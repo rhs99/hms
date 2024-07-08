@@ -22,4 +22,3 @@ async def db_session_middleware(request: Request, call_next):
                 content={"message": "Internal Server Error"},
             )
     return response
-
