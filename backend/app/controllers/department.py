@@ -1,24 +1,24 @@
-from fastapi import APIRouter
-from sqlalchemy.future import select
+from fastapi import APIRouter, status
 from pydantic import BaseModel
 
-from app.db import session
-from app.models import Department
+from app.services.department import DepartmentService
 
 router = APIRouter()
 
 
-class DepartmentSchema(BaseModel):
-    name: str
+class DepartmentSchema:
+    class DepartmentCreateInput(BaseModel):
+        name: str
+    
+    class Output(BaseModel):
+        id: int
+        name: str
 
 
-@router.get("/departments", status_code=200)
+@router.get("/departments", response_model=list[DepartmentSchema.Output], status_code=status.HTTP_200_OK)
 async def get_departments():
-    departments = await session().scalars(select(Department))
-    return [dept for dept in departments.all()]
+    return await DepartmentService.get_departments()
 
-@router.post("/departments", status_code=201)
-async def create_department(dept: DepartmentSchema):
-    new_dept = Department(name=dept.name)
-    session().add(new_dept)
-    await session().commit()
+@router.post("/departments", response_model=DepartmentSchema.Output, status_code=status.HTTP_201_CREATED)
+async def create_department(dept: DepartmentSchema.DepartmentCreateInput):
+    return await DepartmentService.create_department(dept.name)
