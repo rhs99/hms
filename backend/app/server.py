@@ -8,6 +8,7 @@ from app.controllers.department import router as department_router
 app = FastAPI()
 app.include_router(department_router)
 
+
 @app.middleware("http")
 async def db_session_middleware(request: Request, call_next):
     async with session_factory() as session:

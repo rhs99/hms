@@ -9,7 +9,6 @@ class DepartmentRepo:
     async def get_departments():
         departments = await session().scalars(select(Department))
         return [dept for dept in departments.all()]
-    
 
     @staticmethod
     async def create_department(name: str):

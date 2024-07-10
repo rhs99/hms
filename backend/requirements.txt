@@ -18,6 +18,8 @@ anyio==4.4.0
     #   httpx
     #   starlette
     #   watchfiles
+black==24.4.2
+    # via -r requirements.in
 certifi==2024.7.4
     # via
     #   -r requirements.in
@@ -30,6 +32,7 @@ cffi==1.16.0
 click==8.1.7
     # via
     #   -r requirements.in
+    #   black
     #   typer
     #   uvicorn
 cryptography==42.0.8
@@ -100,10 +103,18 @@ mdurl==0.1.2
     # via
     #   -r requirements.in
     #   markdown-it-py
+mypy-extensions==1.0.0
+    # via black
 orjson==3.10.6
     # via
     #   -r requirements.in
     #   fastapi
+packaging==24.1
+    # via black
+pathspec==0.12.1
+    # via black
+platformdirs==4.2.2
+    # via black
 pycparser==2.22
     # via
     #   -r requirements.in
@@ -157,6 +168,8 @@ starlette==0.37.2
     # via
     #   -r requirements.in
     #   fastapi
+tomli==2.0.1
+    # via black
 typer==0.12.3
     # via
     #   -r requirements.in
@@ -166,6 +179,7 @@ typing-extensions==4.12.2
     #   -r requirements.in
     #   alembic
     #   anyio
+    #   black
     #   fastapi
     #   pydantic
     #   pydantic-core
