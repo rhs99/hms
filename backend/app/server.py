@@ -9,9 +9,9 @@ from app.controllers.test import router as test_router
 
 app = FastAPI()
 
-app.include_router(department_router)
-app.include_router(role_router)
-app.include_router(test_router)
+app.include_router(department_router, tags=["department"])
+app.include_router(role_router, tags=["role"])
+app.include_router(test_router, tags=["test"])
 
 
 @app.middleware("http")
