@@ -5,11 +5,13 @@ from sqlalchemy.exc import DBAPIError
 from app.db import session_factory, session_var
 from app.controllers.department import router as department_router
 from app.controllers.role import router as role_router
+from app.controllers.test import router as test_router
 
 app = FastAPI()
 
 app.include_router(department_router)
 app.include_router(role_router)
+app.include_router(test_router)
 
 
 @app.middleware("http")
