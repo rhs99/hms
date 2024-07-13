@@ -24,3 +24,12 @@ class Test(Base):
     name = Column(String(50), unique=True, nullable=False)
 
 
+class Hospital(Base):
+    __tablename__ = "hospitals"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100), nullable=False)
+    address = Column(String(500), nullable=False)
+    phone = Column(String(15))
+    email = Column(String(30))
+
