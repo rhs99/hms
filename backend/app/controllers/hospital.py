@@ -9,16 +9,12 @@ router = APIRouter()
 class HospitalSchema:
     class BaseSchema(BaseModel):
         name: str
-        address: str
-        phone: str | None = None
-        email: str | None = None
 
     class CreateInput(BaseSchema):
         pass
 
     class Output(BaseSchema):
         id: int
-
 
 
 @router.get(
@@ -36,4 +32,4 @@ async def get_hospitals():
     status_code=status.HTTP_201_CREATED,
 )
 async def create_hospital(hospital: HospitalSchema.CreateInput):
-    return await HospitalService.create_hospital(hospital.name, hospital.address, hospital.phone, hospital.email)
+    return await HospitalService.create_hospital(hospital.name)

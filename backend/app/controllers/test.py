@@ -7,12 +7,14 @@ router = APIRouter()
 
 
 class TestSchema:
-    class TestCreateInput(BaseModel):
+    class BaseSchema(BaseModel):
         name: str
 
-    class Output(BaseModel):
+    class CreateInput(BaseSchema):
+        pass
+
+    class Output(BaseSchema):
         id: int
-        name: str
 
 
 @router.get(
@@ -29,5 +31,5 @@ async def get_tests():
     response_model=TestSchema.Output,
     status_code=status.HTTP_201_CREATED,
 )
-async def create_role(test: TestSchema.TestCreateInput):
+async def create_role(test: TestSchema.CreateInput):
     return await TestService.create_test(test.name)

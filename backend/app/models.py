@@ -29,7 +29,3 @@ class Hospital(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(100), nullable=False)
-    address = Column(String(500), nullable=False)
-    phone = Column(String(15))
-    email = Column(String(30))
-

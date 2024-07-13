@@ -7,5 +7,5 @@ class HospitalService:
         return await HospitalRepo.get_hospitals()
 
     @staticmethod
-    async def create_hospital(name: str, address: str, phone: str | None = None, email: str | None = None):
-        return await HospitalRepo.create_hospital(name, address, phone, email)
+    async def create_hospital(name: str):
+        return await HospitalRepo.create_hospital(name)

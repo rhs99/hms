@@ -11,8 +11,8 @@ class HospitalRepo:
         return [hospital for hospital in hospitals.all()]
 
     @staticmethod
-    async def create_hospital(name: str, address: str, phone: str | None = None, email: str | None = None):
-        new_hospital = Hospital(name=name, address=address, phone=phone, email=email)
+    async def create_hospital(name: str):
+        new_hospital = Hospital(name=name)
         session().add(new_hospital)
         await session().commit()
         await session().refresh(new_hospital)

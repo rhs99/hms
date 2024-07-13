@@ -7,12 +7,14 @@ router = APIRouter()
 
 
 class DepartmentSchema:
-    class DepartmentCreateInput(BaseModel):
+    class BaseSchema(BaseModel):
         name: str
 
-    class Output(BaseModel):
+    class CreateInput(BaseSchema):
+        pass
+
+    class Output(BaseSchema):
         id: int
-        name: str
 
 
 @router.get(
@@ -29,5 +31,5 @@ async def get_departments():
     response_model=DepartmentSchema.Output,
     status_code=status.HTTP_201_CREATED,
 )
-async def create_department(dept: DepartmentSchema.DepartmentCreateInput):
+async def create_department(dept: DepartmentSchema.CreateInput):
     return await DepartmentService.create_department(dept.name)

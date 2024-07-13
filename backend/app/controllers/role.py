@@ -7,12 +7,14 @@ router = APIRouter()
 
 
 class RoleSchema:
-    class RoleCreateInput(BaseModel):
+    class BaseSchema(BaseModel):
         name: str
 
-    class Output(BaseModel):
+    class CreateInput(BaseSchema):
+        pass
+
+    class Output(BaseSchema):
         id: int
-        name: str
 
 
 @router.get(
@@ -29,5 +31,5 @@ async def get_roles():
     response_model=RoleSchema.Output,
     status_code=status.HTTP_201_CREATED,
 )
-async def create_role(role: RoleSchema.RoleCreateInput):
+async def create_role(role: RoleSchema.CreateInput):
     return await RoleService.create_role(role.name)
