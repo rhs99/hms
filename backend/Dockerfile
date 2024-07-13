@@ -1,4 +1,4 @@
-FROM python:3.10.12-slim
+FROM python:3.10.12
 WORKDIR /code
 RUN pip install pip-tools==7.4.1
 COPY requirements.txt .
