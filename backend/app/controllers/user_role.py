@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status
 from pydantic import BaseModel
 
-from app.services.user_role import UserRoleRepo
+from app.services.user_role import UserRoleService
 
 router = APIRouter()
 
@@ -19,18 +19,18 @@ class UserRoleSchema:
 
 
 @router.get(
-    "/roles",
+    "/user-roles",
     response_model=list[UserRoleSchema.Output],
     status_code=status.HTTP_200_OK,
 )
 async def get_roles(user_id: int):
-    return await UserRoleRepo.get_user_roles(user_id)
+    return await UserRoleService.get_user_roles(user_id)
 
 
 @router.post(
-    "/roles",
+    "/user-roles",
     response_model=UserRoleSchema.Output,
     status_code=status.HTTP_201_CREATED,
 )
 async def create_role(user_role: UserRoleSchema.CreateInput):
-    return await UserRoleRepo.create_user_role(user_role.user_id, user_role.role_id)
+    return await UserRoleService.create_user_role(user_role.user_id, user_role.role_id)

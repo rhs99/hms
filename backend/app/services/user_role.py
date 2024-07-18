@@ -1,7 +1,7 @@
 from app.repositories.user_role import UserRoleRepo
 
 
-class RoleService:
+class UserRoleService:
     @staticmethod
     async def get_user_roles(user_id: int):
         return await UserRoleRepo.get_user_roles(user_id)

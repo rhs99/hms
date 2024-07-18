@@ -4,6 +4,7 @@ from sqlalchemy.exc import DBAPIError
 
 from app.db import session_factory, session_var
 from app.controllers.branch import router as branch_router
+from app.controllers.branch_dept import router as branch_dept_router
 from app.controllers.department import router as department_router
 from app.controllers.doctor import router as doctor_router
 from app.controllers.hospital import router as hospital_router
@@ -15,6 +16,7 @@ from app.controllers.user_role import router as user_role_router
 app = FastAPI()
 
 app.include_router(branch_router, tags=["branch"])
+app.include_router(branch_dept_router, tags=["branch-dept"])
 app.include_router(department_router, tags=["department"])
 app.include_router(doctor_router, tags=["doctor"])
 app.include_router(hospital_router, tags=["hospital"])
