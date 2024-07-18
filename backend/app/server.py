@@ -9,6 +9,7 @@ from app.controllers.hospital import router as hospital_router
 from app.controllers.role import router as role_router
 from app.controllers.test import router as test_router
 from app.controllers.user import router as user_router
+from app.controllers.user_role import router as user_role_router
 
 app = FastAPI()
 
@@ -18,6 +19,7 @@ app.include_router(hospital_router, tags=["hospital"])
 app.include_router(role_router, tags=["role"])
 app.include_router(test_router, tags=["test"])
 app.include_router(user_router, tags=["user"])
+app.include_router(user_role_router, tags=["user-role"])
 
 
 @app.middleware("http")

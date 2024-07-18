@@ -115,8 +115,8 @@ class Doctor(Base):
     user_id = mapped_column(ForeignKey("users.id"), primary_key=True)
     dept_id = mapped_column(ForeignKey("departments.id"))
     registration_no: Mapped[int] = mapped_column(unique=True)
-    degree: Mapped[str] = mapped_column(String(300))
-    experience: Mapped[str] = mapped_column(String(500))
+    degree: Mapped[str] = mapped_column(String(300), nullable=True)
+    experience: Mapped[str] = mapped_column(String(500), nullable=True)
 
 
 class WorkHistory(Base):
