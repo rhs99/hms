@@ -80,7 +80,6 @@ class User(Base):
     )
 
 
-
 class Branch(Base):
     __tablename__ = "branches"
 
