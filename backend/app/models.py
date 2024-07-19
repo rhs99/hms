@@ -151,7 +151,9 @@ class SlotSchedule(Base):
     __tablename__ = "slotschedules"
 
     slot_id: Mapped[int] = mapped_column(ForeignKey("slots.id"), primary_key=True)
-    wp_id: Mapped[int] = mapped_column(ForeignKey("workplaces.id"), primary_key=True)
+    work_place_id: Mapped[int] = mapped_column(
+        ForeignKey("workplaces.id"), primary_key=True
+    )
     day: Mapped[WeekDayEnum] = mapped_column(Enum(WeekDayEnum), primary_key=True)
 
 
