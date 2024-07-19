@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.exc import DBAPIError
 
 from app.db import session_factory, session_var
+from app.controllers.appointment import router as appointment_router
 from app.controllers.branch import router as branch_router
 from app.controllers.branch_dept import router as branch_dept_router
 from app.controllers.department import router as department_router
@@ -18,6 +19,7 @@ from app.controllers.work_place import router as work_place_router
 
 app = FastAPI()
 
+app.include_router(appointment_router, tags=["appointment"])
 app.include_router(branch_router, tags=["branch"])
 app.include_router(branch_dept_router, tags=["branch-dept"])
 app.include_router(department_router, tags=["department"])

@@ -150,11 +150,10 @@ class WeekDayEnum(enum.Enum):
 class SlotSchedule(Base):
     __tablename__ = "slotschedules"
 
-    slot_id: Mapped[int] = mapped_column(ForeignKey("slots.id"), primary_key=True)
-    work_place_id: Mapped[int] = mapped_column(
-        ForeignKey("workplaces.id"), primary_key=True
-    )
-    day: Mapped[WeekDayEnum] = mapped_column(Enum(WeekDayEnum), primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True)
+    slot_id: Mapped[int] = mapped_column(ForeignKey("slots.id"))
+    work_place_id: Mapped[int] = mapped_column(ForeignKey("workplaces.id"))
+    day: Mapped[WeekDayEnum] = mapped_column(Enum(WeekDayEnum))
 
 
 class Appointment(Base):
@@ -162,9 +161,7 @@ class Appointment(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     patient_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
-    doctor_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
-    branch_id: Mapped[int] = mapped_column(ForeignKey("branches.id"))
-    slot_id: Mapped[int] = mapped_column(ForeignKey("slots.id"))
+    slot_schedule_id: Mapped[int] = mapped_column(ForeignKey("slotschedules.id"))
     parent: Mapped[int] = mapped_column(ForeignKey("appointments.id"), nullable=True)
     date: Mapped[datetime.date] = mapped_column(Date, nullable=False)
     created_at: Mapped[datetime.datetime] = mapped_column(DateTime)
