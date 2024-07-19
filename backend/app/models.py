@@ -119,8 +119,8 @@ class Doctor(Base):
     experience: Mapped[str] = mapped_column(String(500), nullable=True)
 
 
-class WorkHistory(Base):
-    __tablename__ = "workhistories"
+class WorkPlace(Base):
+    __tablename__ = "workplaces"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     branch_id: Mapped[int] = mapped_column(ForeignKey("branches.id"))
@@ -151,7 +151,7 @@ class SlotSchedule(Base):
     __tablename__ = "slotschedules"
 
     slot_id: Mapped[int] = mapped_column(ForeignKey("slots.id"), primary_key=True)
-    wh_id: Mapped[int] = mapped_column(ForeignKey("workhistories.id"), primary_key=True)
+    wp_id: Mapped[int] = mapped_column(ForeignKey("workplaces.id"), primary_key=True)
     day: Mapped[WeekDayEnum] = mapped_column(Enum(WeekDayEnum), primary_key=True)
 
 
