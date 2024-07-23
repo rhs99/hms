@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.exc import DBAPIError
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.db import session_factory, session_var
 from app.controllers.appointment import router as appointment_router
@@ -32,6 +33,15 @@ app.include_router(test_router, tags=["test"])
 app.include_router(user_router, tags=["user"])
 app.include_router(user_role_router, tags=["user-role"])
 app.include_router(work_place_router, tags=["work-place"])
+
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.middleware("http")
