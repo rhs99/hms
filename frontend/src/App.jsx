@@ -1,4 +1,4 @@
-import { RouterProvider, createBrowserRouter, Outlet } from 'react-router-dom';
+import { RouterProvider, createBrowserRouter, Outlet, useNavigate } from 'react-router-dom';
 
 import Homepage from "./pages/homepage";
 import Hospital from './pages/hospital';
@@ -7,9 +7,11 @@ import Department from './pages/department';
 
 
 const RootLayout = () => {
+  const navigate = useNavigate();
+
   return (
     <>
-      <h1 style={{ marginLeft: '30px' }}>Healthcare Management System</h1>
+      <h1 className="nav-title" onClick={()=>navigate('/')}>Healthcare Management System</h1>
       <hr></hr>
       <main style={{
         marginLeft: 'auto',

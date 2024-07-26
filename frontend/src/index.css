@@ -31,3 +31,11 @@ td:hover{
   cursor: pointer;
 }
 
+.nav-title{
+  margin-left: 30px;
+}
+
+.nav-title:hover{
+  cursor: pointer;
+}
+
