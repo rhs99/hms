@@ -35,7 +35,7 @@ async def get_user(id: int):
 
 
 @router.post(
-    "/hospitals",
+    "/users",
     response_model=UserSchema.Output,
     status_code=status.HTTP_201_CREATED,
 )

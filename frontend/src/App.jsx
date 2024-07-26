@@ -1,78 +1,56 @@
-import axios from 'axios'
-import { useState, useEffect } from 'react';
+import { RouterProvider, createBrowserRouter, Outlet } from 'react-router-dom';
 
-import Config from './config';
+import Homepage from "./pages/homepage";
+import Hospital from './pages/hospital';
 
 
-const Hospitals = () => {
-  const [hospitals, setHospitals] = useState([]);
-  const [branches, setBranches] = useState([]);
-
-  useEffect(() => {
-    const url = Config.SERVER_URL + '/hospitals';
-    axios.get(url).then(({ data }) => {
-      setHospitals(data);
-    })
-  }, [])
-
-  const fetchBranches = (id) => {
-    const url = Config.SERVER_URL + `/branches?hospital_id=${id}`;
-    axios.get(url).then(({ data }) => {
-      setBranches(data);
-    })
-  }
-
-  const renderHospitals = () => {
-    return <table>
-      <thead>
-        <tr><th>Hospitals</th></tr>
-      </thead>
-      <tbody>
-        {hospitals.map((hospital) => {
-          return (
-            <tr key={hospital.id}><td onClick={() => fetchBranches(hospital.id)}>{hospital.name}</td></tr>
-          )
-        })}
-      </tbody>
-    </table>
-  }
-
-  const renderBranches = () => {
-    return <table>
-      <thead>
-        <tr><th>Branches</th></tr>
-      </thead>
-      <tbody>
-        {branches.length > 0 ? branches.map((branch) => {
-          return (
-            <tr key={branch.id} onClick={() => fetchBranches(branch.id)}>
-              <td>{branch.address}</td>
-              <td>{branch.phone}</td>
-              <td>{branch.email}</td>
-            </tr>
-          )
-        }) : <tr><td>No branch found!</td></tr>}
-      </tbody>
-    </table>
-  }
-
+const RootLayout = () => {
   return (
     <>
-      {renderHospitals()}
-      <br></br>
-      {renderBranches()}
-    </>
-  )
-}
-
-
-function App() {
-  return (
-    <>
-      <h1>Healthcare Management System</h1>
-      <Hospitals />
+      <h1 style={{ marginLeft: '30px' }}>Healthcare Management System</h1>
+      <hr></hr>
+      <main style={{
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        width: '80%',
+      }}>
+        <Outlet />
+      </main>
     </>
   );
-}
+};
+
+const ErrorPage = () => {
+  return (
+    <div id="error-page">
+      <h1>Oops!</h1>
+      <p>Sorry, an unexpected error has occurred.</p>
+    </div>
+  );
+};
+
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <RootLayout />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        errorElement: <ErrorPage />,
+        children: [
+          { index: true, element: <Homepage /> },
+          { path: '/hospitals/:hospitalId', element: <Hospital /> },
+        ],
+      },
+    ],
+  },
+]);
+
+const App = () => {
+  return (
+    <RouterProvider router={router} />
+  );
+};
 
 export default App;
