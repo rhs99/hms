@@ -14,14 +14,19 @@ class BranchDeptSchema:
     class CreateInput(BaseSchema):
         pass
 
-    class Output(BaseModel):
+    class Dept(BaseModel):
         id: int
         name: str
 
+    class Doctor(BaseModel):
+        id: int
+        name: str
+        degree: str
+        experience: str
 
 @router.get(
     "/branch-depts",
-    response_model=list[BranchDeptSchema.Output],
+    response_model=list[BranchDeptSchema.Dept],
     status_code=status.HTTP_200_OK,
 )
 async def get_branch_depts(branch_id: int):
@@ -30,7 +35,7 @@ async def get_branch_depts(branch_id: int):
 
 @router.post(
     "/branch-depts",
-    response_model=BranchDeptSchema.Output,
+    response_model=BranchDeptSchema.Dept,
     status_code=status.HTTP_201_CREATED,
 )
 async def create_branch_dept(branch_dept: BranchDeptSchema.CreateInput):
@@ -41,6 +46,7 @@ async def create_branch_dept(branch_dept: BranchDeptSchema.CreateInput):
 
 @router.get(
     "/branch-depts/doctors",
+    response_model=list[BranchDeptSchema.Doctor],
     status_code=status.HTTP_200_OK,
 )
 async def get_branch_depts(branch_id: int, dept_id: int):

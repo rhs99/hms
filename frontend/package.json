@@ -19,6 +19,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "format": "prettier --write \"src/**/*.{js,jsx,scss}\"",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -40,6 +41,7 @@
     ]
   },
   "devDependencies": {
+    "prettier": "^3.3.3",
     "sass": "^1.77.8"
   }
 }

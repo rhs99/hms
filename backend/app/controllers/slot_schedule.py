@@ -19,14 +19,20 @@ class SlotScheduleSchema:
     class Output(BaseSchema):
         id: int
 
+    class Slot(BaseModel):
+        id: int
+        start_at: str
+        end_at: str
+        day: str
+
 
 @router.get(
     "/slot-schedules",
-    response_model=list[SlotScheduleSchema.Output],
+    response_model=list[SlotScheduleSchema.Slot],
     status_code=status.HTTP_200_OK,
 )
-async def get_slot_schedules(work_place_id: int):
-    return await SlotScheduleService.get_slot_schedules(work_place_id)
+async def get_slot_schedules(branch_id: int, employee_id: int):
+    return await SlotScheduleService.get_slot_schedules(branch_id, employee_id)
 
 
 @router.post(

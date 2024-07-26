@@ -26,11 +26,19 @@ class BranchDeptRepo:
     @staticmethod
     async def get_branch_dept_doctors(branch_id: int, dept_id: int):
         results = await session().execute(
-            select(User.full_name, Doctor.degree, Doctor.experience)
+            select(User.id, User.full_name, Doctor.degree, Doctor.experience)
             .filter(WorkPlace.branch_id == branch_id)
             .filter(Doctor.dept_id == dept_id)
             .filter(Doctor.user_id == WorkPlace.employee_id)
             .filter(User.id == Doctor.user_id)
         )
         doctors = [res for res in results.all()]
-        return [{"name": doctor[0], "degree": doctor[1], "experience": doctor[2]} for doctor in doctors]
+        return [
+            {
+                "id": doctor[0],
+                "name": doctor[1],
+                "degree": doctor[2],
+                "experience": doctor[3],
+            }
+            for doctor in doctors
+        ]

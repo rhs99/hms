@@ -1,23 +1,27 @@
 import { RouterProvider, createBrowserRouter, Outlet, useNavigate } from 'react-router-dom';
 
-import Homepage from "./pages/homepage";
+import Homepage from './pages/homepage';
 import Hospital from './pages/hospital';
 import Branch from './pages/branch';
 import Department from './pages/department';
-
+import Doctor from './pages/doctor';
 
 const RootLayout = () => {
   const navigate = useNavigate();
 
   return (
     <>
-      <h1 className="nav-title" onClick={()=>navigate('/')}>Healthcare Management System</h1>
+      <h1 className="nav-title" onClick={() => navigate('/')}>
+        Healthcare Management System
+      </h1>
       <hr></hr>
-      <main style={{
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        width: '80%',
-      }}>
+      <main
+        style={{
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          width: '80%',
+        }}
+      >
         <Outlet />
       </main>
     </>
@@ -33,7 +37,6 @@ const ErrorPage = () => {
   );
 };
 
-
 const router = createBrowserRouter([
   {
     path: '/',
@@ -46,7 +49,11 @@ const router = createBrowserRouter([
           { index: true, element: <Homepage /> },
           { path: '/hospitals/:hospitalId', element: <Hospital /> },
           { path: '/hospitals/:hospitalId/branches/:branchId', element: <Branch /> },
-          { path: '/hospitals/:hospitalId/branches/:branchId/departments/:deptId', element: <Department/> },
+          { path: '/hospitals/:hospitalId/branches/:branchId/departments/:deptId', element: <Department /> },
+          {
+            path: '/hospitals/:hospitalId/branches/:branchId/departments/:deptId/doctors/:doctorId',
+            element: <Doctor />,
+          },
         ],
       },
     ],
@@ -54,9 +61,7 @@ const router = createBrowserRouter([
 ]);
 
 const App = () => {
-  return (
-    <RouterProvider router={router} />
-  );
+  return <RouterProvider router={router} />;
 };
 
 export default App;

@@ -1,5 +1,5 @@
 const Config = {
-    SERVER_URL: 'http://localhost:8000',
-}
+  SERVER_URL: 'http://localhost:8000',
+};
 
 export default Config;
