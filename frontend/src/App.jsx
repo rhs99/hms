@@ -1,3 +1,4 @@
+import axios from 'axios'
 import { useState, useEffect } from 'react';
 
 import Config from './config';
@@ -9,19 +10,15 @@ const Hospitals = () => {
 
   useEffect(() => {
     const url = Config.SERVER_URL + '/hospitals';
-    fetch(url).then((res) => {
-      res.json().then((data) => {
-        setHospitals(data);
-      })
+    axios.get(url).then(({ data }) => {
+      setHospitals(data);
     })
   }, [])
 
   const fetchBranches = (id) => {
     const url = Config.SERVER_URL + `/branches?hospital_id=${id}`;
-    fetch(url).then((res) => {
-      res.json().then((data) => {
-        setBranches(data);
-      })
+    axios.get(url).then(({ data }) => {
+      setBranches(data);
     })
   }
 
