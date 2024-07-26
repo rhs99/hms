@@ -15,6 +15,7 @@ class BranchDeptSchema:
         pass
 
     class Output(BaseModel):
+        id: int
         name: str
 
 
@@ -36,3 +37,11 @@ async def create_branch_dept(branch_dept: BranchDeptSchema.CreateInput):
     return await BranchDeptService.create_branch_dept(
         branch_dept.branch_id, branch_dept.dept_id
     )
+
+
+@router.get(
+    "/branch-depts/doctors",
+    status_code=status.HTTP_200_OK,
+)
+async def get_branch_depts(branch_id: int, dept_id: int):
+    return await BranchDeptService.get_branch_dept_doctors(branch_id, dept_id)

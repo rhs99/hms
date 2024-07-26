@@ -9,3 +9,7 @@ class BranchDeptService:
     @staticmethod
     async def create_branch_dept(branch_id: int, dept_id: int):
         return await BranchDeptRepo.create_branch_dept(branch_id, dept_id)
+
+    @staticmethod
+    async def get_branch_dept_doctors(branch_id: int, dept_id: int):
+        return await BranchDeptRepo.get_branch_dept_doctors(branch_id, dept_id)

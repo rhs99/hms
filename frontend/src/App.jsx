@@ -3,6 +3,7 @@ import { RouterProvider, createBrowserRouter, Outlet } from 'react-router-dom';
 import Homepage from "./pages/homepage";
 import Hospital from './pages/hospital';
 import Branch from './pages/branch';
+import Department from './pages/department';
 
 
 const RootLayout = () => {
@@ -43,6 +44,7 @@ const router = createBrowserRouter([
           { index: true, element: <Homepage /> },
           { path: '/hospitals/:hospitalId', element: <Hospital /> },
           { path: '/hospitals/:hospitalId/branches/:branchId', element: <Branch /> },
+          { path: '/hospitals/:hospitalId/branches/:branchId/departments/:deptId', element: <Department/> },
         ],
       },
     ],

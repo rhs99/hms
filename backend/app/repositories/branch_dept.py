@@ -1,15 +1,19 @@
 from sqlalchemy.future import select
 
 from app.db import session
-from app.models import BranchDept, Department
+from app.models import BranchDept, Department, Doctor, WorkPlace, User
 
 
 class BranchDeptRepo:
     @staticmethod
     async def get_branch_depts(branch_id: int):
-        results = await session().execute(select(Department.name).filter(Department.id == BranchDept.dept_id).where(BranchDept.branch_id == branch_id))
+        results = await session().execute(
+            select(Department.name, Department.id)
+            .filter(Department.id == BranchDept.dept_id)
+            .where(BranchDept.branch_id == branch_id)
+        )
         depts = [res for res in results.all()]
-        return [{'name': dept[0]} for dept in depts]
+        return [{"name": dept[0], "id": dept[1]} for dept in depts]
 
     @staticmethod
     async def create_branch_dept(branch_id: int, dept_id: int):
@@ -18,3 +22,15 @@ class BranchDeptRepo:
         await session().commit()
         await session().refresh(new_branch_dept)
         return new_branch_dept
+
+    @staticmethod
+    async def get_branch_dept_doctors(branch_id: int, dept_id: int):
+        results = await session().execute(
+            select(User.user_name, Doctor.degree, Doctor.experience)
+            .filter(WorkPlace.branch_id == branch_id)
+            .filter(Doctor.dept_id == dept_id)
+            .filter(Doctor.user_id == WorkPlace.employee_id)
+            .filter(User.id == Doctor.user_id)
+        )
+        doctors = [res for res in results.all()]
+        return [{"name": doctor[0], "degree": doctor[1], "experience": doctor[2]} for doctor in doctors]
