@@ -13,6 +13,7 @@ class UserService:
     async def create_user(
         user_name: str,
         password: str,
+        full_name: str,
         email: str,
         phone: str,
         dob: datetime.date,
@@ -20,5 +21,5 @@ class UserService:
         blood_group: BloodGroupEnum | None,
     ):
         return await UserRepo.create_user(
-            user_name, password, email, phone, dob, gender, blood_group
+            user_name, password, full_name, email, phone, dob, gender, blood_group
         )

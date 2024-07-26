@@ -13,6 +13,7 @@ class UserRepo:
     async def create_user(
         user_name: str,
         password: str,
+        full_name: str,
         email: str,
         phone: str,
         dob: datetime.date,
@@ -22,6 +23,7 @@ class UserRepo:
         new_user = User(
             user_name=user_name,
             password=password,
+            full_name=full_name,
             email=email,
             phone=phone,
             dob=dob,

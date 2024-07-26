@@ -67,6 +67,7 @@ class User(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     user_name: Mapped[str] = mapped_column(String(30), unique=True)
     password: Mapped[str] = mapped_column(String(100))
+    full_name: Mapped[str] = mapped_column(String(30), nullable=True)
     email: Mapped[str] = mapped_column(String(30))
     phone: Mapped[str] = mapped_column(String(20))
     dob: Mapped[datetime.date] = mapped_column(Date)

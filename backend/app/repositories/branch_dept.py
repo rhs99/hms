@@ -26,7 +26,7 @@ class BranchDeptRepo:
     @staticmethod
     async def get_branch_dept_doctors(branch_id: int, dept_id: int):
         results = await session().execute(
-            select(User.user_name, Doctor.degree, Doctor.experience)
+            select(User.full_name, Doctor.degree, Doctor.experience)
             .filter(WorkPlace.branch_id == branch_id)
             .filter(Doctor.dept_id == dept_id)
             .filter(Doctor.user_id == WorkPlace.employee_id)

@@ -12,6 +12,7 @@ class UserSchema:
     class BaseSchema(BaseModel):
         user_name: str
         password: str
+        full_name: str
         email: str
         phone: str
         dob: datetime.date
@@ -43,6 +44,7 @@ async def create_user(user: UserSchema.CreateInput):
     return await UserService.create_user(
         user.user_name,
         user.password,
+        user.full_name,
         user.email,
         user.phone,
         user.dob,
