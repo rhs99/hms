@@ -14,3 +14,7 @@ class AppointmentService:
         return await AppointmentRepo.create_appointment(
             patient_id, slot_schedule_id, parent, date
         )
+
+    @staticmethod
+    async def get_appointments(slot_schedule_id: int, date: datetime.date):
+        return await AppointmentRepo.get_appointments(slot_schedule_id, date)

@@ -23,7 +23,7 @@ class AppointmentSchema:
 
 
 @router.post(
-    "/appointemnt",
+    "/appointemnts",
     response_model=AppointmentSchema.Output,
     status_code=status.HTTP_201_CREATED,
 )
@@ -34,3 +34,8 @@ async def create_doctor(appointment: AppointmentSchema.CreateInput):
         appointment.parent,
         appointment.date,
     )
+
+
+@router.get("/appointments", status_code=status.HTTP_200_OK)
+async def get_appointments(slot_schedule_id: int, date: datetime.date):
+    return await AppointmentService.get_appointments(slot_schedule_id, date)

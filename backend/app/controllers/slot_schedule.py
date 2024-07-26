@@ -19,7 +19,7 @@ class SlotScheduleSchema:
     class Output(BaseSchema):
         id: int
 
-    class Slot(BaseModel):
+    class OutputWithSlot(BaseModel):
         id: int
         start_at: str
         end_at: str
@@ -28,7 +28,7 @@ class SlotScheduleSchema:
 
 @router.get(
     "/slot-schedules",
-    response_model=list[SlotScheduleSchema.Slot],
+    response_model=list[SlotScheduleSchema.OutputWithSlot],
     status_code=status.HTTP_200_OK,
 )
 async def get_slot_schedules(branch_id: int, employee_id: int):

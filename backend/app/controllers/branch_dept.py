@@ -24,6 +24,7 @@ class BranchDeptSchema:
         degree: str
         experience: str
 
+
 @router.get(
     "/branch-depts",
     response_model=list[BranchDeptSchema.Dept],

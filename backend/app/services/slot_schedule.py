@@ -12,7 +12,6 @@ class SlotScheduleService:
 
         return slots
 
-
     @staticmethod
     async def create_slot_schedule(slot_id: int, work_place_id: int, day: WeekDayEnum):
         return await SlotScheduleRepo.create_slot_schedule(slot_id, work_place_id, day)

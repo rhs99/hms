@@ -8,7 +8,7 @@ class SlotScheduleRepo:
     @staticmethod
     async def get_slot_schedules(branch_id: int, employee_id: int):
         results = await session().execute(
-            select(Slot.id, Slot.start_at, Slot.end_at, SlotSchedule.day)
+            select(SlotSchedule.id, Slot.start_at, Slot.end_at, SlotSchedule.day)
             .filter(
                 WorkPlace.branch_id == branch_id, WorkPlace.employee_id == employee_id
             )
