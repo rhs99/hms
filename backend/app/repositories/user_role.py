@@ -7,7 +7,7 @@ from app.models import UserRole
 class UserRoleRepo:
     @staticmethod
     async def get_user_roles(user_id: int):
-        user_roles = await session().scalars(select(UserRole.user_id == user_id))
+        user_roles = await session().scalars(select(UserRole).where(UserRole.user_id == user_id))
         return [user_role for user_role in user_roles.all()]
 
     @staticmethod

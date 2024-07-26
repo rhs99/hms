@@ -12,7 +12,7 @@ class WorkPlaceSchema:
         branch_id: int
         employee_id: int
         start_date: datetime.date
-        end_date: datetime.date
+        end_date: datetime.date | None = None
 
     class CreateInput(BaseSchema):
         pass

@@ -23,7 +23,7 @@ class UserRoleSchema:
     response_model=list[UserRoleSchema.Output],
     status_code=status.HTTP_200_OK,
 )
-async def get_roles(user_id: int):
+async def get_user_roles(user_id: int):
     return await UserRoleService.get_user_roles(user_id)
 
 
@@ -32,5 +32,5 @@ async def get_roles(user_id: int):
     response_model=UserRoleSchema.Output,
     status_code=status.HTTP_201_CREATED,
 )
-async def create_role(user_role: UserRoleSchema.CreateInput):
+async def create_user_role(user_role: UserRoleSchema.CreateInput):
     return await UserRoleService.create_user_role(user_role.user_id, user_role.role_id)

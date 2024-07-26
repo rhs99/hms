@@ -7,8 +7,7 @@ from app.models import User, GenderEnum, BloodGroupEnum
 class UserRepo:
     @staticmethod
     async def get_user(id: int):
-        hospitals = await session().get(User, id)
-        return [hospital for hospital in hospitals.all()]
+        return await session().get(User, id)
 
     @staticmethod
     async def create_user(

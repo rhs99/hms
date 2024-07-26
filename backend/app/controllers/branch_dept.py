@@ -14,8 +14,8 @@ class BranchDeptSchema:
     class CreateInput(BaseSchema):
         pass
 
-    class Output(BaseSchema):
-        pass
+    class Output(BaseModel):
+        name: str
 
 
 @router.get(

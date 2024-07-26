@@ -12,7 +12,7 @@ class SlotRepo:
         return [slot for slot in slots.all()]
 
     @staticmethod
-    async def create_slot(start_at: datetime.datetime, end_at: datetime.datetime):
+    async def create_slot(start_at: str, end_at: str):
         new_slot = Slot(start_at=start_at, end_at=end_at)
         session().add(new_slot)
         await session().commit()

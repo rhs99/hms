@@ -8,8 +8,8 @@ from app.models import WorkPlace
 class WorkPlaceRepo:
     @staticmethod
     async def get_work_places(employee_id: int):
-        work_places = await session().execute(
-            select(WorkPlace.employee_id == employee_id)
+        work_places = await session().scalars(
+            select(WorkPlace).filter(WorkPlace.employee_id == employee_id)
         )
         return [work_place for work_place in work_places.all()]
 

@@ -1,12 +1,13 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 import Config from "../config";
 
 const Hospital = () => {
   const [branches, setBranches] = useState([]);
   const { hospitalId } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const url = Config.SERVER_URL + `/branches?hospital_id=${hospitalId}`;
@@ -29,7 +30,7 @@ const Hospital = () => {
       <tbody>
         {branches.map((branch) => {
           return (
-            <tr key={branch.id}>
+            <tr key={branch.id} onClick={()=>navigate(`/hospitals/${hospitalId}/branches/${branch.id}`)}>
               <td>{branch.address}</td>
               <td>{branch.phone}</td>
               <td>{branch.email}</td>

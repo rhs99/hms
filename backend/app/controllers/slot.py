@@ -1,4 +1,3 @@
-import datetime
 from fastapi import APIRouter, status
 from pydantic import BaseModel
 
@@ -9,8 +8,8 @@ router = APIRouter()
 
 class SlotSchema:
     class BaseSchema(BaseModel):
-        start_at: datetime.datetime
-        end_at: datetime.datetime
+        start_at: str
+        end_at: str
 
     class CreateInput(BaseSchema):
         pass

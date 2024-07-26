@@ -11,7 +11,7 @@ class AppointmentSchema:
     class BaseSchema(BaseModel):
         patient_id: int
         slot_schedule_id: int
-        parent: int
+        parent: int | None = None
         date: datetime.date
 
     class CreateInput(BaseSchema):
