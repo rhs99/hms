@@ -2,6 +2,8 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
+import Table from '../design-library/table/Table';
+
 import Config from '../config';
 
 const Department = () => {
@@ -17,34 +19,19 @@ const Department = () => {
   }, [branchId]);
 
   return (
-    <div>
-      <h2>Doctors</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Degree</th>
-            <th>Experience</th>
-          </tr>
-        </thead>
-        <tbody>
-          {doctors.map((doctor) => {
-            return (
-              <tr
-                key={doctor.id}
-                onClick={() =>
-                  navigate(`/hospitals/${hospitalId}/branches/${branchId}/departments/${deptId}/doctors/${doctor.id}`)
-                }
-              >
-                <td>{doctor.name}</td>
-                <td>{doctor.degree}</td>
-                <td>{doctor.experience}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
+    <Table
+      title="Doctors"
+      headers={['Name', 'Degree', 'Experience']}
+      rows={doctors.map((doctor) => {
+        return {
+          key: doctor.id,
+          value: [doctor.name, doctor.degree, doctor.experience],
+        };
+      })}
+      onRowClick={(id) => {
+        navigate(`/hospitals/${hospitalId}/branches/${branchId}/departments/${deptId}/doctors/${id}`);
+      }}
+    />
   );
 };
 

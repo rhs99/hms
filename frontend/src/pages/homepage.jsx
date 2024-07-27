@@ -2,6 +2,8 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import Table from '../design-library/table/Table';
+
 import Config from '../config';
 
 const Homepage = () => {
@@ -16,25 +18,19 @@ const Homepage = () => {
   }, []);
 
   return (
-    <div className="homepage">
-      <h3>List of Hospitals</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-          </tr>
-        </thead>
-        <tbody>
-          {hospitals.map((hospital) => {
-            return (
-              <tr key={hospital.id} onClick={() => navigate(`/hospitals/${hospital.id}`)}>
-                <td>{hospital.name}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
+    <Table
+      title="Hospitals"
+      headers={['Name']}
+      rows={hospitals.map((h) => {
+        return {
+          key: h.id,
+          value: [h.name],
+        };
+      })}
+      onRowClick={(id) => {
+        navigate(`/hospitals/${id}`);
+      }}
+    />
   );
 };
 

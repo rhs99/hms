@@ -1,0 +1,17 @@
+.dl-table {
+  &-table,
+  &-th,
+  &-td {
+    border: 1px solid black;
+    border-collapse: collapse;
+    padding: 10px;
+  }
+
+  &-tr:hover {
+    cursor: pointer;
+  }
+
+  &-highlight {
+    background-color: rgb(231, 226, 226);
+  }
+}

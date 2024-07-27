@@ -1,12 +1,17 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import Datepicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
+import Table from '../design-library/table/Table';
 import Config from '../config';
+
+import './_doctor.scss';
 
 const Doctor = () => {
   const [slotSchedules, setSlotSchedules] = useState([]);
-  const [selectedSlotSchedule, setSelectedSlotSchedule] = useState(null);
+  const [selectedSlotSchedule, setSelectedSlotSchedule] = useState(new Date());
   const [date, setDate] = useState(null);
   const [appointments, setAppointments] = useState(null);
 
@@ -24,8 +29,14 @@ const Doctor = () => {
       return;
     }
 
+    const year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(date);
+    const month = new Intl.DateTimeFormat('en', { month: '2-digit' }).format(date);
+    const day = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(date);
+
+    const convertedDate = `${year}-${month}-${day}`;
+
     axios
-      .get(Config.SERVER_URL + `/appointments?slot_schedule_id=${selectedSlotSchedule.id}&date=${date}`)
+      .get(Config.SERVER_URL + `/appointments?slot_schedule_id=${selectedSlotSchedule.id}&date=${convertedDate}`)
       .then(({ data }) => {
         setAppointments(data);
       });
@@ -34,27 +45,21 @@ const Doctor = () => {
   const renderSlots = () => {
     return (
       <div>
-        <h2>Slots</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Start At</th>
-              <th>End At</th>
-              <th>Day</th>
-            </tr>
-          </thead>
-          <tbody>
-            {slotSchedules.map((slotSchedule) => {
-              return (
-                <tr key={slotSchedule.id} onClick={() => setSelectedSlotSchedule(slotSchedule)}>
-                  <td>{slotSchedule.start_at}</td>
-                  <td>{slotSchedule.end_at}</td>
-                  <td>{slotSchedule.day}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
+        <Table
+          title="Working Schedules"
+          headers={['Starting Time', 'Ending Time', 'Day']}
+          rows={slotSchedules.map((slotSchedule) => {
+            return {
+              key: slotSchedule.id,
+              value: [slotSchedule.start_at, slotSchedule.end_at, slotSchedule.day],
+            };
+          })}
+          onRowClick={(id) => {
+            const ss = slotSchedules.filter((slotSchedule) => slotSchedule.id === id);
+            setSelectedSlotSchedule(ss[0]);
+          }}
+          highlightSelection={true}
+        />
       </div>
     );
   };
@@ -65,42 +70,38 @@ const Doctor = () => {
     }
 
     return (
-      <div>
-        <h2>Appointments</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Patient</th>
-              <th>Created At</th>
-            </tr>
-          </thead>
-          <tbody>
-            {appointments.map((appointment, idx) => {
-              return (
-                <tr key={idx}>
-                  <td>{appointment.name}</td>
-                  <td>{appointment.created_at}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
+      <Table
+        title="Appointments"
+        headers={['Patient', 'Appointment Given At']}
+        rows={appointments.map((appointment, idx) => {
+          return {
+            key: idx,
+            value: [appointment.name, new Date(appointment.created_at).toString()],
+          };
+        })}
+      />
     );
   };
 
   return (
-    <div>
+    <div className="doctor">
       {renderSlots()}
-
-      <p>
+      <div>
         <strong>Selected Slot:</strong> {selectedSlotSchedule?.start_at || 'NA'}:{selectedSlotSchedule?.end_at || 'NA'}{' '}
         ({selectedSlotSchedule?.day || 'NA'})
-      </p>
-      <label htmlFor="data">Date: </label>
-      <input value={date} onChange={(e) => setDate(e.target.value)} />
-      <button onClick={getAppointments}>View Appointment</button>
-      <button>Make Appointment</button>
+      </div>
+      <div>
+        <span>
+          <strong>Selected date: </strong>
+        </span>
+        <Datepicker selected={date} dateFormat="yyyy-MM-dd" onChange={(date) => setDate(date)} />
+      </div>
+      <div className="action-btn-container">
+        <button className="action-btn" onClick={getAppointments}>
+          View Appointment
+        </button>
+        <button className="action-btn">Make Appointment</button>
+      </div>
       {renderAppointments()}
     </div>
   );

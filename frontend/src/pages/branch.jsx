@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import Table from '../design-library/table/Table';
 
 import Config from '../config';
 
@@ -17,28 +18,19 @@ const Branch = () => {
   }, [branchId]);
 
   return (
-    <div>
-      <h2>Departments</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-          </tr>
-        </thead>
-        <tbody>
-          {depts.map((dept) => {
-            return (
-              <tr
-                key={dept.id}
-                onClick={() => navigate(`/hospitals/${hospitalId}/branches/${branchId}/departments/${dept.id}`)}
-              >
-                <td>{dept.name}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
+    <Table
+      title="Departments"
+      headers={['Name']}
+      rows={depts.map((dept) => {
+        return {
+          key: dept.id,
+          value: [dept.name],
+        };
+      })}
+      onRowClick={(id) => {
+        navigate(`/hospitals/${hospitalId}/branches/${branchId}/departments/${id}`);
+      }}
+    />
   );
 };
 

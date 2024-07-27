@@ -20,7 +20,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "format": "prettier --write \"src/**/*.{js,jsx,scss}\"",
+    "format": "prettier --write \"src/**/*.{js,jsx,scss,css}\"",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import Config from '../config';
+import Table from '../design-library/table/Table';
 
 const Hospital = () => {
   const [branches, setBranches] = useState([]);
@@ -17,29 +18,19 @@ const Hospital = () => {
   }, [hospitalId]);
 
   return (
-    <div>
-      <h2>Branches</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Address</th>
-            <th>Phone</th>
-            <th>Email</th>
-          </tr>
-        </thead>
-        <tbody>
-          {branches.map((branch) => {
-            return (
-              <tr key={branch.id} onClick={() => navigate(`/hospitals/${hospitalId}/branches/${branch.id}`)}>
-                <td>{branch.address}</td>
-                <td>{branch.phone}</td>
-                <td>{branch.email}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
-    </div>
+    <Table
+      title="Branches"
+      headers={['Address', 'Phone', 'Email']}
+      rows={branches.map((branch) => {
+        return {
+          key: branch.id,
+          value: [branch.address, branch.phone, branch.email],
+        };
+      })}
+      onRowClick={(id) => {
+        navigate(`/hospitals/${hospitalId}/branches/${id}`);
+      }}
+    />
   );
 };
 

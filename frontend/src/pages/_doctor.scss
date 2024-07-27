@@ -1,0 +1,15 @@
+.doctor {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  .action-btn-container {
+    display: flex;
+    gap: 10px;
+  }
+
+  .action-btn {
+    font-size: large;
+    padding: 10px;
+  }
+}
