@@ -1,5 +1,6 @@
-import { RouterProvider, createBrowserRouter, Outlet, useNavigate } from 'react-router-dom';
+import { RouterProvider, createBrowserRouter, Outlet } from 'react-router-dom';
 
+import Navigation from './component/navigation/Navigation';
 import Homepage from './pages/Homepage';
 import Hospital from './pages/Hospital';
 import Branch from './pages/Branch';
@@ -7,19 +8,15 @@ import Department from './pages/Department';
 import Doctor from './pages/doctor/Doctor';
 
 const RootLayout = () => {
-  const navigate = useNavigate();
-
   return (
     <>
-      <h1 className="nav-title" onClick={() => navigate('/')}>
-        Healthcare Management System
-      </h1>
+      <Navigation />
       <hr></hr>
       <main
         style={{
           marginLeft: 'auto',
           marginRight: 'auto',
-          width: '80%',
+          width: '50%',
         }}
       >
         <Outlet />

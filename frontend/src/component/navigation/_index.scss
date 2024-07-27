@@ -1,0 +1,33 @@
+.navigation {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &-title {
+    margin-left: 30px;
+  }
+
+  &-title:hover {
+    cursor: pointer;
+  }
+
+  &-btn-container {
+    display: flex;
+    margin-right: 30px;
+  }
+
+  &-btn-grp{
+    display: flex;
+    gap: 5px;
+  }
+
+  &-btn-grp button{
+    font-size: medium;
+    padding: 5px;
+    border: 1px solid blue;
+    border-radius: 5px;
+    color: blue;
+  }
+
+
+}

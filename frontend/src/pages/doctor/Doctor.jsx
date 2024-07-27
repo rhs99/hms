@@ -94,7 +94,7 @@ const Doctor = () => {
         rows={appointments.map((appointment, idx) => {
           return {
             key: idx,
-            value: [idx+1, appointment.name, new Date(appointment.created_at).toString()],
+            value: [idx + 1, appointment.name, new Date(appointment.created_at).toString()],
           };
         })}
       />
