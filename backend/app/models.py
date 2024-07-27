@@ -174,3 +174,4 @@ class Appointment(Base):
     parent: Mapped[int] = mapped_column(ForeignKey("appointments.id"), nullable=True)
     date: Mapped[datetime.date] = mapped_column(Date, nullable=False)
     created_at: Mapped[datetime.datetime] = mapped_column(DateTime)
+    details: Mapped[str] = mapped_column(String(2000), nullable=True)

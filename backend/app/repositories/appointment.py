@@ -3,7 +3,17 @@ from sqlalchemy import desc
 from sqlalchemy.future import select
 
 from app.db import session
-from app.models import Appointment, User, SlotSchedule, Slot, Branch, Hospital, WorkPlace, Doctor, Department
+from app.models import (
+    Appointment,
+    User,
+    SlotSchedule,
+    Slot,
+    Branch,
+    Hospital,
+    WorkPlace,
+    Doctor,
+    Department,
+)
 
 
 class AppointmentRepo:
@@ -26,51 +36,51 @@ class AppointmentRepo:
         await session().refresh(new_appointment)
         return new_appointment
 
-
     @staticmethod
     async def get_appointment(appointment_id: int):
 
         results = await session().execute(
-            select(User.full_name, User.gender, User.dob, User.blood_group)
-            .filter(
-                Appointment.id == appointment_id
+            select(
+                User.full_name,
+                User.gender,
+                User.dob,
+                User.blood_group,
+                Appointment.details,
             )
+            .filter(Appointment.id == appointment_id)
             .filter(User.id == Appointment.patient_id)
         )
         appointment = results.one_or_none()
         return {
+            "id": appointment_id,
             "name": appointment[0],
             "gender": appointment[1],
             "dob": appointment[2],
             "blood_group": appointment[3],
+            "details": appointment[4],
         }
 
     @staticmethod
-    async def get_appointments(slot_schedule_id: int, date: datetime.date):
-
-        results = await session().execute(
-            select(User.full_name, Appointment.created_at)
-            .filter(
-                Appointment.slot_schedule_id == slot_schedule_id,
-                Appointment.date == date,
-            )
-            .filter(User.id == Appointment.patient_id)
-            .order_by(Appointment.id)
-        )
-        appointments = [res for res in results.all()]
-        return [
-            {"name": appointment[0], "created_at": appointment[1]}
-            for appointment in appointments
-        ]
+    async def update_appointment(appointment_id: int, data):
+        appointment = await session().get(Appointment, appointment_id)
+        appointment.details = data.details
+        await session().commit()
 
     @staticmethod
     async def get_user_appointments(user_id: int):
 
         results = await session().execute(
-            select(Appointment.id, Appointment.date, Appointment.parent, Hospital.name, Branch.address, Department.name, User.full_name, Slot.start_at)
-            .filter(
-                Appointment.patient_id == user_id
+            select(
+                Appointment.id,
+                Appointment.date,
+                Appointment.parent,
+                Hospital.name,
+                Branch.address,
+                Department.name,
+                User.full_name,
+                Slot.start_at,
             )
+            .filter(Appointment.patient_id == user_id)
             .filter(Appointment.slot_schedule_id == SlotSchedule.id)
             .filter(SlotSchedule.work_place_id == WorkPlace.id)
             .filter(SlotSchedule.slot_id == Slot.id)
@@ -96,16 +106,23 @@ class AppointmentRepo:
             for appointment in appointments
         ]
 
-
     @staticmethod
-    async def get_slot_schedule_appointments(slot_schedule_id: int):
-
+    async def get_slot_schedule_appointments(
+        slot_schedule_id: int, date: datetime.date
+    ):
         results = await session().execute(
-            select(Appointment.id, Appointment.parent, User.full_name, User.gender)
-            .filter(
-                Appointment.slot_schedule_id == slot_schedule_id
+            select(
+                Appointment.id,
+                Appointment.parent,
+                Appointment.created_at,
+                User.full_name,
+                User.gender,
             )
-            .filter(Appointment.patient_id == User.id)
+            .filter(
+                Appointment.slot_schedule_id == slot_schedule_id,
+                Appointment.date == date,
+            )
+            .filter(User.id == Appointment.patient_id)
             .order_by(Appointment.id)
         )
         appointments = [res for res in results.all()]
@@ -113,9 +130,9 @@ class AppointmentRepo:
             {
                 "id": appointment[0],
                 "parent": appointment[1],
-                "full_name": appointment[2],
-                "gender": appointment[3],
+                "created_at": appointment[2],
+                "full_name": appointment[3],
+                "gender": appointment[4],
             }
             for appointment in appointments
         ]
-

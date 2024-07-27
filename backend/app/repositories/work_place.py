@@ -9,7 +9,14 @@ class WorkPlaceRepo:
     @staticmethod
     async def get_work_places(employee_id: int):
         results = await session().execute(
-            select(SlotSchedule.id, Hospital.name, Branch.address, SlotSchedule.day, Slot.start_at, Slot.end_at)
+            select(
+                SlotSchedule.id,
+                Hospital.name,
+                Branch.address,
+                SlotSchedule.day,
+                Slot.start_at,
+                Slot.end_at,
+            )
             .filter(WorkPlace.employee_id == employee_id)
             .filter(WorkPlace.end_date == None)
             .filter(WorkPlace.branch_id == Branch.id)

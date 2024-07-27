@@ -21,6 +21,9 @@ class AppointmentSchema:
         id: int
         created_at: datetime.datetime
 
+    class UpdateInput(BaseModel):
+        details: str
+
 
 @router.post(
     "/appointments",
@@ -41,15 +44,20 @@ async def get_appointment(appointment_id: int):
     return await AppointmentService.get_appointment(appointment_id)
 
 
-@router.get("/appointments", status_code=status.HTTP_200_OK)
-async def get_appointments(slot_schedule_id: int, date: datetime.date):
-    return await AppointmentService.get_appointments(slot_schedule_id, date)
+@router.patch("/appointments/{appointment_id}", status_code=status.HTTP_200_OK)
+async def update_appointment(appointment_id: int, data: AppointmentSchema.UpdateInput):
+    return await AppointmentService.update_appointment(appointment_id, data)
 
 
 @router.get("/appointments/users/{user_id}", status_code=status.HTTP_200_OK)
 async def get_user_appointments(user_id: int):
     return await AppointmentService.get_user_appointments(user_id)
 
-@router.get("/appointments/slot-schedules/{slot_schedule_id}", status_code=status.HTTP_200_OK)
-async def get_slot_schedule_appointments(slot_schedule_id: int):
-    return await AppointmentService.get_slot_schedule_appointments(slot_schedule_id)
+
+@router.get(
+    "/appointments/slot-schedules/{slot_schedule_id}", status_code=status.HTTP_200_OK
+)
+async def get_slot_schedule_appointments(slot_schedule_id: int, date: datetime.date):
+    return await AppointmentService.get_slot_schedule_appointments(
+        slot_schedule_id, date
+    )

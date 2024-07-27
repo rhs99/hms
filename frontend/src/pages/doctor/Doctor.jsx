@@ -1,10 +1,12 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import Datepicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
+import AuthContext from '../../store/auth';
 import Table from '../../design-library/table/Table';
+import utils from '../../utils';
 import Config from '../../config';
 
 import './_doctor.scss';
@@ -15,6 +17,7 @@ const Doctor = () => {
   const [date, setDate] = useState(new Date());
   const [appointments, setAppointments] = useState(null);
 
+  const authCtx = useContext(AuthContext);
   const { branchId, doctorId } = useParams();
 
   useEffect(() => {
@@ -24,20 +27,13 @@ const Doctor = () => {
     });
   }, [branchId]);
 
-  const getFormatedDate = () => {
-    const year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(date);
-    const month = new Intl.DateTimeFormat('en', { month: '2-digit' }).format(date);
-    const day = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(date);
-    return `${year}-${month}-${day}`;
-  };
-
   const getAppointments = () => {
     if (!selectedSlotSchedule || !date) {
       return;
     }
 
     const URL =
-      Config.SERVER_URL + `/appointments?slot_schedule_id=${selectedSlotSchedule.id}&date=${getFormatedDate()}`;
+      Config.SERVER_URL + `/appointments/slot-schedules/${selectedSlotSchedule.id}?date=${utils.getFormatedDate(date)}`;
     axios.get(URL).then(({ data }) => {
       setAppointments(data);
     });
@@ -50,9 +46,9 @@ const Doctor = () => {
 
     const URL = Config.SERVER_URL + `/appointments`;
     const data = {
-      patient_id: 1,
+      patient_id: authCtx.getStoredValue().userId,
       slot_schedule_id: selectedSlotSchedule.id,
-      date: getFormatedDate(),
+      date: utils.getFormatedDate(date),
     };
 
     axios.post(URL, data).then(({ data }) => {
@@ -94,7 +90,7 @@ const Doctor = () => {
         rows={appointments.map((appointment, idx) => {
           return {
             key: idx,
-            value: [idx + 1, appointment.name, new Date(appointment.created_at).toString()],
+            value: [idx + 1, appointment.full_name, new Date(appointment.created_at).toString()],
           };
         })}
       />
