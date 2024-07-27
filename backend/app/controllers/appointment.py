@@ -39,3 +39,8 @@ async def create_doctor(appointment: AppointmentSchema.CreateInput):
 @router.get("/appointments", status_code=status.HTTP_200_OK)
 async def get_appointments(slot_schedule_id: int, date: datetime.date):
     return await AppointmentService.get_appointments(slot_schedule_id, date)
+
+
+@router.get("/appointments/users/{user_id}", status_code=status.HTTP_200_OK)
+async def get_user_appointments(user_id: int):
+    return await AppointmentService.get_user_appointments(user_id)

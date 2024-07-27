@@ -1,8 +1,9 @@
 import datetime
+from sqlalchemy import desc
 from sqlalchemy.future import select
 
 from app.db import session
-from app.models import Appointment, User
+from app.models import Appointment, User, SlotSchedule, Slot, Branch, Hospital, WorkPlace, Doctor, Department
 
 
 class AppointmentRepo:
@@ -42,3 +43,37 @@ class AppointmentRepo:
             {"name": appointment[0], "created_at": appointment[1]}
             for appointment in appointments
         ]
+
+    @staticmethod
+    async def get_user_appointments(user_id: int):
+
+        results = await session().execute(
+            select(Appointment.id, Appointment.date, Appointment.parent, Hospital.name, Branch.address, Department.name, User.full_name, Slot.start_at)
+            .filter(
+                Appointment.patient_id == user_id
+            )
+            .filter(Appointment.slot_schedule_id == SlotSchedule.id)
+            .filter(SlotSchedule.work_place_id == WorkPlace.id)
+            .filter(SlotSchedule.slot_id == Slot.id)
+            .filter(WorkPlace.branch_id == Branch.id)
+            .filter(WorkPlace.employee_id == Doctor.user_id)
+            .filter(Doctor.user_id == User.id)
+            .filter(Doctor.dept_id == Department.id)
+            .filter(Branch.hospital_id == Hospital.id)
+            .order_by(desc(Appointment.date))
+        )
+        appointments = [res for res in results.all()]
+        return [
+            {
+                "id": appointment[0],
+                "date": appointment[1],
+                "parent": appointment[2],
+                "hospital": appointment[3],
+                "branch": appointment[4],
+                "department": appointment[5],
+                "doctor": appointment[6],
+                "time": appointment[7],
+            }
+            for appointment in appointments
+        ]
+
