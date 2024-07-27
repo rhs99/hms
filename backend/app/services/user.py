@@ -22,10 +22,14 @@ class UserService:
     ):
         if gender:
             gender = GenderEnum[gender]
-        
+
         if blood_group:
             blood_group = BloodGroupEnum[blood_group]
-        
+
         return await UserRepo.create_user(
             user_name, password, full_name, email, phone, dob, gender, blood_group
         )
+
+    @staticmethod
+    async def sign_in(user_name: str, password: str):
+        return await UserRepo.sign_in(user_name, password)

@@ -11,15 +11,18 @@ router = APIRouter()
 class UserSchema:
     class BaseSchema(BaseModel):
         user_name: str
+
+    class CreateUser(BaseSchema):
         password: str
         full_name: str
         email: str
         phone: str
         dob: datetime.date
-
-    class CreateInput(BaseSchema):
         gender: str
         blood_group: str | None = None
+
+    class SignIn(BaseSchema):
+        password: str
 
     class Output(BaseSchema):
         id: int
@@ -35,11 +38,11 @@ async def get_user(id: int):
 
 
 @router.post(
-    "/users",
-    response_model=UserSchema.Output,
+    "/users/sign-up",
+    response_model=UserSchema.SignIn,
     status_code=status.HTTP_201_CREATED,
 )
-async def create_user(user: UserSchema.CreateInput):
+async def create_user(user: UserSchema.CreateUser):
     return await UserService.create_user(
         user.user_name,
         user.password,
@@ -49,4 +52,16 @@ async def create_user(user: UserSchema.CreateInput):
         user.dob,
         user.gender,
         user.blood_group,
+    )
+
+
+@router.post(
+    "/users/sign-in",
+    response_model=UserSchema.Output,
+    status_code=status.HTTP_201_CREATED,
+)
+async def create_user(user: UserSchema.SignIn):
+    return await UserService.sign_in(
+        user.user_name,
+        user.password,
     )

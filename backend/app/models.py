@@ -151,7 +151,7 @@ class WeekDayEnum(enum.Enum):
 class SlotSchedule(Base):
     __tablename__ = "slotschedules"
     __table_args__ = (
-        UniqueConstraint('work_place_id', 'slot_id', 'day', name='u_ix_same_day_slot'),
+        UniqueConstraint("work_place_id", "slot_id", "day", name="u_ix_same_day_slot"),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -163,7 +163,9 @@ class SlotSchedule(Base):
 class Appointment(Base):
     __tablename__ = "appointments"
     __table_args__ = (
-        UniqueConstraint('patient_id', 'date', 'slot_schedule_id', name='u_ix_same_date_slot'),
+        UniqueConstraint(
+            "patient_id", "date", "slot_schedule_id", name="u_ix_same_date_slot"
+        ),
     )
 
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -172,5 +174,3 @@ class Appointment(Base):
     parent: Mapped[int] = mapped_column(ForeignKey("appointments.id"), nullable=True)
     date: Mapped[datetime.date] = mapped_column(Date, nullable=False)
     created_at: Mapped[datetime.datetime] = mapped_column(DateTime)
-
-

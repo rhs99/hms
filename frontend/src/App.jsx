@@ -1,5 +1,6 @@
 import { RouterProvider, createBrowserRouter, Outlet } from 'react-router-dom';
 
+import { AuthContextProvider } from './store/auth';
 import Navigation from './component/navigation/Navigation';
 import Homepage from './pages/Homepage';
 import Hospital from './pages/Hospital';
@@ -62,7 +63,11 @@ const router = createBrowserRouter([
 ]);
 
 const App = () => {
-  return <RouterProvider router={router} />;
+  return (
+    <AuthContextProvider>
+      <RouterProvider router={router} />;
+    </AuthContextProvider>
+  );
 };
 
 export default App;

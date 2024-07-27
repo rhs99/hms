@@ -23,27 +23,24 @@ const SignUp = () => {
 
     const URL = Config.SERVER_URL + '/users';
     const data = {
-        user_name: userName,
-        password: password,
-        full_name: fullName,
-        email,
-        phone,
-        dob,
-        gender,
-        blood_group: bg,
-    }
+      user_name: userName,
+      password: password,
+      full_name: fullName,
+      email,
+      phone,
+      dob,
+      gender,
+      blood_group: bg,
+    };
 
-    axios.post(URL, data).then(({data})=>{
-        navigate('/sign-in');
-    })
-
+    axios.post(URL, data).then(({ data }) => {
+      navigate('/sign-in');
+    });
   };
 
   return (
-    <div className='signUp'>
-        <h1>
-            Sign Up
-        </h1>
+    <div className="signUp">
+      <h1>Sign Up</h1>
       <form onSubmit={handleSignUp}>
         <input placeholder="Enter user name" value={userName} onChange={(e) => setUserName(e.target.value)} required />
         <input placeholder="Enter password" value={password} onChange={(e) => setPassword(e.target.value)} required />
@@ -53,7 +50,7 @@ const SignUp = () => {
         <input placeholder="Enter date of birth" value={dob} onChange={(e) => setDob(e.target.value)} required />
         <input placeholder="Enter gender" value={gender} onChange={(e) => setGender(e.target.value)} required />
         <input placeholder="Enter blood group" value={bg} onChange={(e) => setBg(e.target.value)} required />
-        <button type='submit'>Submit</button>
+        <button type="submit">Submit</button>
       </form>
     </div>
   );

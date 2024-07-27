@@ -1,11 +1,20 @@
 import { useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
+
+import AuthContext from '../../store/auth';
 
 import './_index.scss';
 
 const Navigation = () => {
   const navigate = useNavigate();
+  const authCtx = useContext(AuthContext);
 
-  const isLoggedIn = true;
+  const { isLoggedIn, logout } = authCtx;
+
+  const handleLogOut = () => {
+    logout();
+    navigate('/');
+  };
 
   return (
     <nav className="navigation">
@@ -15,14 +24,16 @@ const Navigation = () => {
       <div className="navigation-btn-container">
         {isLoggedIn ? (
           <div className="navigation-btn-grp">
-            <button className="navigation-sign-in">Sign In</button>
-            <button className="navigation-sign-up" onClick={() => navigate('/sign-up')}>
-              Sign Up
-            </button>
+            <button onClick={handleLogOut}>Log Out</button>
           </div>
         ) : (
           <div className="navigation-btn-grp">
-            <button>Log Out</button>
+            <button className="navigation-sign-in" onClick={() => navigate('/sign-in')}>
+              Sign In
+            </button>
+            <button className="navigation-sign-up" onClick={() => navigate('/sign-up')}>
+              Sign Up
+            </button>
           </div>
         )}
       </div>

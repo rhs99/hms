@@ -1,4 +1,5 @@
 import datetime
+from sqlalchemy.future import select
 
 from app.db import session
 from app.models import User, GenderEnum, BloodGroupEnum
@@ -34,3 +35,14 @@ class UserRepo:
         await session().commit()
         await session().refresh(new_user)
         return new_user
+
+    @staticmethod
+    async def sign_in(user_name: str, password: str):
+        result = await session().execute(
+            select(User.id, User.user_name).filter(
+                User.user_name == user_name, User.password == password
+            )
+        )
+        user = result.one_or_none()
+        print(user)
+        return user
