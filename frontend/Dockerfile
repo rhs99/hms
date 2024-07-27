@@ -1,7 +1,7 @@
-FROM node:20.10-slim
+FROM node:20
 WORKDIR /code
 COPY package*.json .
-RUN npm ci
+RUN npm install
 COPY . .
 EXPOSE 3000
 CMD ["npm", "start"]

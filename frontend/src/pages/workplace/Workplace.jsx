@@ -90,7 +90,7 @@ const Workplace = () => {
         rows={appointments.map((appointment, idx) => {
           return {
             key: appointment.id,
-            value: [idx+1, appointment.parent || 'N/A', appointment.full_name, appointment.gender],
+            value: [idx + 1, appointment.parent || 'N/A', appointment.full_name, appointment.gender],
           };
         })}
         onRowClick={resolveAppointment}
