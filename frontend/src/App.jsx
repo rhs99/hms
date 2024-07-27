@@ -6,6 +6,8 @@ import Hospital from './pages/Hospital';
 import Branch from './pages/Branch';
 import Department from './pages/Department';
 import Doctor from './pages/doctor/Doctor';
+import SignUp from './pages/sign-up/SignUp';
+import SignIn from './pages/sign-in/SignIn';
 
 const RootLayout = () => {
   return (
@@ -44,6 +46,8 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />,
         children: [
           { index: true, element: <Homepage /> },
+          { path: '/sign-up', element: <SignUp /> },
+          { path: '/sign-in', element: <SignIn /> },
           { path: '/hospitals/:hospitalId', element: <Hospital /> },
           { path: '/hospitals/:hospitalId/branches/:branchId', element: <Branch /> },
           { path: '/hospitals/:hospitalId/branches/:branchId/departments/:deptId', element: <Department /> },

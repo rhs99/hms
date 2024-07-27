@@ -17,9 +17,15 @@ class UserService:
         email: str,
         phone: str,
         dob: datetime.date,
-        gender: GenderEnum,
-        blood_group: BloodGroupEnum | None,
+        gender: str,
+        blood_group: str | None,
     ):
+        if gender:
+            gender = GenderEnum[gender]
+        
+        if blood_group:
+            blood_group = BloodGroupEnum[blood_group]
+        
         return await UserRepo.create_user(
             user_name, password, full_name, email, phone, dob, gender, blood_group
         )

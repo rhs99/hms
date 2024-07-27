@@ -1,0 +1,28 @@
+.signUp{
+    border: 1px solid;
+    padding: 0 30px 15px 30px;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: azure;
+
+    & form{
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    & input{
+        border-radius: 5px;
+        height: 40px;
+    }
+
+    & button{
+        font-size: large;
+        border-radius: 5px;
+        height: 40px;
+        width: 30%;
+        background-color: rgb(117, 226, 226);
+        cursor: pointer;
+    }
+}

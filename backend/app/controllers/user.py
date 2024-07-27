@@ -16,11 +16,10 @@ class UserSchema:
         email: str
         phone: str
         dob: datetime.date
-        gender: GenderEnum
-        blood_group: BloodGroupEnum | None = None
 
     class CreateInput(BaseSchema):
-        pass
+        gender: str
+        blood_group: str | None = None
 
     class Output(BaseSchema):
         id: int
