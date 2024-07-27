@@ -77,3 +77,26 @@ class AppointmentRepo:
             for appointment in appointments
         ]
 
+
+    @staticmethod
+    async def get_slot_schedule_appointments(slot_schedule_id: int):
+
+        results = await session().execute(
+            select(Appointment.id, Appointment.parent, User.full_name, User.gender)
+            .filter(
+                Appointment.slot_schedule_id == slot_schedule_id
+            )
+            .filter(Appointment.patient_id == User.id)
+            .order_by(Appointment.id)
+        )
+        appointments = [res for res in results.all()]
+        return [
+            {
+                "id": appointment[0],
+                "parent": appointment[1],
+                "full_name": appointment[2],
+                "gender": appointment[3],
+            }
+            for appointment in appointments
+        ]
+

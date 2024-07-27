@@ -2,16 +2,33 @@ import datetime
 from sqlalchemy.future import select
 
 from app.db import session
-from app.models import WorkPlace
+from app.models import WorkPlace, Slot, SlotSchedule, Hospital, Branch
 
 
 class WorkPlaceRepo:
     @staticmethod
     async def get_work_places(employee_id: int):
-        work_places = await session().scalars(
-            select(WorkPlace).filter(WorkPlace.employee_id == employee_id)
+        results = await session().execute(
+            select(SlotSchedule.id, Hospital.name, Branch.address, SlotSchedule.day, Slot.start_at, Slot.end_at)
+            .filter(WorkPlace.employee_id == employee_id)
+            .filter(WorkPlace.end_date == None)
+            .filter(WorkPlace.branch_id == Branch.id)
+            .filter(Branch.hospital_id == Hospital.id)
+            .filter(WorkPlace.id == SlotSchedule.work_place_id)
+            .filter(SlotSchedule.slot_id == Slot.id)
         )
-        return [work_place for work_place in work_places.all()]
+        work_places = [res for res in results.all()]
+        return [
+            {
+                "slot_schedule_id": work_place[0],
+                "hospital": work_place[1],
+                "branch": work_place[2],
+                "day": work_place[3],
+                "start_at": work_place[4],
+                "end_at": work_place[5],
+            }
+            for work_place in work_places
+        ]
 
     @staticmethod
     async def create_work_place(

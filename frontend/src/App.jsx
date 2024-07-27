@@ -10,6 +10,7 @@ import Doctor from './pages/doctor/Doctor';
 import SignUp from './pages/sign-up/SignUp';
 import SignIn from './pages/sign-in/SignIn';
 import Activities from './pages/activities/Activities';
+import Workplace from './pages/workplace/Workplace';
 
 const RootLayout = () => {
   return (
@@ -51,6 +52,7 @@ const router = createBrowserRouter([
           { path: '/sign-up', element: <SignUp /> },
           { path: '/sign-in', element: <SignIn /> },
           { path: '/activities', element: <Activities /> },
+          { path: '/workplaces', element: <Workplace /> },
           { path: '/hospitals/:hospitalId', element: <Hospital /> },
           { path: '/hospitals/:hospitalId/branches/:branchId', element: <Branch /> },
           { path: '/hospitals/:hospitalId/branches/:branchId/departments/:deptId', element: <Department /> },

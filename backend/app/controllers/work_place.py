@@ -22,8 +22,7 @@ class WorkPlaceSchema:
 
 
 @router.get(
-    "/work-places",
-    response_model=list[WorkPlaceSchema.Output],
+    "/work-places/employees/{employee_id}",
     status_code=status.HTTP_200_OK,
 )
 async def get_work_places(employee_id: int):

@@ -12,11 +12,11 @@ const Activities = () => {
   const authCtx = useContext(AuthContext);
   const navigate = useNavigate();
 
-  if (!authCtx.isLoggedIn) {
-    navigate('/sign-in');
-  }
-
   useEffect(() => {
+    if (!authCtx.isLoggedIn) {
+      return;
+    }
+
     const URL = Config.SERVER_URL + `/appointments/users/${authCtx.getStoredValue().userId}`;
     axios.get(URL).then(({ data }) => {
       setAppointments(data);
@@ -25,7 +25,7 @@ const Activities = () => {
 
   const renderAllAppointments = () => {
     if (!appointments || appointments.length === 0) {
-      return <p>No appointments found!</p>;
+      return <p>No appointment found!</p>;
     }
     return (
       <Table
@@ -49,6 +49,10 @@ const Activities = () => {
       />
     );
   };
+
+  if (!authCtx.isLoggedIn) {
+    return navigate('/sign-in');
+  }
 
   return (
     <div>

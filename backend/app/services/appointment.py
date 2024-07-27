@@ -2,7 +2,6 @@ import datetime
 
 from app.repositories.appointment import AppointmentRepo
 
-
 class AppointmentService:
     @staticmethod
     async def create_appointment(
@@ -22,3 +21,12 @@ class AppointmentService:
     @staticmethod
     async def get_user_appointments(user_id: int):
         return await AppointmentRepo.get_user_appointments(user_id)
+
+    @staticmethod
+    async def get_slot_schedule_appointments(slot_schedule_id: int):
+        appointments = await AppointmentRepo.get_slot_schedule_appointments(slot_schedule_id)
+
+        for appointment in appointments:
+            appointment["gender"] = appointment["gender"].name.capitalize()
+
+        return appointments

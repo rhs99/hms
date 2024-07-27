@@ -25,6 +25,7 @@ const Navigation = () => {
         {isLoggedIn ? (
           <div className="navigation-btn-grp">
             <button onClick={() => navigate('/activities')}>Activities</button>
+            <button onClick={() => navigate('/workplaces')}>Work Places</button>
             <button onClick={handleLogOut}>Log Out</button>
           </div>
         ) : (
