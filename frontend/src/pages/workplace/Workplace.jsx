@@ -9,6 +9,7 @@ import Config from '../../config';
 const Workplace = () => {
     const [workplaces, setWorkplaces] = useState(null);
     const [appointments, setAppointments] = useState(null);
+    const [appointmentToResolve, setAppointmentToResolve] = useState(null);
 
     const authCtx = useContext(AuthContext);
     const navigate = useNavigate();
@@ -28,6 +29,13 @@ const Workplace = () => {
         const URL = Config.SERVER_URL + `/appointments/slot-schedules/${slot_schedule_id}`;
         axios.get(URL).then(({ data }) => {
             setAppointments(data);
+        });
+    }
+
+    const resolveAppointment = (id) => {
+        const URL = Config.SERVER_URL + `/appointments/${id}`;
+        axios.get(URL).then(({ data }) => {
+            setAppointmentToResolve(data);
         });
     }
 
@@ -74,6 +82,8 @@ const Workplace = () => {
                         ],
                     };
                 })}
+                onRowClick={resolveAppointment}
+                highlightSelection={true}
             />
         );
     };

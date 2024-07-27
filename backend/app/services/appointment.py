@@ -15,6 +15,13 @@ class AppointmentService:
         )
 
     @staticmethod
+    async def get_appointment(appointment_id: int):
+        appointment = await AppointmentRepo.get_appointment(appointment_id)
+        appointment["gender"] = appointment["gender"].name.capitalize()
+        appointment["blood_group"] = appointment["blood_group"].name
+        return appointment
+
+    @staticmethod
     async def get_appointments(slot_schedule_id: int, date: datetime.date):
         return await AppointmentRepo.get_appointments(slot_schedule_id, date)
 

@@ -26,6 +26,25 @@ class AppointmentRepo:
         await session().refresh(new_appointment)
         return new_appointment
 
+
+    @staticmethod
+    async def get_appointment(appointment_id: int):
+
+        results = await session().execute(
+            select(User.full_name, User.gender, User.dob, User.blood_group)
+            .filter(
+                Appointment.id == appointment_id
+            )
+            .filter(User.id == Appointment.patient_id)
+        )
+        appointment = results.one_or_none()
+        return {
+            "name": appointment[0],
+            "gender": appointment[1],
+            "dob": appointment[2],
+            "blood_group": appointment[3],
+        }
+
     @staticmethod
     async def get_appointments(slot_schedule_id: int, date: datetime.date):
 
