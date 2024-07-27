@@ -23,7 +23,7 @@ class AppointmentSchema:
 
 
 @router.post(
-    "/appointemnts",
+    "/appointments",
     response_model=AppointmentSchema.Output,
     status_code=status.HTTP_201_CREATED,
 )
