@@ -35,6 +35,7 @@ class AppointmentRepo:
                 Appointment.date == date,
             )
             .filter(User.id == Appointment.patient_id)
+            .order_by(Appointment.id)
         )
         appointments = [res for res in results.all()]
         return [

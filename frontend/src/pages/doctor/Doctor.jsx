@@ -90,11 +90,11 @@ const Doctor = () => {
     return (
       <Table
         title="Appointments"
-        headers={['Patient', 'Appointment Given At']}
+        headers={['SL No', 'Patient', 'Appointment Given At']}
         rows={appointments.map((appointment, idx) => {
           return {
             key: idx,
-            value: [appointment.name, new Date(appointment.created_at).toString()],
+            value: [idx+1, appointment.name, new Date(appointment.created_at).toString()],
           };
         })}
       />
