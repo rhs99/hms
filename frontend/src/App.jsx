@@ -1,10 +1,10 @@
 import { RouterProvider, createBrowserRouter, Outlet, useNavigate } from 'react-router-dom';
 
-import Homepage from './pages/homepage';
-import Hospital from './pages/hospital';
-import Branch from './pages/branch';
-import Department from './pages/department';
-import Doctor from './pages/doctor';
+import Homepage from './pages/Homepage';
+import Hospital from './pages/Hospital';
+import Branch from './pages/Branch';
+import Department from './pages/Department';
+import Doctor from './pages/doctor/Doctor';
 
 const RootLayout = () => {
   const navigate = useNavigate();

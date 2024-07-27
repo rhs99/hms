@@ -4,8 +4,8 @@ import { useParams } from 'react-router-dom';
 import Datepicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-import Table from '../design-library/table/Table';
-import Config from '../config';
+import Table from '../../design-library/table/Table';
+import Config from '../../config';
 
 import './_doctor.scss';
 
