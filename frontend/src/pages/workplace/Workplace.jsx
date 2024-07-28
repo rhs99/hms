@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import utils from '../../utils';
 import Table from '../../design-library/table/Table';
+import Prescreption from '../../component/prescription/Prescreption';
 import AuthContext from '../../store/auth';
 import Config from '../../config';
 
@@ -14,7 +15,6 @@ const Workplace = () => {
   const [pendingAppointments, setPendingAppointments] = useState(null);
   const [resolvedAppointments, setResolvedAppointments] = useState(null);
   const [appointmentToResolve, setAppointmentToResolve] = useState(null);
-  const [prescreption, setPrescreption] = useState('');
   const [selectedSlotScheduleId, setSelectedSlotScheduleId] = useState(null);
 
   const authCtx = useContext(AuthContext);
@@ -31,14 +31,14 @@ const Workplace = () => {
     });
   }, []);
 
-  useEffect(()=>{
-    if(selectedSlotScheduleId){
-      getAllAppointments().then(()=>{})
+  useEffect(() => {
+    if (selectedSlotScheduleId) {
+      getAllAppointments().then(() => {});
     }
-  },[selectedSlotScheduleId])
+  }, [selectedSlotScheduleId]);
 
-  const getAllAppointments = async() => {
-    if(!selectedSlotScheduleId){
+  const getAllAppointments = async () => {
+    if (!selectedSlotScheduleId) {
       return;
     }
 
@@ -57,20 +57,10 @@ const Workplace = () => {
     setResolvedAppointments(appointments[1].data);
   };
 
-  const resolveAppointment = async(id) => {
+  const resolveAppointment = async (id) => {
     const URL = Config.SERVER_URL + `/appointments/${id}`;
-    const {data} = await axios.get(URL);
+    const { data } = await axios.get(URL);
     setAppointmentToResolve(data);
-  };
-
-  const updateAppointment = async() => {
-    if (!appointmentToResolve) {
-      return;
-    }
-    const URL = Config.SERVER_URL + `/appointments/${appointmentToResolve.id}`;
-    await axios.patch(URL, { details: prescreption });
-    setAppointmentToResolve(null);
-    await getAllAppointments();
   };
 
   if (!authCtx.isLoggedIn) {
@@ -91,7 +81,7 @@ const Workplace = () => {
             value: [workplace.hospital, workplace.branch, workplace.day, workplace.start_at, workplace.end_at],
           };
         })}
-        onRowClick={(id)=>setSelectedSlotScheduleId(id)}
+        onRowClick={(id) => setSelectedSlotScheduleId(id)}
         highlightSelection={true}
       />
     );
@@ -103,7 +93,7 @@ const Workplace = () => {
     }
     return (
       <Table
-        title={`All ${isPending ? 'Pending' : 'Resolved'} Appointments`}
+        title={`${isPending ? 'Pending' : 'Resolved'} Appointments`}
         headers={['SL No', 'Parent', 'Patient', 'Gender']}
         rows={appointmentDatas.map((appointment, idx) => {
           return {
@@ -117,34 +107,19 @@ const Workplace = () => {
     );
   };
 
-  const renderAppointmentResolver = () => {
-    return (
-      <div className="workplace-resolver">
-        <div className="workplace-meta-info">
-          <p>Patient: {appointmentToResolve.name}</p>
-          <p>Gender: {appointmentToResolve.gender}</p>
-          <p>Date of Birth: {appointmentToResolve.dob}</p>
-          <p>Blood Group: {appointmentToResolve.blood_group}</p>
-        </div>
-        <div>
-          <textarea
-            className="workplace-prescreption"
-            placeholder="Prescribe here"
-            value={prescreption}
-            onChange={(e) => setPrescreption(e.target.value)}
-          />
-        </div>
-        <button className="workplace-done" onClick={updateAppointment}>
-          Done
-        </button>
-      </div>
-    );
-  };
-
   return (
     <div className="workplace">
       {renderAllWorkplaces()}
-      {appointmentToResolve && renderAppointmentResolver()}
+      {appointmentToResolve && (
+        <Prescreption
+          appointment={appointmentToResolve}
+          onUpdate={async () => {
+            setAppointmentToResolve(null);
+            await getAllAppointments();
+          }}
+          onCancel={()=>setAppointmentToResolve(null)}
+        />
+      )}
       {pendingAppointments && renderAppointments(pendingAppointments, true)}
       {resolvedAppointments && renderAppointments(resolvedAppointments, false)}
     </div>

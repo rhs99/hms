@@ -1,0 +1,57 @@
+.prescription {
+  border: 1px solid;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+
+  &-meta-info-container {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &-meta-info {
+    font-size: 1.2em;
+    display: flex;
+    gap: 5px;
+  }
+
+  &-meta-key {
+    font-weight: bold;
+  }
+
+  &-meta-value {
+    font-style: italic;
+  }
+
+  &-box {
+    height: 150px;
+    width: 100%;
+  }
+
+  &-done {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  &-done-btn {
+    font-size: large;
+    padding: 10px;
+    border: 1px solid green;
+
+    &:hover{
+        cursor: pointer;
+    }
+  }
+
+  &-cancel-btn{
+    font-size: large;
+    padding: 10px;
+    border: 1px solid red;
+
+    &:hover{
+        cursor: pointer;
+    }
+  }
+}

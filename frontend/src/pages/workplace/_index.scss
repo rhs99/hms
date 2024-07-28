@@ -2,25 +2,4 @@
   display: flex;
   flex-direction: column;
   gap: 50px;
-
-  &-resolver {
-    padding: 10px;
-    border: 1px solid;
-  }
-
-  &-meta-info {
-    display: flex;
-    gap: 15px;
-  }
-
-  &-prescreption {
-    min-height: 200px;
-    width: 80%;
-  }
-
-  &-done {
-    margin: 10px 0;
-    font-size: larger;
-    padding: 5px;
-  }
 }
