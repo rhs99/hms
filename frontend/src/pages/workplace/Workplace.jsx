@@ -117,7 +117,7 @@ const Workplace = () => {
             setAppointmentToResolve(null);
             await getAllAppointments();
           }}
-          onCancel={()=>setAppointmentToResolve(null)}
+          onCancel={() => setAppointmentToResolve(null)}
         />
       )}
       {pendingAppointments && renderAppointments(pendingAppointments, true)}

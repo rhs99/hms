@@ -110,21 +110,27 @@ class AppointmentRepo:
     async def get_slot_schedule_appointments(
         slot_schedule_id: int, date: datetime.date, pending: bool | None
     ):
-        stmt = select(
-            Appointment.id,
-            Appointment.parent,
-            Appointment.created_at,
-            User.full_name,
-            User.gender,
-        ).filter(
-            Appointment.slot_schedule_id == slot_schedule_id,
-            Appointment.date == date,
-        ).join(User, User.id == Appointment.patient_id)
+        stmt = (
+            select(
+                Appointment.id,
+                Appointment.parent,
+                Appointment.created_at,
+                User.full_name,
+                User.gender,
+            )
+            .filter(
+                Appointment.slot_schedule_id == slot_schedule_id,
+                Appointment.date == date,
+            )
+            .join(User, User.id == Appointment.patient_id)
+        )
 
         if pending == True:
             stmt = stmt.filter(Appointment.details == None).order_by(Appointment.id)
         elif pending == False:
-            stmt = stmt.filter(Appointment.details != None).order_by(desc(Appointment.id))
+            stmt = stmt.filter(Appointment.details != None).order_by(
+                desc(Appointment.id)
+            )
 
         results = await session().execute(stmt)
 

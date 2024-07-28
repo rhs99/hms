@@ -40,18 +40,18 @@
     padding: 10px;
     border: 1px solid green;
 
-    &:hover{
-        cursor: pointer;
+    &:hover {
+      cursor: pointer;
     }
   }
 
-  &-cancel-btn{
+  &-cancel-btn {
     font-size: large;
     padding: 10px;
     border: 1px solid red;
 
-    &:hover{
-        cursor: pointer;
+    &:hover {
+      cursor: pointer;
     }
   }
 }

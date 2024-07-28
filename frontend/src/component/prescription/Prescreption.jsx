@@ -5,8 +5,8 @@ import Config from '../../config';
 
 import './_index.scss';
 
-const Prescreption = ({ appointment, onUpdate, onCancel }) => {
-  const [prescreption, setPrescreption] = useState('');
+const Prescreption = ({ appointment, onUpdate, onCancel, viewOnly }) => {
+  const [prescreption, setPrescreption] = useState(appointment.details || '');
 
   const updateAppointment = async () => {
     const URL = Config.SERVER_URL + `/appointments/${appointment.id}`;
@@ -71,13 +71,18 @@ const Prescreption = ({ appointment, onUpdate, onCancel }) => {
           placeholder="Prescribe here"
           value={prescreption}
           onChange={(e) => setPrescreption(e.target.value)}
+          disabled={Boolean(viewOnly)}
         />
       </div>
       <div className="prescription-done">
-        <button className='prescription-cancel-btn' onClick={onCancel}>Cancel</button>
-        <button className="prescription-done-btn" disabled={disabled} onClick={updateAppointment}>
-          Done
+        <button className="prescription-cancel-btn" onClick={onCancel}>
+          Cancel
         </button>
+        {!Boolean(viewOnly) && (
+          <button className="prescription-done-btn" disabled={disabled} onClick={updateAppointment}>
+            Done
+          </button>
+        )}
       </div>
     </div>
   );
