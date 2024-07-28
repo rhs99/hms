@@ -18,8 +18,8 @@ class UserSchema:
         email: str
         phone: str
         dob: datetime.date
-        gender: str
-        blood_group: str | None = None
+        gender: GenderEnum
+        blood_group: BloodGroupEnum | None = None
 
     class SignIn(BaseSchema):
         password: str

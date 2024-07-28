@@ -21,8 +21,6 @@ class HospitalRepo:
         )
         hospitals = [res for res in results.all()]
 
-        print(hospitals)
-
         return [
             {
                 "name": hospital[1],

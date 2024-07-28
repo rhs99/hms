@@ -21,7 +21,7 @@ const SignUp = () => {
   const handleSignUp = (e) => {
     e.preventDefault();
 
-    const URL = Config.SERVER_URL + '/users';
+    const URL = Config.SERVER_URL + '/users/sign-up';
     const data = {
       user_name: userName,
       password: password,
@@ -29,8 +29,8 @@ const SignUp = () => {
       email,
       phone,
       dob,
-      gender,
-      blood_group: bg,
+      gender: parseInt(gender),
+      blood_group: parseInt(bg),
     };
 
     axios.post(URL, data).then(({ data }) => {
