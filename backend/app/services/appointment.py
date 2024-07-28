@@ -32,10 +32,10 @@ class AppointmentService:
 
     @staticmethod
     async def get_slot_schedule_appointments(
-        slot_schedule_id: int, date: datetime.date
+        slot_schedule_id: int, date: datetime.date, pending: bool | None
     ):
         appointments = await AppointmentRepo.get_slot_schedule_appointments(
-            slot_schedule_id, date
+            slot_schedule_id, date, pending
         )
 
         for appointment in appointments:

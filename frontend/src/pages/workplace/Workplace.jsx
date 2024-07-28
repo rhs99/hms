@@ -11,9 +11,11 @@ import './_index.scss';
 
 const Workplace = () => {
   const [workplaces, setWorkplaces] = useState(null);
-  const [appointments, setAppointments] = useState(null);
+  const [pendingAppointments, setPendingAppointments] = useState(null);
+  const [resolvedAppointments, setResolvedAppointments] = useState(null);
   const [appointmentToResolve, setAppointmentToResolve] = useState(null);
   const [prescreption, setPrescreption] = useState('');
+  const [selectedSlotScheduleId, setSelectedSlotScheduleId] = useState(null);
 
   const authCtx = useContext(AuthContext);
   const navigate = useNavigate();
@@ -29,30 +31,46 @@ const Workplace = () => {
     });
   }, []);
 
-  const getAllAppointments = (slot_schedule_id) => {
-    const URL =
-      Config.SERVER_URL + `/appointments/slot-schedules/${slot_schedule_id}?date=${utils.getFormatedDate(new Date())}`;
-    axios.get(URL).then(({ data }) => {
-      setAppointments(data);
-    });
-  };
+  useEffect(()=>{
+    if(selectedSlotScheduleId){
+      getAllAppointments().then(()=>{})
+    }
+  },[selectedSlotScheduleId])
 
-  const resolveAppointment = (id) => {
-    const URL = Config.SERVER_URL + `/appointments/${id}`;
-    axios.get(URL).then(({ data }) => {
-      setAppointmentToResolve(data);
-    });
-  };
-
-  const updateAppointment = () => {
-    if (!appointmentToResolve) {
+  const getAllAppointments = async() => {
+    if(!selectedSlotScheduleId){
       return;
     }
 
+    const PENDING_URL =
+      Config.SERVER_URL +
+      `/appointments/slot-schedules/${selectedSlotScheduleId}?date=${utils.getFormatedDate(new Date())}&pending=True`;
+
+    const RESOLVED_URL =
+      Config.SERVER_URL +
+      `/appointments/slot-schedules/${selectedSlotScheduleId}?date=${utils.getFormatedDate(new Date())}&pending=False`;
+
+    const promises = [axios.get(PENDING_URL), axios.get(RESOLVED_URL)];
+    const appointments = await Promise.all(promises);
+
+    setPendingAppointments(appointments[0].data);
+    setResolvedAppointments(appointments[1].data);
+  };
+
+  const resolveAppointment = async(id) => {
+    const URL = Config.SERVER_URL + `/appointments/${id}`;
+    const {data} = await axios.get(URL);
+    setAppointmentToResolve(data);
+  };
+
+  const updateAppointment = async() => {
+    if (!appointmentToResolve) {
+      return;
+    }
     const URL = Config.SERVER_URL + `/appointments/${appointmentToResolve.id}`;
-    axios.patch(URL, { details: prescreption }).then(({ data }) => {
-      setAppointmentToResolve(null);
-    });
+    await axios.patch(URL, { details: prescreption });
+    setAppointmentToResolve(null);
+    await getAllAppointments();
   };
 
   if (!authCtx.isLoggedIn) {
@@ -73,21 +91,21 @@ const Workplace = () => {
             value: [workplace.hospital, workplace.branch, workplace.day, workplace.start_at, workplace.end_at],
           };
         })}
-        onRowClick={getAllAppointments}
+        onRowClick={(id)=>setSelectedSlotScheduleId(id)}
         highlightSelection={true}
       />
     );
   };
 
-  const renderAllAppointments = () => {
-    if (!appointments || appointments.length === 0) {
+  const renderAppointments = (appointmentDatas, isPending) => {
+    if (!appointmentDatas || appointmentDatas.length === 0) {
       return <p>No appointment found!</p>;
     }
     return (
       <Table
-        title="My Appointments"
+        title={`All ${isPending ? 'Pending' : 'Resolved'} Appointments`}
         headers={['SL No', 'Parent', 'Patient', 'Gender']}
-        rows={appointments.map((appointment, idx) => {
+        rows={appointmentDatas.map((appointment, idx) => {
           return {
             key: appointment.id,
             value: [idx + 1, appointment.parent || 'N/A', appointment.full_name, appointment.gender],
@@ -127,7 +145,8 @@ const Workplace = () => {
     <div className="workplace">
       {renderAllWorkplaces()}
       {appointmentToResolve && renderAppointmentResolver()}
-      {appointments && renderAllAppointments()}
+      {pendingAppointments && renderAppointments(pendingAppointments, true)}
+      {resolvedAppointments && renderAppointments(resolvedAppointments, false)}
     </div>
   );
 };

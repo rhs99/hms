@@ -57,7 +57,9 @@ async def get_user_appointments(user_id: int):
 @router.get(
     "/appointments/slot-schedules/{slot_schedule_id}", status_code=status.HTTP_200_OK
 )
-async def get_slot_schedule_appointments(slot_schedule_id: int, date: datetime.date):
+async def get_slot_schedule_appointments(
+    slot_schedule_id: int, date: datetime.date, pending: bool | None = None
+):
     return await AppointmentService.get_slot_schedule_appointments(
-        slot_schedule_id, date
+        slot_schedule_id, date, pending
     )

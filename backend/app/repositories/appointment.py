@@ -108,24 +108,35 @@ class AppointmentRepo:
 
     @staticmethod
     async def get_slot_schedule_appointments(
-        slot_schedule_id: int, date: datetime.date
+        slot_schedule_id: int, date: datetime.date, pending: bool | None
     ):
-        results = await session().execute(
-            select(
-                Appointment.id,
-                Appointment.parent,
-                Appointment.created_at,
-                User.full_name,
-                User.gender,
-            )
-            .filter(
-                Appointment.slot_schedule_id == slot_schedule_id,
-                Appointment.date == date,
-            )
-            .filter(User.id == Appointment.patient_id)
-            .order_by(Appointment.id)
+        stmt = select(
+            Appointment.id,
+            Appointment.parent,
+            Appointment.created_at,
+            User.full_name,
+            User.gender,
+        ).filter(
+            Appointment.slot_schedule_id == slot_schedule_id,
+            Appointment.date == date,
         )
+
+        if pending == True:
+            stmt = stmt.filter(Appointment.details == None)
+        elif pending == False:
+            stmt = stmt.filter(Appointment.details != None)
+
+        stmt = stmt.filter(User.id == Appointment.patient_id)
+
+        if pending == True:
+            stmt = stmt.order_by(Appointment.id)
+        elif pending == False:
+            stmt = stmt.order_by(desc(Appointment.id))
+
+        results = await session().execute(stmt)
+
         appointments = [res for res in results.all()]
+
         return [
             {
                 "id": appointment[0],
