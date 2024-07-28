@@ -8,7 +8,7 @@ import Config from '../config';
 
 const Department = () => {
   const [doctors, setDoctors] = useState([]);
-  const { branchId, deptId, hospitalId } = useParams();
+  const { branchId, deptId } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,7 +29,7 @@ const Department = () => {
         };
       })}
       onRowClick={(id) => {
-        navigate(`/hospitals/${hospitalId}/branches/${branchId}/departments/${deptId}/doctors/${id}`);
+        navigate(`/branches/${branchId}/departments/${deptId}/doctors/${id}`);
       }}
     />
   );

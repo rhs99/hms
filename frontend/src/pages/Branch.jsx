@@ -7,7 +7,7 @@ import Config from '../config';
 
 const Branch = () => {
   const [depts, setDepts] = useState([]);
-  const { branchId, hospitalId } = useParams();
+  const { branchId } = useParams();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,7 +28,7 @@ const Branch = () => {
         };
       })}
       onRowClick={(id) => {
-        navigate(`/hospitals/${hospitalId}/branches/${branchId}/departments/${id}`);
+        navigate(`/branches/${branchId}/departments/${id}`);
       }}
     />
   );

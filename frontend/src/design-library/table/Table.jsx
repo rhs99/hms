@@ -23,10 +23,10 @@ const Table = (props) => {
           </tr>
         </thead>
         <tbody>
-          {rows.map((row) => {
+          {rows.map((row, idx) => {
             return (
               <tr
-                key={row.key}
+                key={idx}
                 onClick={() => {
                   if (highlightSelection) {
                     setSelectedRow(row.key);

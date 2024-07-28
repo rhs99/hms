@@ -16,10 +16,16 @@ class HospitalSchema:
     class Output(BaseSchema):
         id: int
 
+    class ExtendedOutput(BaseSchema):
+        address: str
+        phone: str
+        email: str
+        branch_id: int
+
 
 @router.get(
     "/hospitals",
-    response_model=list[HospitalSchema.Output],
+    response_model=list[HospitalSchema.ExtendedOutput],
     status_code=status.HTTP_200_OK,
 )
 async def get_hospitals():

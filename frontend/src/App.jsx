@@ -3,7 +3,6 @@ import { RouterProvider, createBrowserRouter, Outlet } from 'react-router-dom';
 import { AuthContextProvider } from './store/auth';
 import Navigation from './component/navigation/Navigation';
 import Homepage from './pages/Homepage';
-import Hospital from './pages/Hospital';
 import Branch from './pages/Branch';
 import Department from './pages/Department';
 import Doctor from './pages/doctor/Doctor';
@@ -53,11 +52,10 @@ const router = createBrowserRouter([
           { path: '/sign-in', element: <SignIn /> },
           { path: '/activities', element: <Activities /> },
           { path: '/workplaces', element: <Workplace /> },
-          { path: '/hospitals/:hospitalId', element: <Hospital /> },
-          { path: '/hospitals/:hospitalId/branches/:branchId', element: <Branch /> },
-          { path: '/hospitals/:hospitalId/branches/:branchId/departments/:deptId', element: <Department /> },
+          { path: '/branches/:branchId', element: <Branch /> },
+          { path: '/branches/:branchId/departments/:deptId', element: <Department /> },
           {
-            path: '/hospitals/:hospitalId/branches/:branchId/departments/:deptId/doctors/:doctorId',
+            path: '/branches/:branchId/departments/:deptId/doctors/:doctorId',
             element: <Doctor />,
           },
         ],

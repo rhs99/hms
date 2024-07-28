@@ -20,15 +20,15 @@ const Homepage = () => {
   return (
     <Table
       title="Hospitals"
-      headers={['Name']}
+      headers={['Name', 'Branch Location', 'Phone', 'Email']}
       rows={hospitals.map((h) => {
         return {
-          key: h.id,
-          value: [h.name],
+          key: h.branch_id,
+          value: [h.name, h.address, h.phone, h.email],
         };
       })}
       onRowClick={(id) => {
-        navigate(`/hospitals/${id}`);
+        navigate(`/branches/${id}`);
       }}
     />
   );
