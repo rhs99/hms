@@ -14,7 +14,7 @@ import './_doctor.scss';
 const Doctor = () => {
   const [slotSchedules, setSlotSchedules] = useState([]);
   const [selectedSlotSchedule, setSelectedSlotSchedule] = useState(null);
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState(new Date().setHours(23,59,59));
   const [appointments, setAppointments] = useState(null);
 
   const authCtx = useContext(AuthContext);
@@ -120,7 +120,7 @@ const Doctor = () => {
         <button className="action-btn" onClick={getAppointments}>
           View Appointment
         </button>
-        <button className="action-btn" onClick={makeAppointment}>
+        <button className="action-btn" disabled={date < new Date().setHours(0,0,0,0)} onClick={makeAppointment}>
           Make Appointment
         </button>
       </div>
