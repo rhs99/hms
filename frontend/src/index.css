@@ -18,3 +18,8 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
+
+iframe {
+  width: 700px !important;
+  height: 300px !important;
+}

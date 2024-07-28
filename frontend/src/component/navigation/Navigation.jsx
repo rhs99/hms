@@ -27,6 +27,7 @@ const Navigation = () => {
             <button onClick={() => navigate('/activities')}>Activities</button>
             <button onClick={() => navigate('/workplaces')}>Work Places</button>
             <button onClick={handleLogOut}>Log Out</button>
+            <span>{authCtx.getStoredValue().userName}</span>
           </div>
         ) : (
           <div className="navigation-btn-grp">

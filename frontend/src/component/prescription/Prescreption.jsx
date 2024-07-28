@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { useState } from 'react';
+import { PDFViewer } from '@react-pdf/renderer';
 
+import PdfDocument from '../PdfDocument';
 import Config from '../../config';
 
 import './_index.scss';
@@ -45,47 +47,85 @@ const Prescreption = ({ appointment, onUpdate, onCancel, viewOnly }) => {
 
   const disabled = prescreption.length === 0;
 
-  return (
-    <div className="prescription">
-      <div className="prescription-meta-info-container">
-        <div className="prescription-meta-info">
-          <span className="prescription-meta-key">Patient</span>
-          <span className="prescription-meta-value">{appointment.name}</span>
-        </div>
-        <div className="prescription-meta-info">
-          <span className="prescription-meta-key">Gender</span>
-          <span className="prescription-meta-value">{appointment.gender}</span>
-        </div>
-        <div className="prescription-meta-info">
-          <span className="prescription-meta-key">Age</span>
-          <span className="prescription-meta-value">{calculateAge(appointment.dob)}</span>
-        </div>
-        <div className="prescription-meta-info">
-          <span className="prescription-meta-key">Blood Group</span>
-          <span className="prescription-meta-value">{getFormattedBloodGroup(appointment.blood_group)}</span>
-        </div>
-      </div>
-      <div>
-        <textarea
-          className="prescription-box"
-          placeholder="Prescribe here"
-          value={prescreption}
-          onChange={(e) => setPrescreption(e.target.value)}
-          disabled={Boolean(viewOnly)}
+  const renderViewOnlyPrescription = () => {
+    const hospitalData = {
+      Hospital: appointment.hospital,
+      Branch: appointment.branch,
+      Phone: appointment.phone,
+      Email: appointment.email,
+    };
+
+    const doctorData = {
+      Department: appointment.dept,
+      Doctor: appointment.doctor,
+      Degree: appointment.degree,
+    };
+
+    const patientData = {
+      Name: appointment.name,
+      Gender: appointment.gender,
+      Age: calculateAge(appointment.dob),
+      'Blood Group': getFormattedBloodGroup(appointment.blood_group),
+      Date: appointment.date,
+    };
+
+    const bodyData = {
+      Prescription: appointment.details,
+    };
+    return (
+      <PDFViewer>
+        <PdfDocument
+          hospitalData={hospitalData}
+          doctorData={doctorData}
+          patientData={patientData}
+          bodyData={bodyData}
         />
-      </div>
-      <div className="prescription-done">
-        <button className="prescription-cancel-btn" onClick={onCancel}>
-          Cancel
-        </button>
-        {!Boolean(viewOnly) && (
+      </PDFViewer>
+    );
+  };
+
+  const renderPrescription = () => {
+    return (
+      <div className="prescription">
+        <div className="prescription-meta-info-container">
+          <div className="prescription-meta-info">
+            <span className="prescription-meta-key">Patient</span>
+            <span className="prescription-meta-value">{appointment.name}</span>
+          </div>
+          <div className="prescription-meta-info">
+            <span className="prescription-meta-key">Gender</span>
+            <span className="prescription-meta-value">{appointment.gender}</span>
+          </div>
+          <div className="prescription-meta-info">
+            <span className="prescription-meta-key">Age</span>
+            <span className="prescription-meta-value">{calculateAge(appointment.dob)}</span>
+          </div>
+          <div className="prescription-meta-info">
+            <span className="prescription-meta-key">Blood Group</span>
+            <span className="prescription-meta-value">{getFormattedBloodGroup(appointment.blood_group)}</span>
+          </div>
+        </div>
+        <div>
+          <textarea
+            className="prescription-box"
+            placeholder="Prescribe here"
+            value={prescreption}
+            onChange={(e) => setPrescreption(e.target.value)}
+          />
+        </div>
+        <div className="prescription-done">
+          <button className="prescription-cancel-btn" onClick={onCancel}>
+            Cancel
+          </button>
           <button className="prescription-done-btn" disabled={disabled} onClick={updateAppointment}>
             Done
           </button>
-        )}
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
+
+  return <>{Boolean(viewOnly) ? renderViewOnlyPrescription() : renderPrescription()}</>;
 };
 
 export default Prescreption;

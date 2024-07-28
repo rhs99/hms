@@ -4,7 +4,6 @@ import { AuthContextProvider } from './store/auth';
 import Navigation from './component/navigation/Navigation';
 import Homepage from './pages/Homepage';
 import Branch from './pages/Branch';
-import Department from './pages/Department';
 import Doctor from './pages/doctor/Doctor';
 import SignUp from './pages/sign-up/SignUp';
 import SignIn from './pages/sign-in/SignIn';
@@ -53,7 +52,6 @@ const router = createBrowserRouter([
           { path: '/activities', element: <Activities /> },
           { path: '/workplaces', element: <Workplace /> },
           { path: '/branches/:branchId', element: <Branch /> },
-          { path: '/branches/:branchId/departments/:deptId', element: <Department /> },
           {
             path: '/branches/:branchId/departments/:deptId/doctors/:doctorId',
             element: <Doctor />,

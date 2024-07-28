@@ -40,7 +40,7 @@ const Activities = () => {
       upcomingAppointment = [];
 
     appointments.forEach((appointment) => {
-      if (new Date(appointment.date) < new Date().setHours(0, 0, 0, 0)) {
+      if (appointment.is_resolved) {
         pastAppointments.push(appointment);
       } else {
         upcomingAppointment.push(appointment);

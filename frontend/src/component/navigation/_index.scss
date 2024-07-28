@@ -19,13 +19,22 @@
   &-btn-grp {
     display: flex;
     gap: 5px;
+    align-items: center;
   }
 
   &-btn-grp button {
     font-size: medium;
     padding: 5px;
-    border: 1px solid blue;
     border-radius: 5px;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  &-btn-grp span {
+    font-size: large;
+    margin: 0 10px;
     color: blue;
   }
 }
