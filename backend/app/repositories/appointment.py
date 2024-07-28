@@ -80,15 +80,15 @@ class AppointmentRepo:
                 User.full_name,
                 Slot.start_at,
             )
+            .join(SlotSchedule, Appointment.slot_schedule_id == SlotSchedule.id)
+            .join(WorkPlace, SlotSchedule.work_place_id == WorkPlace.id)
+            .join(Slot, SlotSchedule.slot_id == Slot.id)
+            .join(Branch, WorkPlace.branch_id == Branch.id)
+            .join(User, WorkPlace.employee_id == User.id)
+            .join(Doctor, User.id == Doctor.user_id)
+            .join(Department, Doctor.dept_id == Department.id)
+            .join(Hospital, Branch.hospital_id == Hospital.id)
             .filter(Appointment.patient_id == user_id)
-            .filter(Appointment.slot_schedule_id == SlotSchedule.id)
-            .filter(SlotSchedule.work_place_id == WorkPlace.id)
-            .filter(SlotSchedule.slot_id == Slot.id)
-            .filter(WorkPlace.branch_id == Branch.id)
-            .filter(WorkPlace.employee_id == Doctor.user_id)
-            .filter(Doctor.user_id == User.id)
-            .filter(Doctor.dept_id == Department.id)
-            .filter(Branch.hospital_id == Hospital.id)
             .order_by(desc(Appointment.date))
         )
         appointments = [res for res in results.all()]
@@ -119,19 +119,12 @@ class AppointmentRepo:
         ).filter(
             Appointment.slot_schedule_id == slot_schedule_id,
             Appointment.date == date,
-        )
+        ).join(User, User.id == Appointment.patient_id)
 
         if pending == True:
-            stmt = stmt.filter(Appointment.details == None)
+            stmt = stmt.filter(Appointment.details == None).order_by(Appointment.id)
         elif pending == False:
-            stmt = stmt.filter(Appointment.details != None)
-
-        stmt = stmt.filter(User.id == Appointment.patient_id)
-
-        if pending == True:
-            stmt = stmt.order_by(Appointment.id)
-        elif pending == False:
-            stmt = stmt.order_by(desc(Appointment.id))
+            stmt = stmt.filter(Appointment.details != None).order_by(desc(Appointment.id))
 
         results = await session().execute(stmt)
 
