@@ -51,11 +51,12 @@ const Activities = () => {
       <>
         <Table
           title="Upcoming Appointments"
-          headers={['Id', 'Date', 'Parent', 'Hospital', 'Branch', 'Department', 'Doctor', 'Time']}
+          headers={['SL No', 'Id', 'Date', 'Parent', 'Hospital', 'Branch', 'Department', 'Doctor', 'Time']}
           rows={upcomingAppointment.map((appointment) => {
             return {
               key: appointment.id,
               value: [
+                appointment.serial_no,
                 appointment.id,
                 appointment.date,
                 appointment.parent || 'N/A',
@@ -70,11 +71,12 @@ const Activities = () => {
         />
         <Table
           title="Past Appointments"
-          headers={['Id', 'Date', 'Parent', 'Hospital', 'Branch', 'Department', 'Doctor', 'Time']}
+          headers={['SL No', 'Id', 'Date', 'Parent', 'Hospital', 'Branch', 'Department', 'Doctor', 'Time']}
           rows={pastAppointments.map((appointment) => {
             return {
               key: appointment.id,
               value: [
+                appointment.serial_no,
                 appointment.id,
                 appointment.date,
                 appointment.parent || 'N/A',

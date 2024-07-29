@@ -20,6 +20,7 @@ class AppointmentSchema:
     class Output(BaseSchema):
         id: int
         created_at: datetime.datetime
+        serial_no: int
 
     class UpdateInput(BaseModel):
         details: str
@@ -30,7 +31,7 @@ class AppointmentSchema:
     response_model=AppointmentSchema.Output,
     status_code=status.HTTP_201_CREATED,
 )
-async def create_doctor(appointment: AppointmentSchema.CreateInput):
+async def create_appointment(appointment: AppointmentSchema.CreateInput):
     return await AppointmentService.create_appointment(
         appointment.patient_id,
         appointment.slot_schedule_id,

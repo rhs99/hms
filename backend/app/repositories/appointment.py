@@ -1,5 +1,5 @@
 import datetime
-from sqlalchemy import desc
+from sqlalchemy import desc, func
 from sqlalchemy.future import select
 
 from app.db import session
@@ -24,13 +24,25 @@ class AppointmentRepo:
         parent: int | None,
         date: datetime.date,
     ):
+        res = await session().execute(
+            select(func.count()).select_from(
+                select(Appointment.id).filter(
+                    Appointment.date == date,
+                    Appointment.slot_schedule_id == slot_schedule_id,
+                )
+            )
+        )
+        serial_no = res.scalar()
+
         new_appointment = Appointment(
             patient_id=patient_id,
             slot_schedule_id=slot_schedule_id,
             parent=parent,
             date=date,
             created_at=datetime.datetime.now(),
+            serial_no=serial_no + 1,
         )
+
         session().add(new_appointment)
         await session().commit()
         await session().refresh(new_appointment)
@@ -135,6 +147,7 @@ class AppointmentRepo:
                 User.full_name,
                 Slot.start_at,
                 Appointment.details,
+                Appointment.serial_no,
             )
             .join(SlotSchedule, Appointment.slot_schedule_id == SlotSchedule.id)
             .join(WorkPlace, SlotSchedule.work_place_id == WorkPlace.id)
@@ -159,6 +172,7 @@ class AppointmentRepo:
                 "doctor": appointment[6],
                 "time": appointment[7],
                 "is_resolved": appointment[8] != None,
+                "serial_no": appointment[9],
             }
             for appointment in appointments
         ]
@@ -172,6 +186,7 @@ class AppointmentRepo:
                 Appointment.id,
                 Appointment.parent,
                 Appointment.created_at,
+                Appointment.serial_no,
                 User.full_name,
                 User.gender,
             )
@@ -198,8 +213,9 @@ class AppointmentRepo:
                 "id": appointment[0],
                 "parent": appointment[1],
                 "created_at": appointment[2],
-                "full_name": appointment[3],
-                "gender": appointment[4],
+                "serial_no": appointment[3],
+                "full_name": appointment[4],
+                "gender": appointment[5],
             }
             for appointment in appointments
         ]

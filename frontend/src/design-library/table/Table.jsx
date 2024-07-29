@@ -23,28 +23,32 @@ const Table = (props) => {
           </tr>
         </thead>
         <tbody>
-          {rows.map((row, idx) => {
-            return (
-              <tr
-                key={idx}
-                onClick={() => {
-                  if (highlightSelection) {
-                    setSelectedRow(row.key);
-                  }
-                  onRowClick?.(row.key);
-                }}
-                className={`${onRowClick && 'dl-table-tr'} ${row.key === selectedRow && 'dl-table-highlight'}`}
-              >
-                {row.value.map((rd, idx) => {
-                  return (
-                    <td className="dl-table-td" key={idx}>
-                      {rd}
-                    </td>
-                  );
-                })}
-              </tr>
-            );
-          })}
+          {rows.length > 0 ? (
+            rows.map((row, idx) => {
+              return (
+                <tr
+                  key={idx}
+                  onClick={() => {
+                    if (highlightSelection) {
+                      setSelectedRow(row.key);
+                    }
+                    onRowClick?.(row.key);
+                  }}
+                  className={`${onRowClick && 'dl-table-tr'} ${row.key === selectedRow && 'dl-table-highlight'}`}
+                >
+                  {row.value.map((rd, idx) => {
+                    return (
+                      <td className="dl-table-td" key={idx}>
+                        {rd}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })
+          ) : (
+            <tr>No data found!</tr>
+          )}
         </tbody>
       </table>
     </div>

@@ -88,17 +88,14 @@ const Workplace = () => {
   };
 
   const renderAppointments = (appointmentDatas, isPending) => {
-    if (!appointmentDatas || appointmentDatas.length === 0) {
-      return <p>No appointment found!</p>;
-    }
     return (
       <Table
         title={`${isPending ? 'Pending' : 'Resolved'} Appointments`}
         headers={['SL No', 'Parent', 'Patient', 'Gender']}
-        rows={appointmentDatas.map((appointment, idx) => {
+        rows={appointmentDatas.map((appointment) => {
           return {
             key: appointment.id,
-            value: [idx + 1, appointment.parent || 'N/A', appointment.full_name, appointment.gender],
+            value: [appointment.serial_no, appointment.parent || 'N/A', appointment.full_name, appointment.gender],
           };
         })}
         onRowClick={resolveAppointment}
