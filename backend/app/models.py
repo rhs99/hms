@@ -175,3 +175,4 @@ class Appointment(Base):
     date: Mapped[datetime.date] = mapped_column(Date, nullable=False)
     created_at: Mapped[datetime.datetime] = mapped_column(DateTime)
     details: Mapped[str] = mapped_column(String(2000), nullable=True)
+    serial_no: Mapped[int] = mapped_column(nullable=True)
