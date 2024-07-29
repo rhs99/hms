@@ -112,7 +112,7 @@ const Workplace = () => {
       {renderAllWorkplaces()}
       {appointmentToResolve && (
         <Prescreption
-          appointment={appointmentToResolve}
+          data={appointmentToResolve}
           onUpdate={async () => {
             setAppointmentToResolve(null);
             await getAllAppointments();

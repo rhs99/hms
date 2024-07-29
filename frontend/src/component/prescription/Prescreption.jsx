@@ -7,11 +7,12 @@ import Config from '../../config';
 
 import './_index.scss';
 
-const Prescreption = ({ appointment, onUpdate, onCancel, viewOnly }) => {
-  const [prescreption, setPrescreption] = useState(appointment.details || '');
+const Prescreption = ({ data, onUpdate, onCancel, viewOnly }) => {
+  const { user_data, appointments } = data;
+  const [prescreption, setPrescreption] = useState(appointments.slice(-1)[0].details || '');
 
-  const updateAppointment = async () => {
-    const URL = Config.SERVER_URL + `/appointments/${appointment.id}`;
+  const updateAppointment = async (id) => {
+    const URL = Config.SERVER_URL + `/appointments/${id}`;
     await axios.patch(URL, { details: prescreption });
     await onUpdate();
   };
@@ -45,66 +46,85 @@ const Prescreption = ({ appointment, onUpdate, onCancel, viewOnly }) => {
     return Math.abs(ageDate.getUTCFullYear() - 1970);
   }
 
-  const disabled = prescreption.length === 0;
-
   const renderViewOnlyPrescription = () => {
+    if (appointments.length <= 0) {
+      return null;
+    }
+
+    if (!viewOnly && appointments.length <= 1) {
+      return null;
+    }
+
     const pages = [];
     const patientData = {
-      Name: appointment.user_data.name,
-      Gender: appointment.user_data.gender,
-      Age: calculateAge(appointment.user_data.dob),
-      'Blood Group': getFormattedBloodGroup(appointment.user_data.blood_group),
+      Name: user_data.name,
+      Gender: user_data.gender,
+      Age: calculateAge(user_data.dob),
+      'Blood Group': getFormattedBloodGroup(user_data.blood_group),
     };
 
-    appointment.appointments.forEach((ad) => {
+    appointments.forEach((appointment) => {
       pages.push({
         hospitalData: {
-          Hospital: ad.hospital,
-          Branch: ad.branch,
-          Phone: ad.phone,
-          Email: ad.email,
+          Hospital: appointment.hospital,
+          Branch: appointment.branch,
+          Phone: appointment.phone,
+          Email: appointment.email,
         },
         doctorData: {
-          Department: ad.dept,
-          Doctor: ad.doctor,
-          Degree: ad.degree,
+          Department: appointment.dept,
+          Doctor: appointment.doctor,
+          Degree: appointment.degree,
         },
         patientData: {
           ...patientData,
-          Date: ad.date,
+          Date: appointment.date,
         },
         bodyData: {
-          Prescription: ad.details,
+          Prescription: appointment.details,
         },
       });
     });
 
+    if (!viewOnly) {
+      pages.shift();
+    }
+
     return (
-      <PDFViewer>
-        <PdfDocument pages={pages} />
-      </PDFViewer>
+      <>
+        <PDFViewer>
+          <PdfDocument pages={pages} />
+        </PDFViewer>
+        {viewOnly && (
+          <button onClick={onCancel} className="prescription-close-btn">
+            Close
+          </button>
+        )}
+      </>
     );
   };
 
-  const renderPrescription = () => {
+  const renderEditablePrescription = (appointment) => {
+    const disabled = prescreption.length === 0;
+
     return (
-      <div className="prescription">
+      <div className="prescription-input">
         <div className="prescription-meta-info-container">
           <div className="prescription-meta-info">
             <span className="prescription-meta-key">Patient</span>
-            <span className="prescription-meta-value">{appointment.name}</span>
+            <span className="prescription-meta-value">{user_data.name}</span>
           </div>
           <div className="prescription-meta-info">
             <span className="prescription-meta-key">Gender</span>
-            <span className="prescription-meta-value">{appointment.gender}</span>
+            <span className="prescription-meta-value">{user_data.gender}</span>
           </div>
           <div className="prescription-meta-info">
             <span className="prescription-meta-key">Age</span>
-            <span className="prescription-meta-value">{calculateAge(appointment.dob)}</span>
+            <span className="prescription-meta-value">{calculateAge(user_data.dob)}</span>
           </div>
           <div className="prescription-meta-info">
             <span className="prescription-meta-key">Blood Group</span>
-            <span className="prescription-meta-value">{getFormattedBloodGroup(appointment.blood_group)}</span>
+            <span className="prescription-meta-value">{getFormattedBloodGroup(user_data.blood_group)}</span>
           </div>
         </div>
         <div>
@@ -119,7 +139,11 @@ const Prescreption = ({ appointment, onUpdate, onCancel, viewOnly }) => {
           <button className="prescription-cancel-btn" onClick={onCancel}>
             Cancel
           </button>
-          <button className="prescription-done-btn" disabled={disabled} onClick={updateAppointment}>
+          <button
+            className="prescription-done-btn"
+            disabled={disabled}
+            onClick={() => updateAppointment(appointment.id)}
+          >
             Done
           </button>
         </div>
@@ -127,7 +151,12 @@ const Prescreption = ({ appointment, onUpdate, onCancel, viewOnly }) => {
     );
   };
 
-  return <>{Boolean(viewOnly) ? renderViewOnlyPrescription() : renderPrescription()}</>;
+  return (
+    <div className="prescription">
+      {!viewOnly && renderEditablePrescription(appointments.slice(-1)[0])}
+      {renderViewOnlyPrescription()}
+    </div>
+  );
 };
 
 export default Prescreption;

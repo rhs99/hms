@@ -103,7 +103,7 @@ const Activities = () => {
     <div>
       <h1>My Activities</h1>
       {appointmentToView && (
-        <Prescription appointment={appointmentToView} onCancel={() => setAppointmentToView(null)} viewOnly={true} />
+        <Prescription data={appointmentToView} onCancel={() => setAppointmentToView(null)} viewOnly={true} />
       )}
       {renderAllAppointments()}
     </div>

@@ -1,9 +1,16 @@
 .prescription {
-  border: 1px solid;
-  padding: 10px;
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 20px;
+
+  &-input {
+    border: 1px solid;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 700px;
+  }
 
   &-meta-info-container {
     display: flex;
@@ -49,6 +56,18 @@
     font-size: large;
     padding: 10px;
     border: 1px solid red;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  &-close-btn {
+    font-size: large;
+    padding: 5px;
+    border: 1px solid red;
+    width: 100px;
+    margin-left: 600px;
 
     &:hover {
       cursor: pointer;

@@ -46,7 +46,7 @@ class AppointmentRepo:
             if curr_appointment.parent is not None:
                 all_appointment_ids.append(curr_appointment.parent)
             curr_appointment_id = curr_appointment.parent
-        
+
         results = await session().execute(
             select(
                 User.full_name,
@@ -58,7 +58,7 @@ class AppointmentRepo:
             .filter(User.id == Appointment.patient_id)
         )
         patient = results.one_or_none()
-        
+
         user_data = {
             "name": patient[0],
             "gender": patient[1],
@@ -113,10 +113,7 @@ class AppointmentRepo:
             for appointment in appointments
         ]
 
-        return {
-            "user_data": user_data,
-            "appointments": appointment_data
-        }
+        return {"user_data": user_data, "appointments": appointment_data}
 
     @staticmethod
     async def update_appointment(appointment_id: int, data):
