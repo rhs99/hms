@@ -38,6 +38,15 @@ class AppointmentRepo:
 
     @staticmethod
     async def get_appointment(appointment_id: int):
+        all_appointment_ids = [appointment_id]
+        curr_appointment_id = appointment_id
+
+        while curr_appointment_id:
+            curr_appointment = await session().get(Appointment, curr_appointment_id)
+            if curr_appointment.parent is not None:
+                all_appointment_ids.append(curr_appointment.parent)
+            curr_appointment_id = curr_appointment.parent
+        
         results = await session().execute(
             select(
                 User.full_name,
@@ -48,12 +57,13 @@ class AppointmentRepo:
             .filter(Appointment.id == appointment_id)
             .filter(User.id == Appointment.patient_id)
         )
-        patient_data = results.one_or_none()
-        data = {
-            "name": patient_data[0],
-            "gender": patient_data[1],
-            "dob": patient_data[2],
-            "blood_group": patient_data[3],
+        patient = results.one_or_none()
+        
+        user_data = {
+            "name": patient[0],
+            "gender": patient[1],
+            "dob": patient[2],
+            "blood_group": patient[3],
         }
 
         results = await session().execute(
@@ -69,6 +79,7 @@ class AppointmentRepo:
                 User.full_name,
                 Doctor.degree,
                 Slot.start_at,
+                Appointment.id,
             )
             .join(SlotSchedule, Appointment.slot_schedule_id == SlotSchedule.id)
             .join(WorkPlace, SlotSchedule.work_place_id == WorkPlace.id)
@@ -78,29 +89,34 @@ class AppointmentRepo:
             .join(Doctor, User.id == Doctor.user_id)
             .join(Department, Doctor.dept_id == Department.id)
             .join(Hospital, Branch.hospital_id == Hospital.id)
-            .filter(Appointment.id == appointment_id)
+            .filter(Appointment.id.in_(all_appointment_ids))
+            .order_by(desc(Appointment.id))
         )
 
-        appointment_data = results.one_or_none()
+        appointments = results.all()
 
-        data.update(
+        appointment_data = [
             {
-                "id": appointment_id,
-                "date": appointment_data[0],
-                "parent": appointment_data[1],
-                "details": appointment_data[2],
-                "hospital": appointment_data[3],
-                "branch": appointment_data[4],
-                "phone": appointment_data[5],
-                "email": appointment_data[6],
-                "dept": appointment_data[7],
-                "doctor": appointment_data[8],
-                "degree": appointment_data[9],
-                "slot": appointment_data[10],
+                "date": appointment[0],
+                "parent": appointment[1],
+                "details": appointment[2],
+                "hospital": appointment[3],
+                "branch": appointment[4],
+                "phone": appointment[5],
+                "email": appointment[6],
+                "dept": appointment[7],
+                "doctor": appointment[8],
+                "degree": appointment[9],
+                "slot": appointment[10],
+                "id": appointment[11],
             }
-        )
+            for appointment in appointments
+        ]
 
-        return data
+        return {
+            "user_data": user_data,
+            "appointments": appointment_data
+        }
 
     @staticmethod
     async def update_appointment(appointment_id: int, data):

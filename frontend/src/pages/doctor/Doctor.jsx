@@ -52,7 +52,7 @@ const Doctor = () => {
       date: utils.getFormatedDate(date),
     };
 
-    if(parent.length > 0){
+    if (parent.length > 0) {
       data.parent = parseInt(parent);
     }
 
@@ -115,16 +115,13 @@ const Doctor = () => {
       <div>
         <strong>Selected Slot:</strong> {getSelectedSlotSchedule()}
       </div>
-      <div className='doctor-appointment-info'>
+      <div className="doctor-appointment-info">
         <span>
           <strong>Selected date: </strong>
         </span>
         <Datepicker selected={date} dateFormat="yyyy-MM-dd" onChange={(date) => setDate(date)} />
-          <label>Parent Appointment Id</label>
-         <input 
-          value={parent}
-          onChange={(e)=>setParent(e.target.value)}
-         />
+        <label>Parent Appointment Id</label>
+        <input value={parent} onChange={(e) => setParent(e.target.value)} />
       </div>
       <div className="action-btn-container">
         <button className="action-btn" onClick={getAppointments}>

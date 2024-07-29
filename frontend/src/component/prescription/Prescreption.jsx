@@ -48,38 +48,40 @@ const Prescreption = ({ appointment, onUpdate, onCancel, viewOnly }) => {
   const disabled = prescreption.length === 0;
 
   const renderViewOnlyPrescription = () => {
-    const hospitalData = {
-      Hospital: appointment.hospital,
-      Branch: appointment.branch,
-      Phone: appointment.phone,
-      Email: appointment.email,
-    };
-
-    const doctorData = {
-      Department: appointment.dept,
-      Doctor: appointment.doctor,
-      Degree: appointment.degree,
-    };
-
+    const pages = [];
     const patientData = {
-      Name: appointment.name,
-      Gender: appointment.gender,
-      Age: calculateAge(appointment.dob),
-      'Blood Group': getFormattedBloodGroup(appointment.blood_group),
-      Date: appointment.date,
+      Name: appointment.user_data.name,
+      Gender: appointment.user_data.gender,
+      Age: calculateAge(appointment.user_data.dob),
+      'Blood Group': getFormattedBloodGroup(appointment.user_data.blood_group),
     };
 
-    const bodyData = {
-      Prescription: appointment.details,
-    };
+    appointment.appointments.forEach((ad) => {
+      pages.push({
+        hospitalData: {
+          Hospital: ad.hospital,
+          Branch: ad.branch,
+          Phone: ad.phone,
+          Email: ad.email,
+        },
+        doctorData: {
+          Department: ad.dept,
+          Doctor: ad.doctor,
+          Degree: ad.degree,
+        },
+        patientData: {
+          ...patientData,
+          Date: ad.date,
+        },
+        bodyData: {
+          Prescription: ad.details,
+        },
+      });
+    });
+
     return (
       <PDFViewer>
-        <PdfDocument
-          hospitalData={hospitalData}
-          doctorData={doctorData}
-          patientData={patientData}
-          bodyData={bodyData}
-        />
+        <PdfDocument pages={pages} />
       </PDFViewer>
     );
   };

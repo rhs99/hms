@@ -17,10 +17,10 @@ class AppointmentService:
 
     @staticmethod
     async def get_appointment(appointment_id: int):
-        appointment = await AppointmentRepo.get_appointment(appointment_id)
-        appointment["gender"] = appointment["gender"].name.capitalize()
-        appointment["blood_group"] = appointment["blood_group"].name
-        return appointment
+        data = await AppointmentRepo.get_appointment(appointment_id)
+        data["user_data"]["gender"] = data["user_data"]["gender"].name.capitalize()
+        data["user_data"]["blood_group"] = data["user_data"]["blood_group"].name
+        return data
 
     @staticmethod
     async def update_appointment(appointment_id: int, data):
