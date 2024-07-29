@@ -15,6 +15,7 @@ const Doctor = () => {
   const [slotSchedules, setSlotSchedules] = useState([]);
   const [selectedSlotSchedule, setSelectedSlotSchedule] = useState(null);
   const [date, setDate] = useState(new Date().setHours(23, 59, 59));
+  const [parent, setParent] = useState('');
   const [appointments, setAppointments] = useState(null);
 
   const authCtx = useContext(AuthContext);
@@ -50,6 +51,10 @@ const Doctor = () => {
       slot_schedule_id: selectedSlotSchedule.id,
       date: utils.getFormatedDate(date),
     };
+
+    if(parent.length > 0){
+      data.parent = parseInt(parent);
+    }
 
     axios.post(URL, data).then(({ data }) => {
       console.log(data);
@@ -110,11 +115,16 @@ const Doctor = () => {
       <div>
         <strong>Selected Slot:</strong> {getSelectedSlotSchedule()}
       </div>
-      <div>
+      <div className='doctor-appointment-info'>
         <span>
           <strong>Selected date: </strong>
         </span>
         <Datepicker selected={date} dateFormat="yyyy-MM-dd" onChange={(date) => setDate(date)} />
+          <label>Parent Appointment Id</label>
+         <input 
+          value={parent}
+          onChange={(e)=>setParent(e.target.value)}
+         />
       </div>
       <div className="action-btn-container">
         <button className="action-btn" onClick={getAppointments}>

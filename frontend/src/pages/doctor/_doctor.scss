@@ -3,6 +3,16 @@
   flex-direction: column;
   gap: 15px;
 
+  &-appointment-info{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    & input {
+      width: 100px;
+    }
+  }
+
   .action-btn-container {
     display: flex;
     gap: 10px;
