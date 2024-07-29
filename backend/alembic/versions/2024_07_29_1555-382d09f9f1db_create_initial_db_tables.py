@@ -1,8 +1,8 @@
-"""create db tables
+"""Create Initial DB Tables
 
-Revision ID: cb36ee51943d
+Revision ID: 382d09f9f1db
 Revises: 
-Create Date: 2024-07-19 08:18:40.942085
+Create Date: 2024-07-29 15:55:36.051963
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'cb36ee51943d'
+revision: str = '382d09f9f1db'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -53,10 +53,11 @@ def upgrade() -> None:
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_name', sa.String(length=30), nullable=False),
     sa.Column('password', sa.String(length=100), nullable=False),
+    sa.Column('full_name', sa.String(length=30), nullable=True),
     sa.Column('email', sa.String(length=30), nullable=False),
     sa.Column('phone', sa.String(length=20), nullable=False),
     sa.Column('dob', sa.Date(), nullable=False),
-    sa.Column('gender', sa.Enum('male', 'female', name='genderenum'), nullable=False),
+    sa.Column('gender', sa.Enum('Male', 'Female', name='genderenum'), nullable=False),
     sa.Column('blood_group', sa.Enum('A_POS', 'A_NEG', 'B_POS', 'B_NEG', 'O_POS', 'O_NEG', 'AB_POS', 'AB_NEG', name='bloodgroupenum'), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('user_name')
@@ -112,7 +113,8 @@ def upgrade() -> None:
     sa.Column('day', sa.Enum('SAT', 'SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', name='weekdayenum'), nullable=False),
     sa.ForeignKeyConstraint(['slot_id'], ['slots.id'], ),
     sa.ForeignKeyConstraint(['work_place_id'], ['workplaces.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('work_place_id', 'slot_id', 'day', name='u_ix_same_day_slot')
     )
     op.create_table('appointments',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -121,10 +123,12 @@ def upgrade() -> None:
     sa.Column('parent', sa.Integer(), nullable=True),
     sa.Column('date', sa.Date(), nullable=False),
     sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('details', sa.String(length=2000), nullable=True),
     sa.ForeignKeyConstraint(['parent'], ['appointments.id'], ),
     sa.ForeignKeyConstraint(['patient_id'], ['users.id'], ),
     sa.ForeignKeyConstraint(['slot_schedule_id'], ['slotschedules.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('patient_id', 'date', 'slot_schedule_id', name='u_ix_same_date_slot')
     )
     # ### end Alembic commands ###
 

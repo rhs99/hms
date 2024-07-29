@@ -46,8 +46,8 @@ class Hospital(Base):
 
 
 class GenderEnum(enum.Enum):
-    male = 1
-    female = 2
+    Male = 1
+    Female = 2
 
 
 class BloodGroupEnum(enum.Enum):

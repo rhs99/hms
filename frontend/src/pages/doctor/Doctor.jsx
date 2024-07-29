@@ -127,7 +127,11 @@ const Doctor = () => {
         <button className="action-btn" onClick={getAppointments}>
           View Appointment
         </button>
-        <button className="action-btn" disabled={date < new Date().setHours(0, 0, 0, 0)} onClick={makeAppointment}>
+        <button
+          className="action-btn"
+          disabled={!authCtx.isLoggedIn || date < new Date().setHours(0, 0, 0, 0) || !Boolean(selectedSlotSchedule)}
+          onClick={makeAppointment}
+        >
           Make Appointment
         </button>
       </div>

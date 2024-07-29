@@ -36,7 +36,7 @@ async def get_branch_depts(branch_id: int):
 
 @router.post(
     "/branch-depts",
-    response_model=BranchDeptSchema.Dept,
+    response_model=BranchDeptSchema.BaseSchema,
     status_code=status.HTTP_201_CREATED,
 )
 async def create_branch_dept(branch_dept: BranchDeptSchema.CreateInput):

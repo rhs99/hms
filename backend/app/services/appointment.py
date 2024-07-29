@@ -18,7 +18,7 @@ class AppointmentService:
     @staticmethod
     async def get_appointment(appointment_id: int):
         data = await AppointmentRepo.get_appointment(appointment_id)
-        data["user_data"]["gender"] = data["user_data"]["gender"].name.capitalize()
+        data["user_data"]["gender"] = data["user_data"]["gender"].name
         data["user_data"]["blood_group"] = data["user_data"]["blood_group"].name
         return data
 
@@ -39,6 +39,6 @@ class AppointmentService:
         )
 
         for appointment in appointments:
-            appointment["gender"] = appointment["gender"].name.capitalize()
+            appointment["gender"] = appointment["gender"].name
 
         return appointments
