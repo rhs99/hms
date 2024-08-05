@@ -116,12 +116,18 @@ const Doctor = () => {
         <strong>Selected Slot:</strong> {getSelectedSlotSchedule()}
       </div>
       <div className="doctor-appointment-info">
-        <span>
-          <strong>Selected date: </strong>
-        </span>
-        <Datepicker selected={date} dateFormat="yyyy-MM-dd" onChange={(date) => setDate(date)} />
-        <label>Parent Appointment Id</label>
-        <input value={parent} onChange={(e) => setParent(e.target.value)} />
+        <div>
+          <span>
+            <strong>Selected date: </strong>
+          </span>
+          <Datepicker selected={date} dateFormat="yyyy-MM-dd" onChange={(date) => setDate(date)} />
+        </div>
+        <div>
+          <label>
+            <strong>Parent Appointment Id: </strong>
+          </label>
+          <input value={parent} onChange={(e) => setParent(e.target.value)} />
+        </div>
       </div>
       <div className="action-btn-container">
         <button className="action-btn" onClick={getAppointments}>
