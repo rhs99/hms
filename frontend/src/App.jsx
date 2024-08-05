@@ -2,7 +2,7 @@ import { RouterProvider, createBrowserRouter, Outlet } from 'react-router-dom';
 
 import { AuthContextProvider } from './store/auth';
 import Navigation from './component/navigation/Navigation';
-import Homepage from './pages/Homepage';
+import Homepage from './pages/homepage/Homepage';
 import Branch from './pages/Branch';
 import Doctor from './pages/doctor/Doctor';
 import SignUp from './pages/sign-up/SignUp';
@@ -15,13 +15,7 @@ const RootLayout = () => {
     <>
       <Navigation />
       <hr></hr>
-      <main
-        style={{
-          marginLeft: 'auto',
-          marginRight: 'auto',
-          width: '50%',
-        }}
-      >
+      <main style={{marginLeft: 'auto', marginRight: 'auto', width: '60%'}}>
         <Outlet />
       </main>
     </>
