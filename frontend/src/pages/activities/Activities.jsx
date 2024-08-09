@@ -8,7 +8,8 @@ import AuthContext from '../../store/auth';
 import Config from '../../config';
 
 const Activities = () => {
-  const [appointments, setAppointments] = useState(null);
+  const [upcomingAppointments, setUpcomingAppointments] = useState(null);
+  const [pastAppointments, setPastAppointments] = useState(null);
   const [appointmentToView, setAppointmentToView] = useState(null);
 
   const authCtx = useContext(AuthContext);
@@ -21,7 +22,8 @@ const Activities = () => {
 
     const URL = Config.SERVER_URL + `/appointments/users/${authCtx.getStoredValue().userId}`;
     axios.get(URL).then(({ data }) => {
-      setAppointments(data);
+      setUpcomingAppointments(data.upcoming);
+      setPastAppointments(data.past);
     });
   }, []);
 
@@ -32,27 +34,16 @@ const Activities = () => {
   };
 
   const renderAllAppointments = () => {
-    if (!appointments || appointments.length === 0) {
+    if ((!upcomingAppointments || upcomingAppointments.length === 0) && (!pastAppointments || pastAppointments.length === 0)) {
       return <p>No appointment found!</p>;
     }
-
-    const pastAppointments = [],
-      upcomingAppointment = [];
-
-    appointments.forEach((appointment) => {
-      if (appointment.is_resolved || new Date(appointment.date) < new Date()) {
-        pastAppointments.push(appointment);
-      } else {
-        upcomingAppointment.push(appointment);
-      }
-    });
 
     return (
       <>
         <Table
           title="Upcoming Appointments"
           headers={['SL No', 'Id', 'Date', 'Parent', 'Hospital', 'Branch', 'Department', 'Doctor', 'Time']}
-          rows={upcomingAppointment.map((appointment) => {
+          rows={upcomingAppointments.map((appointment) => {
             return {
               key: appointment.id,
               value: [

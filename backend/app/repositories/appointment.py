@@ -135,6 +135,47 @@ class AppointmentRepo:
 
     @staticmethod
     async def get_user_appointments(user_id: int):
+        results = await session().execute(
+            select(
+                Appointment.id,
+                Appointment.date,
+                Appointment.parent,
+                Hospital.name,
+                Branch.address,
+                Department.name,
+                User.full_name,
+                Slot.start_at,
+                Appointment.details,
+                Appointment.serial_no,
+            )
+            .join(SlotSchedule, Appointment.slot_schedule_id == SlotSchedule.id)
+            .join(WorkPlace, SlotSchedule.work_place_id == WorkPlace.id)
+            .join(Slot, SlotSchedule.slot_id == Slot.id)
+            .join(Branch, WorkPlace.branch_id == Branch.id)
+            .join(User, WorkPlace.employee_id == User.id)
+            .join(Doctor, User.id == Doctor.user_id)
+            .join(Department, Doctor.dept_id == Department.id)
+            .join(Hospital, Branch.hospital_id == Hospital.id)
+            .filter(Appointment.patient_id == user_id)
+            .filter(Appointment.date >= datetime.datetime.today().strftime('%Y-%m-%d'), Appointment.details == None)
+            .order_by(desc(Appointment.date))
+        )
+        appointments = [res for res in results.all()]
+        upcoming_appointments = [
+            {
+                "id": appointment[0],
+                "date": appointment[1],
+                "parent": appointment[2],
+                "hospital": appointment[3],
+                "branch": appointment[4],
+                "department": appointment[5],
+                "doctor": appointment[6],
+                "time": appointment[7],
+                "is_resolved": appointment[8] != None,
+                "serial_no": appointment[9],
+            }
+            for appointment in appointments
+        ]
 
         results = await session().execute(
             select(
@@ -158,10 +199,11 @@ class AppointmentRepo:
             .join(Department, Doctor.dept_id == Department.id)
             .join(Hospital, Branch.hospital_id == Hospital.id)
             .filter(Appointment.patient_id == user_id)
+            .filter(Appointment.date <= datetime.datetime.today().strftime('%Y-%m-%d'), Appointment.details != None)
             .order_by(desc(Appointment.date))
         )
         appointments = [res for res in results.all()]
-        return [
+        past_appointments = [
             {
                 "id": appointment[0],
                 "date": appointment[1],
@@ -176,6 +218,11 @@ class AppointmentRepo:
             }
             for appointment in appointments
         ]
+
+        return {
+            'upcoming': upcoming_appointments,
+            'past': past_appointments,
+        }
 
     @staticmethod
     async def get_slot_schedule_appointments(
