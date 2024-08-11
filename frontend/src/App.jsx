@@ -15,7 +15,9 @@ const RootLayout = () => {
     <>
       <Navigation />
       <hr></hr>
-      <main style={{ marginLeft: 'auto', marginRight: 'auto', maxWidth: '60%', display: 'flex', justifyContent: 'center' }}>
+      <main
+        style={{ marginLeft: 'auto', marginRight: 'auto', maxWidth: '60%', display: 'flex', justifyContent: 'center' }}
+      >
         <Outlet />
       </main>
     </>

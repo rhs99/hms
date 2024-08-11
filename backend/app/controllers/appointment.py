@@ -51,8 +51,8 @@ async def update_appointment(appointment_id: int, data: AppointmentSchema.Update
 
 
 @router.get("/appointments/users/{user_id}", status_code=status.HTTP_200_OK)
-async def get_user_appointments(user_id: int):
-    return await AppointmentService.get_user_appointments(user_id)
+async def get_user_appointments(user_id: int, past: bool | None = None):
+    return await AppointmentService.get_user_appointments(user_id, past)
 
 
 @router.get(

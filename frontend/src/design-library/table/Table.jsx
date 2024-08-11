@@ -47,7 +47,9 @@ const Table = (props) => {
               );
             })
           ) : (
-            <tr><td>No data found!</td></tr>
+            <tr>
+              <td>No data found!</td>
+            </tr>
           )}
         </tbody>
       </table>

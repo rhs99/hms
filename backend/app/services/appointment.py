@@ -27,8 +27,8 @@ class AppointmentService:
         return await AppointmentRepo.update_appointment(appointment_id, data)
 
     @staticmethod
-    async def get_user_appointments(user_id: int):
-        return await AppointmentRepo.get_user_appointments(user_id)
+    async def get_user_appointments(user_id: int, past: bool | None):
+        return await AppointmentRepo.get_user_appointments(user_id, past)
 
     @staticmethod
     async def get_slot_schedule_appointments(

@@ -8,23 +8,29 @@ import AuthContext from '../../store/auth';
 import Config from '../../config';
 
 const Activities = () => {
-  const [upcomingAppointments, setUpcomingAppointments] = useState(null);
-  const [pastAppointments, setPastAppointments] = useState(null);
+  const [upcomingAppointments, setUpcomingAppointments] = useState([]);
+  const [pastAppointments, setPastAppointments] = useState([]);
   const [appointmentToView, setAppointmentToView] = useState(null);
 
   const authCtx = useContext(AuthContext);
   const navigate = useNavigate();
 
+  const fetchAppointments = async () => {
+    const UPCOMING_URL = Config.SERVER_URL + `/appointments/users/${authCtx.getStoredValue().userId}`;
+    const PAST_URL = Config.SERVER_URL + `/appointments/users/${authCtx.getStoredValue().userId}?past=True`;
+
+    const promises = [axios.get(UPCOMING_URL), axios.get(PAST_URL)];
+    const appointments = await Promise.all(promises);
+
+    setUpcomingAppointments(appointments[0].data);
+    setPastAppointments(appointments[1].data);
+  };
+
   useEffect(() => {
     if (!authCtx.isLoggedIn) {
       return;
     }
-
-    const URL = Config.SERVER_URL + `/appointments/users/${authCtx.getStoredValue().userId}`;
-    axios.get(URL).then(({ data }) => {
-      setUpcomingAppointments(data.upcoming);
-      setPastAppointments(data.past);
-    });
+    fetchAppointments().catch((e) => console.log(e));
   }, []);
 
   const getAppointment = async (id) => {
@@ -34,10 +40,6 @@ const Activities = () => {
   };
 
   const renderAllAppointments = () => {
-    if ((!upcomingAppointments || upcomingAppointments.length === 0) && (!pastAppointments || pastAppointments.length === 0)) {
-      return <p>No appointment found!</p>;
-    }
-
     return (
       <>
         <Table
