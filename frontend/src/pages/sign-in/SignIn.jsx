@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Box, Input, Field, Text } from '@optiaxiom/react';
+import { Button, Box, Input, Field, Text, Flex } from '@optiaxiom/react';
 
 import AuthContext from '../../store/auth';
 import Config from '../../config';
@@ -45,7 +45,11 @@ const SignIn = () => {
         <Field label="Password">
           <Input placeholder="Enter password" value={password} onChange={(e) => setPassword(e.target.value)} required />
         </Field>
-        <Button type="submit">Submit</Button>
+        <Flex flexDirection="row" justifyContent="flex-end">
+          <Button appearance="primary" type="submit">
+            Submit
+          </Button>
+        </Flex>
       </form>
     </Box>
   );

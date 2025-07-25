@@ -43,13 +43,7 @@ const Homepage = () => {
     () => [
       {
         id: 'select',
-        header: ({ table }) => (
-          <Checkbox
-            checked={table.getIsAllRowsSelected() || (table.getIsSomeRowsSelected() && 'indeterminate')}
-            onChange={table.getToggleAllRowsSelectedHandler()}
-            indeterminate={table.getIsSomeRowsSelected()}
-          />
-        ),
+        size: 50,
         cell: ({ row }) => (
           <Checkbox
             checked={row.getIsSelected()}
@@ -73,6 +67,7 @@ const Homepage = () => {
       columnHelper.accessor('email', {
         id: 'email',
         header: 'Email',
+        minSize: 200,
       }),
     ],
     []
@@ -116,12 +111,9 @@ const Homepage = () => {
 
   return (
     <Flex flexDirection="column" gap="16">
-      <SearchInput
-        className="homepage-search-box"
-        placeholder="Search"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
+      <Flex flexDirection="row" justifyContent="flex-end" style={{ margin: '16px 0' }}>
+        <SearchInput placeholder="Search" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+      </Flex>
 
       <DataTable maxH="xs" maxW="full" table={table}>
         <DataTableBody />

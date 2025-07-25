@@ -12,16 +12,10 @@ import Config from '../../config';
 
 const columnHelper = createColumnHelper();
 
-const getWorkplaceColumns = (table) => [
+const getWorkplaceColumns = () => [
   {
     id: 'select',
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllRowsSelected() || (table.getIsSomeRowsSelected() && 'indeterminate')}
-        onChange={table.getToggleAllRowsSelectedHandler()}
-        indeterminate={table.getIsSomeRowsSelected()}
-      />
-    ),
+    size: 50,
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
@@ -47,16 +41,9 @@ const getWorkplaceColumns = (table) => [
   }),
 ];
 
-const getAppointmentColumns = (table) => [
+const getAppointmentColumns = () => [
   {
     id: 'select',
-    header: ({ table }) => (
-      <Checkbox
-        checked={table.getIsAllRowsSelected() || (table.getIsSomeRowsSelected() && 'indeterminate')}
-        onChange={table.getToggleAllRowsSelectedHandler()}
-        indeterminate={table.getIsSomeRowsSelected()}
-      />
-    ),
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}

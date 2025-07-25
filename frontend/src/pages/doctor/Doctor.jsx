@@ -63,13 +63,7 @@ const Doctor = () => {
     () => [
       {
         id: 'select',
-        header: ({ table }) => (
-          <Checkbox
-            checked={table.getIsAllRowsSelected() || (table.getIsSomeRowsSelected() && 'indeterminate')}
-            onChange={table.getToggleAllRowsSelectedHandler()}
-            indeterminate={table.getIsSomeRowsSelected()}
-          />
-        ),
+        size: 50,
         cell: ({ row }) => (
           <Checkbox
             checked={row.getIsSelected()}

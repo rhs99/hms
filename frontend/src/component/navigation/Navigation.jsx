@@ -1,6 +1,6 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 import { useContext } from 'react';
-import { Box, Button, Badge, Heading, Flex } from '@optiaxiom/react';
+import { Button, Badge, Heading, Flex } from '@optiaxiom/react';
 
 import AuthContext from '../../store/auth';
 
@@ -23,15 +23,51 @@ const Navigation = () => {
       <>
         {isLoggedIn ? (
           <Flex flexDirection="row" justifyContent="center" gap="12">
-            <Button onClick={() => navigate('/activities')}>Activities</Button>
-            <Button onClick={() => navigate('/workplaces')}>Work Places</Button>
+            <NavLink
+              to="/activities"
+              style={({ isActive }) => ({
+                textDecoration: 'none',
+                color: isActive ? 'darkblue' : 'blue',
+                fontWeight: isActive ? 'bold' : 'normal',
+              })}
+            >
+              Activities
+            </NavLink>
+            <NavLink
+              to="/workplaces"
+              style={({ isActive }) => ({
+                textDecoration: 'none',
+                color: isActive ? 'darkblue' : 'blue',
+                fontWeight: isActive ? 'bold' : 'normal',
+              })}
+            >
+              Work Places
+            </NavLink>
             <Button onClick={handleLogOut}>Log Out</Button>
             <Badge>{authCtx.getStoredValue().userName}</Badge>
           </Flex>
         ) : (
           <Flex flexDirection="row" justifyContent="center" gap="12">
-            <Button onClick={() => navigate('/sign-in')}>Sign In</Button>
-            <Button onClick={() => navigate('/sign-up')}>Sign Up</Button>
+            <NavLink
+              to="/sign-in"
+              style={({ isActive }) => ({
+                textDecoration: 'none',
+                color: isActive ? 'darkblue' : 'blue',
+                fontWeight: isActive ? 'bold' : 'normal',
+              })}
+            >
+              Sign In
+            </NavLink>
+            <NavLink
+              to="/sign-up"
+              style={({ isActive }) => ({
+                textDecoration: 'none',
+                color: isActive ? 'darkblue' : 'blue',
+                fontWeight: isActive ? 'bold' : 'normal',
+              })}
+            >
+              Sign Up
+            </NavLink>
           </Flex>
         )}
       </>

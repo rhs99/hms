@@ -4,7 +4,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { createColumnHelper } from '@tanstack/react-table';
 import { DataTable, DataTableBody, Flex, Checkbox } from '@optiaxiom/react';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import Config from '../config';
+import Config from '../../config';
 
 const columnHelper = createColumnHelper();
 
@@ -55,13 +55,7 @@ const Branch = () => {
     () => [
       {
         id: 'select',
-        header: ({ table }) => (
-          <Checkbox
-            checked={table.getIsAllRowsSelected() || (table.getIsSomeRowsSelected() && 'indeterminate')}
-            onChange={table.getToggleAllRowsSelectedHandler()}
-            indeterminate={table.getIsSomeRowsSelected()}
-          />
-        ),
+        size: 50,
         cell: ({ row }) => (
           <Checkbox
             checked={row.getIsSelected()}
@@ -72,7 +66,7 @@ const Branch = () => {
       },
       columnHelper.accessor('name', {
         id: 'name',
-        header: 'Name',
+        header: 'Department',
       }),
     ],
     []
@@ -103,13 +97,7 @@ const Branch = () => {
     () => [
       {
         id: 'select',
-        header: ({ table }) => (
-          <Checkbox
-            checked={table.getIsAllRowsSelected() || (table.getIsSomeRowsSelected() && 'indeterminate')}
-            onChange={table.getToggleAllRowsSelectedHandler()}
-            indeterminate={table.getIsSomeRowsSelected()}
-          />
-        ),
+        size: 50,
         cell: ({ row }) => (
           <Checkbox
             checked={row.getIsSelected()}

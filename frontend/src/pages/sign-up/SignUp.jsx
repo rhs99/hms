@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import { Button, Box, Input, Field, Text } from '@optiaxiom/react';
+import { Button, Box, Input, Field, Text, Flex, DateInput } from '@optiaxiom/react';
 
 import Config from '../../config';
 
@@ -69,7 +69,7 @@ const SignUp = () => {
           <Input placeholder="Enter phone" value={phone} onChange={(e) => setPhone(e.target.value)} required />
         </Field>
         <Field label="Date of Birth">
-          <Input placeholder="Enter date of birth" value={dob} onChange={(e) => setDob(e.target.value)} required />
+          <DateInput value={dob} onChange={setDob} required />
         </Field>
         <Field label="Gender">
           <Input placeholder="Enter gender" value={gender} onChange={(e) => setGender(e.target.value)} required />
@@ -77,7 +77,11 @@ const SignUp = () => {
         <Field label="Blood Group">
           <Input placeholder="Enter blood group" value={bg} onChange={(e) => setBg(e.target.value)} required />
         </Field>
-        <Button type="submit">Submit</Button>
+        <Flex flexDirection="row" justifyContent="flex-end">
+          <Button appearance="primary" type="submit">
+            Submit
+          </Button>
+        </Flex>
       </form>
     </Box>
   );

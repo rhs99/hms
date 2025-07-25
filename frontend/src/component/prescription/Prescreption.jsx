@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { PDFViewer } from '@react-pdf/renderer';
 import { Button, Flex, Text, Textarea } from '@optiaxiom/react';
 
-import PdfDocument from '../PdfDocument';
+import PdfDocument from './PdfDocument';
 import Config from '../../config';
 
 const Prescreption = ({ data, onUpdate, onCancel, viewOnly }) => {
