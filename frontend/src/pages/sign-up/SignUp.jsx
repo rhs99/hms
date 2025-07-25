@@ -52,7 +52,13 @@ const SignUp = () => {
           />
         </Field>
         <Field label="Password">
-          <Input placeholder="Enter password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          <Input
+            placeholder="Enter password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
         </Field>
         <Field label="Full Name">
           <Input

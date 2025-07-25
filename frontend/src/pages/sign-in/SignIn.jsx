@@ -43,7 +43,13 @@ const SignIn = () => {
           />
         </Field>
         <Field label="Password">
-          <Input placeholder="Enter password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          <Input
+            placeholder="Enter password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
         </Field>
         <Flex flexDirection="row" justifyContent="flex-end">
           <Button appearance="primary" type="submit">
