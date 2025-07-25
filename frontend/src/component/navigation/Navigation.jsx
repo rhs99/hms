@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
+import {Button, Badge} from '@optiaxiom/react';
 
 import AuthContext from '../../store/auth';
 
@@ -24,19 +25,19 @@ const Navigation = () => {
       <div className="navigation-btn-container">
         {isLoggedIn ? (
           <div className="navigation-btn-grp">
-            <button onClick={() => navigate('/activities')}>Activities</button>
-            <button onClick={() => navigate('/workplaces')}>Work Places</button>
-            <button onClick={handleLogOut}>Log Out</button>
-            <span>{authCtx.getStoredValue().userName}</span>
+            <Button onClick={() => navigate('/activities')}>Activities</Button>
+            <Button onClick={() => navigate('/workplaces')}>Work Places</Button>
+            <Button onClick={handleLogOut}>Log Out</Button>
+            <Badge>{authCtx.getStoredValue().userName}</Badge>
           </div>
         ) : (
           <div className="navigation-btn-grp">
-            <button className="navigation-sign-in" onClick={() => navigate('/sign-in')}>
+            <Button className="navigation-sign-in" onClick={() => navigate('/sign-in')}>
               Sign In
-            </button>
-            <button className="navigation-sign-up" onClick={() => navigate('/sign-up')}>
+            </Button>
+            <Button className="navigation-sign-up" onClick={() => navigate('/sign-up')}>
               Sign Up
-            </button>
+            </Button>
           </div>
         )}
       </div>

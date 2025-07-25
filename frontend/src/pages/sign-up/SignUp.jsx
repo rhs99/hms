@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import {Button} from '@optiaxiom/react';
 
 import Config from '../../config';
 
@@ -50,7 +51,7 @@ const SignUp = () => {
         <input placeholder="Enter date of birth" value={dob} onChange={(e) => setDob(e.target.value)} required />
         <input placeholder="Enter gender" value={gender} onChange={(e) => setGender(e.target.value)} required />
         <input placeholder="Enter blood group" value={bg} onChange={(e) => setBg(e.target.value)} required />
-        <button type="submit">Submit</button>
+        <Button type="submit">Submit</Button>
       </form>
     </div>
   );

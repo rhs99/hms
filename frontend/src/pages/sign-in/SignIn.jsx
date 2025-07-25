@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import {Button} from '@optiaxiom/react';
 
 import AuthContext from '../../store/auth';
 import Config from '../../config';
@@ -35,7 +36,7 @@ const SignIn = () => {
       <form onSubmit={handleSignIn}>
         <input placeholder="Enter user name" value={userName} onChange={(e) => setUserName(e.target.value)} required />
         <input placeholder="Enter password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-        <button type="submit">Submit</button>
+        <Button type="submit">Submit</Button>
       </form>
     </div>
   );
