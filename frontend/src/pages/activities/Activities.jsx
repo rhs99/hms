@@ -107,7 +107,7 @@ const Activities = () => {
     columns: getAppointmentColumns(),
     data: upcomingAppointments,
     getCoreRowModel: getCoreRowModel(),
-    enableRowSelection: true,
+    enableMultiRowSelection: false,
     onRowSelectionChange: setUpcomingRowSelection,
     state: {
       rowSelection: upcomingRowSelection,
@@ -118,7 +118,7 @@ const Activities = () => {
     columns: getAppointmentColumns(),
     data: pastAppointments,
     getCoreRowModel: getCoreRowModel(),
-    enableRowSelection: true,
+    enableMultiRowSelection: false,
     onRowSelectionChange: setPastRowSelection,
     state: {
       rowSelection: pastRowSelection,

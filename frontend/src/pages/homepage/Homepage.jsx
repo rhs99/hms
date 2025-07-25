@@ -95,7 +95,7 @@ const Homepage = () => {
     columns,
     data,
     getCoreRowModel: getCoreRowModel(),
-    enableRowSelection: true,
+    enableMultiRowSelection: false,
     onRowSelectionChange: setRowSelection,
     state: {
       rowSelection,

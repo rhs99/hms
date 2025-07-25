@@ -91,7 +91,7 @@ const Branch = () => {
     columns: deptColumns,
     data: deptData,
     getCoreRowModel: getCoreRowModel(),
-    enableRowSelection: true,
+    enableMultiRowSelection: false,
     onRowSelectionChange: setDeptRowSelection,
     getRowId: (row) => row.id,
     state: {

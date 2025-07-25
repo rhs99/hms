@@ -111,7 +111,7 @@ const Doctor = () => {
     columns: slotColumns,
     data: slotData,
     getCoreRowModel: getCoreRowModel(),
-    enableRowSelection: true,
+    enableMultiRowSelection: false,
     onRowSelectionChange: setSlotRowSelection,
     getRowId: (row) => row.id,
     state: {

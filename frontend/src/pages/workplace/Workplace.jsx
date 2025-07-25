@@ -153,7 +153,7 @@ const Workplace = () => {
     columns: getWorkplaceColumns(),
     data: workplaces,
     getCoreRowModel: getCoreRowModel(),
-    enableRowSelection: true,
+    enableMultiRowSelection: false,
     onRowSelectionChange: setWorkplaceRowSelection,
     state: {
       rowSelection: workplaceRowSelection,
@@ -164,7 +164,7 @@ const Workplace = () => {
     columns: getAppointmentColumns(),
     data: pendingAppointments,
     getCoreRowModel: getCoreRowModel(),
-    enableRowSelection: true,
+    enableMultiRowSelection: false,
     onRowSelectionChange: setPendingRowSelection,
     state: {
       rowSelection: pendingRowSelection,
@@ -175,7 +175,7 @@ const Workplace = () => {
     columns: getAppointmentColumns(),
     data: resolvedAppointments,
     getCoreRowModel: getCoreRowModel(),
-    enableRowSelection: true,
+    enableMultiRowSelection: false,
     onRowSelectionChange: setResolvedRowSelection,
     state: {
       rowSelection: resolvedRowSelection,
