@@ -1,17 +1,20 @@
 import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { createColumnHelper } from '@tanstack/react-table';
+import { DataTable, DataTableBody, Flex, Checkbox } from '@optiaxiom/react';
+import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 
 import { SearchInput } from '@optiaxiom/react';
-import Table from '../../design-library/table/Table';
 import Config from '../../config';
 
-import './_index.scss';
+const columnHelper = createColumnHelper();
 
 const Homepage = () => {
   const [hospitals, setHospitals] = useState([]);
   const [matchedHospitals, setMatchedHospitals] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
+  const [rowSelection, setRowSelection] = useState({});
 
   const navigate = useNavigate();
 
@@ -36,8 +39,83 @@ const Homepage = () => {
     }
   }, [searchTerm]);
 
+  const columns = useMemo(
+    () => [
+      {
+        id: 'select',
+        header: ({ table }) => (
+          <Checkbox
+            checked={table.getIsAllRowsSelected() || (table.getIsSomeRowsSelected() && 'indeterminate')}
+            onChange={table.getToggleAllRowsSelectedHandler()}
+            indeterminate={table.getIsSomeRowsSelected()}
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={row.getIsSelected()}
+            onChange={row.getToggleSelectedHandler()}
+            disabled={!row.getCanSelect()}
+          />
+        ),
+      },
+      columnHelper.accessor('name', {
+        id: 'name',
+        header: 'Name',
+      }),
+      columnHelper.accessor('address', {
+        id: 'address',
+        header: 'Address',
+      }),
+      columnHelper.accessor('phone', {
+        id: 'phone',
+        header: 'Phone',
+      }),
+      columnHelper.accessor('email', {
+        id: 'email',
+        header: 'Email',
+      }),
+    ],
+    []
+  );
+
+  const data = useMemo(
+    () =>
+      matchedHospitals.map((hospital) => ({
+        id: `${hospital.name}-${hospital.branch_id}`,
+        name: hospital.name,
+        address: hospital.address,
+        phone: hospital.phone,
+        email: hospital.email,
+        branch_id: hospital.branch_id,
+      })),
+    [matchedHospitals]
+  );
+
+  const table = useReactTable({
+    columns,
+    data,
+    getCoreRowModel: getCoreRowModel(),
+    enableRowSelection: true,
+    onRowSelectionChange: setRowSelection,
+    state: {
+      rowSelection,
+    },
+  });
+
+  useEffect(() => {
+    const selectedIds = Object.keys(rowSelection);
+    if (selectedIds.length > 0) {
+      const selectedRowId = selectedIds[0];
+      const selectedRowIndex = table.getRowModel().rows.findIndex((row) => row.id === selectedRowId);
+      if (selectedRowIndex !== -1) {
+        const selectedHospital = data[selectedRowIndex];
+        navigate(`/branches/${selectedHospital.branch_id}`);
+      }
+    }
+  }, [rowSelection, data, table]);
+
   return (
-    <div className="homepage">
+    <Flex flexDirection="column" gap="16">
       <SearchInput
         className="homepage-search-box"
         placeholder="Search"
@@ -45,20 +123,10 @@ const Homepage = () => {
         onChange={(e) => setSearchTerm(e.target.value)}
       />
 
-      <Table
-        title="Hospitals"
-        headers={['Name', 'Branch Location', 'Phone', 'Email']}
-        rows={matchedHospitals.map((h) => {
-          return {
-            key: h.branch_id,
-            value: [h.name, h.address, h.phone, h.email],
-          };
-        })}
-        onRowClick={(id) => {
-          navigate(`/branches/${id}`);
-        }}
-      />
-    </div>
+      <DataTable maxH="xs" maxW="full" table={table}>
+        <DataTableBody />
+      </DataTable>
+    </Flex>
   );
 };
 

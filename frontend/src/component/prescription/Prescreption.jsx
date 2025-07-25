@@ -90,16 +90,20 @@ const Prescreption = ({ data, onUpdate, onCancel, viewOnly }) => {
     }
 
     return (
-      <>
+      <Flex flexDirection="column" gap="12">
         <PDFViewer>
           <PdfDocument pages={pages} />
         </PDFViewer>
         {viewOnly && (
-          <button onClick={onCancel} className="prescription-close-btn">
+          <Button
+            appearance="danger"
+            onClick={onCancel}
+            style={{ width: 'auto', alignSelf: 'flex-start', minWidth: 0 }}
+          >
             Close
-          </button>
+          </Button>
         )}
-      </>
+      </Flex>
     );
   };
 

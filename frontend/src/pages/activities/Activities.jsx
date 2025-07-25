@@ -1,16 +1,70 @@
 import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { createColumnHelper } from '@tanstack/react-table';
+import { DataTable, DataTableBody, Flex, Checkbox } from '@optiaxiom/react';
+import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 
-import Table from '../../design-library/table/Table';
 import Prescription from '../../component/prescription/Prescreption';
 import AuthContext from '../../store/auth';
 import Config from '../../config';
+
+const columnHelper = createColumnHelper();
+
+const getAppointmentColumns = () => [
+  {
+    id: 'select',
+    header: ({ table }) => (
+      <Checkbox
+        checked={table.getIsAllRowsSelected() || (table.getIsSomeRowsSelected() && 'indeterminate')}
+        onChange={table.getToggleAllRowsSelectedHandler()}
+        indeterminate={table.getIsSomeRowsSelected()}
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onChange={row.getToggleSelectedHandler()}
+        disabled={!row.getCanSelect()}
+      />
+    ),
+  },
+  columnHelper.accessor('serial_no', {
+    header: 'SL No',
+  }),
+  columnHelper.accessor('id', {
+    header: 'Id',
+  }),
+  columnHelper.accessor('date', {
+    header: 'Date',
+  }),
+  columnHelper.accessor('parent', {
+    header: 'Parent',
+    cell: (info) => info.getValue() || 'N/A',
+  }),
+  columnHelper.accessor('hospital', {
+    header: 'Hospital',
+  }),
+  columnHelper.accessor('branch', {
+    header: 'Branch',
+  }),
+  columnHelper.accessor('department', {
+    header: 'Department',
+  }),
+  columnHelper.accessor('doctor', {
+    header: 'Doctor',
+  }),
+  columnHelper.accessor('time', {
+    header: 'Time',
+  }),
+];
 
 const Activities = () => {
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
   const [pastAppointments, setPastAppointments] = useState([]);
   const [appointmentToView, setAppointmentToView] = useState(null);
+  const [upcomingRowSelection, setUpcomingRowSelection] = useState({});
+  const [pastRowSelection, setPastRowSelection] = useState({});
 
   const authCtx = useContext(AuthContext);
   const navigate = useNavigate();
@@ -19,19 +73,19 @@ const Activities = () => {
     const UPCOMING_URL = Config.SERVER_URL + `/appointments/users/${authCtx.getStoredValue().userId}`;
     const PAST_URL = Config.SERVER_URL + `/appointments/users/${authCtx.getStoredValue().userId}?past=True`;
 
-    const promises = [axios.get(UPCOMING_URL), axios.get(PAST_URL)];
-    const appointments = await Promise.all(promises);
+    const [upcomingResponse, pastResponse] = await Promise.all([axios.get(UPCOMING_URL), axios.get(PAST_URL)]);
 
-    setUpcomingAppointments(appointments[0].data);
-    setPastAppointments(appointments[1].data);
+    setUpcomingAppointments(upcomingResponse.data);
+    setPastAppointments(pastResponse.data);
   };
 
   useEffect(() => {
     if (!authCtx.isLoggedIn) {
+      navigate('/sign-in');
       return;
     }
     fetchAppointments().catch((e) => console.log(e));
-  }, []);
+  }, [authCtx, navigate]);
 
   const getAppointment = async (id) => {
     const URL = Config.SERVER_URL + `/appointments/${id}`;
@@ -39,69 +93,62 @@ const Activities = () => {
     setAppointmentToView(data);
   };
 
-  const renderAllAppointments = () => {
-    return (
-      <>
-        <Table
-          title="Upcoming Appointments"
-          headers={['SL No', 'Id', 'Date', 'Parent', 'Hospital', 'Branch', 'Department', 'Doctor', 'Time']}
-          rows={upcomingAppointments.map((appointment) => {
-            return {
-              key: appointment.id,
-              value: [
-                appointment.serial_no,
-                appointment.id,
-                appointment.date,
-                appointment.parent || 'N/A',
-                appointment.hospital,
-                appointment.branch,
-                appointment.department,
-                appointment.doctor,
-                appointment.time,
-              ],
-            };
-          })}
-        />
-        <Table
-          title="Past Appointments"
-          headers={['SL No', 'Id', 'Date', 'Parent', 'Hospital', 'Branch', 'Department', 'Doctor', 'Time']}
-          rows={pastAppointments.map((appointment) => {
-            return {
-              key: appointment.id,
-              value: [
-                appointment.serial_no,
-                appointment.id,
-                appointment.date,
-                appointment.parent || 'N/A',
-                appointment.hospital,
-                appointment.branch,
-                appointment.department,
-                appointment.doctor,
-                appointment.time,
-              ],
-            };
-          })}
-          onRowClick={async (id) => {
-            await getAppointment(id);
-          }}
-          highlightSelection={true}
-        />
-      </>
-    );
-  };
+  useEffect(() => {
+    const selectedIds = Object.keys(pastRowSelection);
+    if (selectedIds.length > 0) {
+      const selectedAppointment = pastAppointments.find((_, index) => pastRowSelection[index]);
+      if (selectedAppointment) {
+        getAppointment(selectedAppointment.id);
+      }
+    }
+  }, [pastRowSelection]);
+
+  const upcomingAppointmentsTable = useReactTable({
+    columns: getAppointmentColumns(),
+    data: upcomingAppointments,
+    getCoreRowModel: getCoreRowModel(),
+    enableRowSelection: true,
+    onRowSelectionChange: setUpcomingRowSelection,
+    state: {
+      rowSelection: upcomingRowSelection,
+    },
+  });
+
+  const pastAppointmentsTable = useReactTable({
+    columns: getAppointmentColumns(),
+    data: pastAppointments,
+    getCoreRowModel: getCoreRowModel(),
+    enableRowSelection: true,
+    onRowSelectionChange: setPastRowSelection,
+    state: {
+      rowSelection: pastRowSelection,
+    },
+  });
 
   if (!authCtx.isLoggedIn) {
-    return navigate('/sign-in');
+    return null;
   }
 
   return (
-    <div>
+    <Flex flexDirection="column" gap="16">
       <h1>My Activities</h1>
+
       {appointmentToView && (
         <Prescription data={appointmentToView} onCancel={() => setAppointmentToView(null)} viewOnly={true} />
       )}
-      {renderAllAppointments()}
-    </div>
+
+      <Flex flexDirection="column" gap="16">
+        <h2>Upcoming Appointments</h2>
+        <DataTable table={upcomingAppointmentsTable}>
+          <DataTableBody />
+        </DataTable>
+
+        <h2>Past Appointments</h2>
+        <DataTable table={pastAppointmentsTable}>
+          <DataTableBody />
+        </DataTable>
+      </Flex>
+    </Flex>
   );
 };
 

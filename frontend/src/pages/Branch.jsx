@@ -1,14 +1,19 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import Table from '../design-library/table/Table';
-
+import { createColumnHelper } from '@tanstack/react-table';
+import { DataTable, DataTableBody, Flex, Checkbox } from '@optiaxiom/react';
+import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import Config from '../config';
+
+const columnHelper = createColumnHelper();
 
 const Branch = () => {
   const [depts, setDepts] = useState([]);
-  const [selectedDeptId, setSelectedDeptId] = useState(null);
   const [doctors, setDoctors] = useState([]);
+  const [selectedDeptId, setSelectedDeptId] = useState(null);
+  const [deptRowSelection, setDeptRowSelection] = useState({});
+  const [doctorRowSelection, setDoctorRowSelection] = useState({});
 
   const { branchId } = useParams();
   const navigate = useNavigate();
@@ -20,46 +25,153 @@ const Branch = () => {
     });
   }, [branchId]);
 
-  const getDoctors = async (id) => {
-    const url = Config.SERVER_URL + `/branch-depts/doctors?branch_id=${branchId}&dept_id=${id}`;
-    const { data } = await axios.get(url);
-    setDoctors(data);
-  };
+  useEffect(() => {
+    const selectedIds = Object.keys(deptRowSelection);
+    if (selectedIds.length > 0) {
+      const selectedDeptId = selectedIds[0];
+      setSelectedDeptId(selectedDeptId);
+      setDoctorRowSelection({});
+      const url = Config.SERVER_URL + `/branch-depts/doctors?branch_id=${branchId}&dept_id=${selectedDeptId}`;
+      axios.get(url).then(({ data }) => {
+        setDoctors(data);
+      });
+    } else {
+      setSelectedDeptId(null);
+      setDoctors([]);
+      setDoctorRowSelection({});
+    }
+  }, [deptRowSelection, branchId]);
+
+  useEffect(() => {
+    if (!selectedDeptId) return;
+    const selectedIds = Object.keys(doctorRowSelection);
+    if (selectedIds.length > 0) {
+      const selectedDoctorId = selectedIds[0];
+      navigate(`/branches/${branchId}/departments/${selectedDeptId}/doctors/${selectedDoctorId}`);
+    }
+  }, [doctorRowSelection, selectedDeptId, branchId, navigate]);
+
+  const deptColumns = useMemo(
+    () => [
+      {
+        id: 'select',
+        header: ({ table }) => (
+          <Checkbox
+            checked={table.getIsAllRowsSelected() || (table.getIsSomeRowsSelected() && 'indeterminate')}
+            onChange={table.getToggleAllRowsSelectedHandler()}
+            indeterminate={table.getIsSomeRowsSelected()}
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={row.getIsSelected()}
+            onChange={row.getToggleSelectedHandler()}
+            disabled={!row.getCanSelect()}
+          />
+        ),
+      },
+      columnHelper.accessor('name', {
+        id: 'name',
+        header: 'Name',
+      }),
+    ],
+    []
+  );
+
+  const deptData = useMemo(
+    () =>
+      depts.map((dept) => ({
+        id: dept.id,
+        name: dept.name,
+      })),
+    [depts]
+  );
+
+  const deptTable = useReactTable({
+    columns: deptColumns,
+    data: deptData,
+    getCoreRowModel: getCoreRowModel(),
+    enableRowSelection: true,
+    onRowSelectionChange: setDeptRowSelection,
+    getRowId: (row) => row.id,
+    state: {
+      rowSelection: deptRowSelection,
+    },
+  });
+
+  const doctorColumns = useMemo(
+    () => [
+      {
+        id: 'select',
+        header: ({ table }) => (
+          <Checkbox
+            checked={table.getIsAllRowsSelected() || (table.getIsSomeRowsSelected() && 'indeterminate')}
+            onChange={table.getToggleAllRowsSelectedHandler()}
+            indeterminate={table.getIsSomeRowsSelected()}
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={row.getIsSelected()}
+            onChange={row.getToggleSelectedHandler()}
+            disabled={!row.getCanSelect()}
+          />
+        ),
+      },
+      columnHelper.accessor('name', {
+        id: 'name',
+        header: 'Name',
+      }),
+      columnHelper.accessor('degree', {
+        id: 'degree',
+        header: 'Degree',
+      }),
+      columnHelper.accessor('experience', {
+        id: 'experience',
+        header: 'Experience',
+      }),
+    ],
+    []
+  );
+
+  const doctorData = useMemo(
+    () =>
+      doctors.map((doctor) => ({
+        id: doctor.id,
+        name: doctor.name,
+        degree: doctor.degree,
+        experience: doctor.experience,
+      })),
+    [doctors]
+  );
+
+  const doctorTable = useReactTable({
+    columns: doctorColumns,
+    data: doctorData,
+    getCoreRowModel: getCoreRowModel(),
+    enableRowSelection: true,
+    onRowSelectionChange: setDoctorRowSelection,
+    getRowId: (row) => row.id,
+    state: {
+      rowSelection: doctorRowSelection,
+    },
+  });
 
   return (
-    <div style={{ display: 'flex', gap: '100px' }}>
-      <Table
-        title="Departments"
-        headers={['Name']}
-        rows={depts.map((dept) => {
-          return {
-            key: dept.id,
-            value: [dept.name],
-          };
-        })}
-        highlightSelection={true}
-        onRowClick={async (id) => {
-          await getDoctors(id);
-          setSelectedDeptId(id);
-        }}
-      />
-
+    <Flex gap="32" style={{ display: 'flex' }}>
+      <div style={{ minWidth: '300px' }}>
+        <DataTable maxH="xs" maxW="full" table={deptTable}>
+          <DataTableBody />
+        </DataTable>
+      </div>
       {selectedDeptId && (
-        <Table
-          title="Doctors"
-          headers={['Name', 'Degree', 'Experience']}
-          rows={doctors.map((doctor) => {
-            return {
-              key: doctor.id,
-              value: [doctor.name, doctor.degree, doctor.experience],
-            };
-          })}
-          onRowClick={(id) => {
-            navigate(`/branches/${branchId}/departments/${selectedDeptId}/doctors/${id}`);
-          }}
-        />
+        <div style={{ minWidth: '400px' }}>
+          <DataTable maxH="xs" maxW="full" table={doctorTable}>
+            <DataTableBody />
+          </DataTable>
+        </div>
       )}
-    </div>
+    </Flex>
   );
 };
 

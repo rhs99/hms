@@ -1,10 +1,11 @@
 import axios from 'axios';
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useContext, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import { Button, DateInput, Flex, Text, Field, Input } from '@optiaxiom/react';
 
 import AuthContext from '../../store/auth';
-import Table from '../../design-library/table/Table';
+import { createColumnHelper } from '@tanstack/react-table';
+import { DataTable, DataTableBody, Flex, Checkbox, Text, Field, Input, Button, DateInput } from '@optiaxiom/react';
+import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import Config from '../../config';
 
 const Doctor = () => {
@@ -56,46 +57,115 @@ const Doctor = () => {
     });
   };
 
-  const renderSlots = () => {
-    return (
-      <div>
-        <Table
-          title="Working Schedules"
-          headers={['Starting Time', 'Ending Time', 'Day']}
-          rows={slotSchedules.map((slotSchedule) => {
-            return {
-              key: slotSchedule.id,
-              value: [slotSchedule.start_at, slotSchedule.end_at, slotSchedule.day],
-            };
-          })}
-          onRowClick={(id) => {
-            const ss = slotSchedules.filter((slotSchedule) => slotSchedule.id === id);
-            setSelectedSlotSchedule(ss[0]);
-          }}
-          highlightSelection={true}
-        />
-      </div>
-    );
-  };
+  const columnHelper = createColumnHelper();
 
-  const renderAppointments = () => {
-    if (!appointments) {
-      return null;
+  const slotColumns = useMemo(
+    () => [
+      {
+        id: 'select',
+        header: ({ table }) => (
+          <Checkbox
+            checked={table.getIsAllRowsSelected() || (table.getIsSomeRowsSelected() && 'indeterminate')}
+            onChange={table.getToggleAllRowsSelectedHandler()}
+            indeterminate={table.getIsSomeRowsSelected()}
+          />
+        ),
+        cell: ({ row }) => (
+          <Checkbox
+            checked={row.getIsSelected()}
+            onChange={row.getToggleSelectedHandler()}
+            disabled={!row.getCanSelect()}
+          />
+        ),
+      },
+      columnHelper.accessor('start_at', {
+        id: 'start_at',
+        header: 'Starting Time',
+      }),
+      columnHelper.accessor('end_at', {
+        id: 'end_at',
+        header: 'Ending Time',
+      }),
+      columnHelper.accessor('day', {
+        id: 'day',
+        header: 'Day',
+      }),
+    ],
+    []
+  );
+
+  const slotData = useMemo(
+    () =>
+      slotSchedules.map((slotSchedule) => ({
+        id: slotSchedule.id,
+        start_at: slotSchedule.start_at,
+        end_at: slotSchedule.end_at,
+        day: slotSchedule.day,
+      })),
+    [slotSchedules]
+  );
+
+  const [slotRowSelection, setSlotRowSelection] = useState({});
+
+  const slotTable = useReactTable({
+    columns: slotColumns,
+    data: slotData,
+    getCoreRowModel: getCoreRowModel(),
+    enableRowSelection: true,
+    onRowSelectionChange: setSlotRowSelection,
+    getRowId: (row) => row.id,
+    state: {
+      rowSelection: slotRowSelection,
+    },
+  });
+
+  useEffect(() => {
+    const selectedRows = slotTable.getSelectedRowModel().rows;
+    if (selectedRows.length > 0) {
+      setSelectedSlotSchedule(selectedRows[0].original);
+    } else {
+      setSelectedSlotSchedule(null);
     }
+  }, [slotRowSelection, slotTable]);
 
-    return (
-      <Table
-        title="Appointments"
-        headers={['SL No', 'Patient', 'Appointment Given At']}
-        rows={appointments.map((appointment) => {
-          return {
-            key: appointment.id,
-            value: [appointment.serial_no, appointment.full_name, new Date(appointment.created_at).toString()],
-          };
-        })}
-      />
-    );
-  };
+  const appointmentColumns = useMemo(
+    () => [
+      columnHelper.accessor('serial_no', {
+        id: 'serial_no',
+        header: 'SL No',
+      }),
+      columnHelper.accessor('full_name', {
+        id: 'full_name',
+        header: 'Patient',
+      }),
+      {
+        id: 'created_at',
+        header: 'Appointment Given At',
+        cell: ({ row }) => new Date(row.original.created_at).toString(),
+      },
+    ],
+    []
+  );
+
+  const appointmentData = useMemo(
+    () =>
+      appointments
+        ? appointments.map((appointment) => ({
+            id: appointment.id,
+            serial_no: appointment.serial_no,
+            full_name: appointment.full_name,
+            created_at: appointment.created_at,
+          }))
+        : [],
+    [appointments]
+  );
+
+  const appointmentTable = useReactTable({
+    columns: appointmentColumns,
+    data: appointmentData,
+    getCoreRowModel: getCoreRowModel(),
+    getRowId: (row) => row.id,
+  });
 
   const getSelectedSlotSchedule = () => {
     if (!Boolean(selectedSlotSchedule)) {
@@ -106,7 +176,11 @@ const Doctor = () => {
 
   return (
     <Flex flexDirection="column" gap="12">
-      {renderSlots()}
+      <div>
+        <DataTable maxH="xs" maxW="full" table={slotTable}>
+          <DataTableBody />
+        </DataTable>
+      </div>
       <Text>Selected Slot: {getSelectedSlotSchedule()}</Text>
       <Text>Selected date: </Text>
       <DateInput value={date} onValueChange={setDate} />
@@ -125,7 +199,13 @@ const Doctor = () => {
           Make Appointment
         </Button>
       </Flex>
-      {renderAppointments()}
+      {appointments && (
+        <div>
+          <DataTable maxH="xs" maxW="full" table={appointmentTable}>
+            <DataTableBody />
+          </DataTable>
+        </div>
+      )}
     </Flex>
   );
 };
