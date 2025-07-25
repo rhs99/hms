@@ -1,26 +1,19 @@
 .signUp {
-  border: 1px solid;
-  padding: 0 30px 15px 30px;
+  border: 1px solid #ccc;
+  padding: 20px;
+  border-radius: 5px;
   width: 80%;
   margin-left: auto;
   margin-right: auto;
 
-  & form {
+  &-title {
+    font-size: 24px;
+    margin-bottom: 16px;
+  }
+
+  &-form {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-  }
-
-  & input {
-    border-radius: 5px;
-    height: 40px;
-  }
-
-  & button {
-    font-size: large;
-    border-radius: 5px;
-    height: 40px;
-    width: 30%;
-    cursor: pointer;
+    gap: 12px;
   }
 }

@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { SearchInput } from "@optiaxiom/react";
+import { SearchInput } from '@optiaxiom/react';
 import Table from '../../design-library/table/Table';
 import Config from '../../config';
 
