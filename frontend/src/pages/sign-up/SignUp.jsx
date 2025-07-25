@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import {Button} from '@optiaxiom/react';
+import { Button } from '@optiaxiom/react';
 
 import Config from '../../config';
 

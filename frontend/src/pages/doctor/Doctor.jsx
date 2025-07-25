@@ -1,12 +1,12 @@
 import axios from 'axios';
 import { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
-import Datepicker from 'react-datepicker';
+import { Button, DateInput } from '@optiaxiom/react';
+
 import 'react-datepicker/dist/react-datepicker.css';
 
 import AuthContext from '../../store/auth';
 import Table from '../../design-library/table/Table';
-import utils from '../../utils';
 import Config from '../../config';
 
 import './_doctor.scss';
@@ -33,8 +33,7 @@ const Doctor = () => {
       return;
     }
 
-    const URL =
-      Config.SERVER_URL + `/appointments/slot-schedules/${selectedSlotSchedule.id}?date=${utils.getFormatedDate(date)}`;
+    const URL = Config.SERVER_URL + `/appointments/slot-schedules/${selectedSlotSchedule.id}?date=${date}`;
     axios.get(URL).then(({ data }) => {
       setAppointments(data);
     });
@@ -49,7 +48,7 @@ const Doctor = () => {
     const data = {
       patient_id: authCtx.getStoredValue().userId,
       slot_schedule_id: selectedSlotSchedule.id,
-      date: utils.getFormatedDate(date),
+      date: date,
     };
 
     if (parent.length > 0) {
@@ -120,7 +119,7 @@ const Doctor = () => {
           <span>
             <strong>Selected date: </strong>
           </span>
-          <Datepicker selected={date} dateFormat="yyyy-MM-dd" onChange={(date) => setDate(date)} />
+          <DateInput value={date} onValueChange={setDate} />
         </div>
         <div>
           <label>
@@ -130,16 +129,16 @@ const Doctor = () => {
         </div>
       </div>
       <div className="action-btn-container">
-        <button className="action-btn" onClick={getAppointments}>
+        <Button className="action-btn" onClick={getAppointments}>
           View Appointment
-        </button>
-        <button
+        </Button>
+        <Button
           className="action-btn"
           disabled={!authCtx.isLoggedIn || date < new Date().setHours(0, 0, 0, 0) || !Boolean(selectedSlotSchedule)}
           onClick={makeAppointment}
         >
           Make Appointment
-        </button>
+        </Button>
       </div>
       {renderAppointments()}
     </div>

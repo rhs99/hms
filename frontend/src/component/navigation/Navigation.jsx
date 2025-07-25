@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { useContext } from 'react';
-import {Button, Badge} from '@optiaxiom/react';
+import { Button, Badge } from '@optiaxiom/react';
 
 import AuthContext from '../../store/auth';
 
