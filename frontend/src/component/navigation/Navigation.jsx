@@ -1,9 +1,8 @@
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 import { useContext } from 'react';
+import { Button, Badge, Heading, Flex } from '@optiaxiom/react';
 
 import AuthContext from '../../store/auth';
-
-import './_index.scss';
 
 const Navigation = () => {
   const navigate = useNavigate();
@@ -17,30 +16,62 @@ const Navigation = () => {
   };
 
   return (
-    <nav className="navigation">
-      <h1 className="navigation-title" onClick={() => navigate('/')}>
+    <Flex flexDirection="row" justifyContent="space-between" alignItems="center" style={{ padding: '10px' }}>
+      <Heading level="3" style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
         Healthcare Management System
-      </h1>
-      <div className="navigation-btn-container">
+      </Heading>
+      <>
         {isLoggedIn ? (
-          <div className="navigation-btn-grp">
-            <button onClick={() => navigate('/activities')}>Activities</button>
-            <button onClick={() => navigate('/workplaces')}>Work Places</button>
-            <button onClick={handleLogOut}>Log Out</button>
-            <span>{authCtx.getStoredValue().userName}</span>
-          </div>
+          <Flex flexDirection="row" justifyContent="center" gap="12">
+            <NavLink
+              to="/activities"
+              style={({ isActive }) => ({
+                textDecoration: 'none',
+                color: isActive ? 'darkblue' : 'blue',
+                fontWeight: isActive ? 'bold' : 'normal',
+              })}
+            >
+              Activities
+            </NavLink>
+            <NavLink
+              to="/workplaces"
+              style={({ isActive }) => ({
+                textDecoration: 'none',
+                color: isActive ? 'darkblue' : 'blue',
+                fontWeight: isActive ? 'bold' : 'normal',
+              })}
+            >
+              Work Places
+            </NavLink>
+            <Button onClick={handleLogOut}>Log Out</Button>
+            <Badge>{authCtx.getStoredValue().userName}</Badge>
+          </Flex>
         ) : (
-          <div className="navigation-btn-grp">
-            <button className="navigation-sign-in" onClick={() => navigate('/sign-in')}>
+          <Flex flexDirection="row" justifyContent="center" gap="12">
+            <NavLink
+              to="/sign-in"
+              style={({ isActive }) => ({
+                textDecoration: 'none',
+                color: isActive ? 'darkblue' : 'blue',
+                fontWeight: isActive ? 'bold' : 'normal',
+              })}
+            >
               Sign In
-            </button>
-            <button className="navigation-sign-up" onClick={() => navigate('/sign-up')}>
+            </NavLink>
+            <NavLink
+              to="/sign-up"
+              style={({ isActive }) => ({
+                textDecoration: 'none',
+                color: isActive ? 'darkblue' : 'blue',
+                fontWeight: isActive ? 'bold' : 'normal',
+              })}
+            >
               Sign Up
-            </button>
-          </div>
+            </NavLink>
+          </Flex>
         )}
-      </div>
-    </nav>
+      </>
+    </Flex>
   );
 };
 

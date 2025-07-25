@@ -111,3 +111,63 @@ curl -X 'POST' \
   "work_place_id": 1,
   "day": 1
 }'
+
+curl -X 'POST' \
+  'http://localhost:5000/slot-schedules' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "slot_id": 1,
+  "work_place_id": 1,
+  "day": 2
+}'
+
+curl -X 'POST' \
+  'http://localhost:5000/slot-schedules' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "slot_id": 1,
+  "work_place_id": 1,
+  "day": 3
+}'
+
+curl -X 'POST' \
+  'http://localhost:5000/slot-schedules' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "slot_id": 1,
+  "work_place_id": 1,
+  "day": 4
+}'
+
+curl -X 'POST' \
+  'http://localhost:5000/slot-schedules' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "slot_id": 1,
+  "work_place_id": 1,
+  "day": 5
+}'
+
+curl -X 'POST' \
+  'http://localhost:5000/slot-schedules' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "slot_id": 1,
+  "work_place_id": 1,
+  "day": 6
+}'
+
+curl -X 'POST' \
+  'http://localhost:5000/slot-schedules' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "slot_id": 1,
+  "work_place_id": 1,
+  "day": 7
+}'

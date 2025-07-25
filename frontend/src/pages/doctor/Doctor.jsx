@@ -1,15 +1,12 @@
 import axios from 'axios';
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useContext, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import Datepicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
 
 import AuthContext from '../../store/auth';
-import Table from '../../design-library/table/Table';
-import utils from '../../utils';
+import { createColumnHelper } from '@tanstack/react-table';
+import { DataTable, DataTableBody, Flex, Checkbox, Text, Field, Input, Button, DateInput } from '@optiaxiom/react';
+import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import Config from '../../config';
-
-import './_doctor.scss';
 
 const Doctor = () => {
   const [slotSchedules, setSlotSchedules] = useState([]);
@@ -33,8 +30,7 @@ const Doctor = () => {
       return;
     }
 
-    const URL =
-      Config.SERVER_URL + `/appointments/slot-schedules/${selectedSlotSchedule.id}?date=${utils.getFormatedDate(date)}`;
+    const URL = Config.SERVER_URL + `/appointments/slot-schedules/${selectedSlotSchedule.id}?date=${date}`;
     axios.get(URL).then(({ data }) => {
       setAppointments(data);
     });
@@ -49,7 +45,7 @@ const Doctor = () => {
     const data = {
       patient_id: authCtx.getStoredValue().userId,
       slot_schedule_id: selectedSlotSchedule.id,
-      date: utils.getFormatedDate(date),
+      date: date,
     };
 
     if (parent.length > 0) {
@@ -61,46 +57,109 @@ const Doctor = () => {
     });
   };
 
-  const renderSlots = () => {
-    return (
-      <div>
-        <Table
-          title="Working Schedules"
-          headers={['Starting Time', 'Ending Time', 'Day']}
-          rows={slotSchedules.map((slotSchedule) => {
-            return {
-              key: slotSchedule.id,
-              value: [slotSchedule.start_at, slotSchedule.end_at, slotSchedule.day],
-            };
-          })}
-          onRowClick={(id) => {
-            const ss = slotSchedules.filter((slotSchedule) => slotSchedule.id === id);
-            setSelectedSlotSchedule(ss[0]);
-          }}
-          highlightSelection={true}
-        />
-      </div>
-    );
-  };
+  const columnHelper = createColumnHelper();
 
-  const renderAppointments = () => {
-    if (!appointments) {
-      return null;
+  const slotColumns = useMemo(
+    () => [
+      {
+        id: 'select',
+        size: 50,
+        cell: ({ row }) => (
+          <Checkbox
+            checked={row.getIsSelected()}
+            onChange={row.getToggleSelectedHandler()}
+            disabled={!row.getCanSelect()}
+          />
+        ),
+      },
+      columnHelper.accessor('start_at', {
+        id: 'start_at',
+        header: 'Starting Time',
+      }),
+      columnHelper.accessor('end_at', {
+        id: 'end_at',
+        header: 'Ending Time',
+      }),
+      columnHelper.accessor('day', {
+        id: 'day',
+        header: 'Day',
+      }),
+    ],
+    []
+  );
+
+  const slotData = useMemo(
+    () =>
+      slotSchedules.map((slotSchedule) => ({
+        id: slotSchedule.id,
+        start_at: slotSchedule.start_at,
+        end_at: slotSchedule.end_at,
+        day: slotSchedule.day,
+      })),
+    [slotSchedules]
+  );
+
+  const [slotRowSelection, setSlotRowSelection] = useState({});
+
+  const slotTable = useReactTable({
+    columns: slotColumns,
+    data: slotData,
+    getCoreRowModel: getCoreRowModel(),
+    enableMultiRowSelection: false,
+    onRowSelectionChange: setSlotRowSelection,
+    getRowId: (row) => row.id,
+    state: {
+      rowSelection: slotRowSelection,
+    },
+  });
+
+  useEffect(() => {
+    const selectedRows = slotTable.getSelectedRowModel().rows;
+    if (selectedRows.length > 0) {
+      setSelectedSlotSchedule(selectedRows[0].original);
+    } else {
+      setSelectedSlotSchedule(null);
     }
+  }, [slotRowSelection, slotTable]);
 
-    return (
-      <Table
-        title="Appointments"
-        headers={['SL No', 'Patient', 'Appointment Given At']}
-        rows={appointments.map((appointment) => {
-          return {
-            key: appointment.id,
-            value: [appointment.serial_no, appointment.full_name, new Date(appointment.created_at).toString()],
-          };
-        })}
-      />
-    );
-  };
+  const appointmentColumns = useMemo(
+    () => [
+      columnHelper.accessor('serial_no', {
+        id: 'serial_no',
+        header: 'SL No',
+      }),
+      columnHelper.accessor('full_name', {
+        id: 'full_name',
+        header: 'Patient',
+      }),
+      {
+        id: 'created_at',
+        header: 'Appointment Given At',
+        cell: ({ row }) => new Date(row.original.created_at).toString(),
+      },
+    ],
+    []
+  );
+
+  const appointmentData = useMemo(
+    () =>
+      appointments
+        ? appointments.map((appointment) => ({
+            id: appointment.id,
+            serial_no: appointment.serial_no,
+            full_name: appointment.full_name,
+            created_at: appointment.created_at,
+          }))
+        : [],
+    [appointments]
+  );
+
+  const appointmentTable = useReactTable({
+    columns: appointmentColumns,
+    data: appointmentData,
+    getCoreRowModel: getCoreRowModel(),
+    getRowId: (row) => row.id,
+  });
 
   const getSelectedSlotSchedule = () => {
     if (!Boolean(selectedSlotSchedule)) {
@@ -110,39 +169,38 @@ const Doctor = () => {
   };
 
   return (
-    <div className="doctor">
-      {renderSlots()}
+    <Flex flexDirection="column" gap="12">
       <div>
-        <strong>Selected Slot:</strong> {getSelectedSlotSchedule()}
+        <DataTable maxH="xs" maxW="full" table={slotTable}>
+          <DataTableBody />
+        </DataTable>
       </div>
-      <div className="doctor-appointment-info">
-        <div>
-          <span>
-            <strong>Selected date: </strong>
-          </span>
-          <Datepicker selected={date} dateFormat="yyyy-MM-dd" onChange={(date) => setDate(date)} />
-        </div>
-        <div>
-          <label>
-            <strong>Parent Appointment Id: </strong>
-          </label>
-          <input value={parent} onChange={(e) => setParent(e.target.value)} />
-        </div>
-      </div>
-      <div className="action-btn-container">
-        <button className="action-btn" onClick={getAppointments}>
+      <Text>Selected Slot: {getSelectedSlotSchedule()}</Text>
+      <Text>Selected date: </Text>
+      <DateInput value={date} onValueChange={setDate} />
+      <Field label="Parent Appointment Id (optional)">
+        <Input value={parent} onChange={(e) => setParent(e.target.value)} />
+      </Field>
+      <Flex flexDirection="row" gap="12">
+        <Button appearance="inverse" onClick={getAppointments}>
           View Appointment
-        </button>
-        <button
-          className="action-btn"
+        </Button>
+        <Button
+          appearance="primary"
           disabled={!authCtx.isLoggedIn || date < new Date().setHours(0, 0, 0, 0) || !Boolean(selectedSlotSchedule)}
           onClick={makeAppointment}
         >
           Make Appointment
-        </button>
-      </div>
-      {renderAppointments()}
-    </div>
+        </Button>
+      </Flex>
+      {appointments && (
+        <div>
+          <DataTable maxH="xs" maxW="full" table={appointmentTable}>
+            <DataTableBody />
+          </DataTable>
+        </div>
+      )}
+    </Flex>
   );
 };
 
