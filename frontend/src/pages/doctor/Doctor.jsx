@@ -3,8 +3,6 @@ import { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { Button, DateInput } from '@optiaxiom/react';
 
-import 'react-datepicker/dist/react-datepicker.css';
-
 import AuthContext from '../../store/auth';
 import Table from '../../design-library/table/Table';
 import Config from '../../config';
