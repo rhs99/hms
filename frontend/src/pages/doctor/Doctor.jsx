@@ -1,13 +1,11 @@
 import axios from 'axios';
 import { useEffect, useState, useContext } from 'react';
 import { useParams } from 'react-router-dom';
-import { Button, DateInput } from '@optiaxiom/react';
+import { Button, DateInput, Flex, Text, Field, Input } from '@optiaxiom/react';
 
 import AuthContext from '../../store/auth';
 import Table from '../../design-library/table/Table';
 import Config from '../../config';
-
-import './_doctor.scss';
 
 const Doctor = () => {
   const [slotSchedules, setSlotSchedules] = useState([]);
@@ -107,39 +105,28 @@ const Doctor = () => {
   };
 
   return (
-    <div className="doctor">
+    <Flex flexDirection="column" gap="12">
       {renderSlots()}
-      <div>
-        <strong>Selected Slot:</strong> {getSelectedSlotSchedule()}
-      </div>
-      <div className="doctor-appointment-info">
-        <div>
-          <span>
-            <strong>Selected date: </strong>
-          </span>
-          <DateInput value={date} onValueChange={setDate} />
-        </div>
-        <div>
-          <label>
-            <strong>Parent Appointment Id: </strong>
-          </label>
-          <input value={parent} onChange={(e) => setParent(e.target.value)} />
-        </div>
-      </div>
-      <div className="action-btn-container">
-        <Button className="action-btn" onClick={getAppointments}>
+      <Text>Selected Slot: {getSelectedSlotSchedule()}</Text>
+      <Text>Selected date: </Text>
+      <DateInput value={date} onValueChange={setDate} />
+      <Field label="Parent Appointment Id (optional)">
+        <Input value={parent} onChange={(e) => setParent(e.target.value)} />
+      </Field>
+      <Flex flexDirection="row" gap="12">
+        <Button appearance="inverse" onClick={getAppointments}>
           View Appointment
         </Button>
         <Button
-          className="action-btn"
+          appearance="primary"
           disabled={!authCtx.isLoggedIn || date < new Date().setHours(0, 0, 0, 0) || !Boolean(selectedSlotSchedule)}
           onClick={makeAppointment}
         >
           Make Appointment
         </Button>
-      </div>
+      </Flex>
       {renderAppointments()}
-    </div>
+    </Flex>
   );
 };
 

@@ -1,11 +1,10 @@
 import axios from 'axios';
 import { useState } from 'react';
 import { PDFViewer } from '@react-pdf/renderer';
+import { Button, Flex, Text, Textarea } from '@optiaxiom/react';
 
 import PdfDocument from '../PdfDocument';
 import Config from '../../config';
-
-import './_index.scss';
 
 const Prescreption = ({ data, onUpdate, onCancel, viewOnly }) => {
   const { user_data, appointments } = data;
@@ -108,46 +107,40 @@ const Prescreption = ({ data, onUpdate, onCancel, viewOnly }) => {
     const disabled = prescreption.length === 0;
 
     return (
-      <div className="prescription-input">
-        <div className="prescription-meta-info-container">
-          <div className="prescription-meta-info">
-            <span className="prescription-meta-key">Patient</span>
-            <span className="prescription-meta-value">{user_data.name}</span>
-          </div>
-          <div className="prescription-meta-info">
-            <span className="prescription-meta-key">Gender</span>
-            <span className="prescription-meta-value">{user_data.gender}</span>
-          </div>
-          <div className="prescription-meta-info">
-            <span className="prescription-meta-key">Age</span>
-            <span className="prescription-meta-value">{calculateAge(user_data.dob)}</span>
-          </div>
-          <div className="prescription-meta-info">
-            <span className="prescription-meta-key">Blood Group</span>
-            <span className="prescription-meta-value">{getFormattedBloodGroup(user_data.blood_group)}</span>
-          </div>
-        </div>
-        <div>
-          <textarea
-            className="prescription-box"
-            placeholder="Prescribe here"
-            value={prescreption}
-            onChange={(e) => setPrescreption(e.target.value)}
-          />
-        </div>
-        <div className="prescription-done">
-          <button className="prescription-cancel-btn" onClick={onCancel}>
+      <Flex flexDirection="column" gap="12" style={{ border: '1px solid #ccc', padding: '16px' }}>
+        <Flex flexDirection="row" justifyContent="space-between">
+          <Flex flexDirection="column" gap="12">
+            <Text>Patient</Text>
+            <Text color="fg.tertiary">{user_data.name}</Text>
+          </Flex>
+          <Flex flexDirection="column" gap="12">
+            <Text>Gender</Text>
+            <Text color="fg.tertiary">{user_data.gender}</Text>
+          </Flex>
+          <Flex flexDirection="column" gap="12">
+            <Text>Age</Text>
+            <Text color="fg.tertiary">{calculateAge(user_data.dob)}</Text>
+          </Flex>
+          <Flex flexDirection="column" gap="12">
+            <Text>Blood Group</Text>
+            <Text color="fg.tertiary">{getFormattedBloodGroup(user_data.blood_group)}</Text>
+          </Flex>
+        </Flex>
+        <Textarea
+          style={{ height: '150px', width: '100%' }}
+          placeholder="Prescribe here"
+          value={prescreption}
+          onChange={(e) => setPrescreption(e.target.value)}
+        />
+        <Flex flexDirection="row" gap="12" justifyContent="flex-end">
+          <Button appearance="danger-outline" onClick={onCancel}>
             Cancel
-          </button>
-          <button
-            className="prescription-done-btn"
-            disabled={disabled}
-            onClick={() => updateAppointment(appointment.id)}
-          >
+          </Button>
+          <Button appearance="primary" disabled={disabled} onClick={() => updateAppointment(appointment.id)}>
             Done
-          </button>
-        </div>
-      </div>
+          </Button>
+        </Flex>
+      </Flex>
     );
   };
 
