@@ -1,5 +1,5 @@
 curl -X 'POST' \
-  'http://localhost:8000/hospitals' \
+  'http://localhost:5000/hospitals' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -7,7 +7,7 @@ curl -X 'POST' \
 }'
 
 curl -X 'POST' \
-  'http://localhost:8000/branches' \
+  'http://localhost:5000/branches' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -19,7 +19,7 @@ curl -X 'POST' \
 
 
 curl -X 'POST' \
-  'http://localhost:8000/users/sign-up' \
+  'http://localhost:5000/users/sign-up' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -34,7 +34,7 @@ curl -X 'POST' \
 }'
 
 curl -X 'POST' \
-  'http://localhost:8000/users/sign-up' \
+  'http://localhost:5000/users/sign-up' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -49,7 +49,7 @@ curl -X 'POST' \
 }'
 
 curl -X 'POST' \
-  'http://localhost:8000/departments' \
+  'http://localhost:5000/departments' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -58,7 +58,7 @@ curl -X 'POST' \
 
 
 curl -X 'POST' \
-  'http://localhost:8000/doctors' \
+  'http://localhost:5000/doctors' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -72,7 +72,7 @@ curl -X 'POST' \
 
 
 curl -X 'POST' \
-  'http://localhost:8000/branch-depts' \
+  'http://localhost:5000/branch-depts' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -82,7 +82,7 @@ curl -X 'POST' \
 
 
 curl -X 'POST' \
-  'http://localhost:8000/work-places' \
+  'http://localhost:5000/work-places' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -93,7 +93,7 @@ curl -X 'POST' \
 
 
 curl -X 'POST' \
-  'http://localhost:8000/slots' \
+  'http://localhost:5000/slots' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
@@ -103,7 +103,7 @@ curl -X 'POST' \
 
 
 curl -X 'POST' \
-  'http://localhost:8000/slot-schedules' \
+  'http://localhost:5000/slot-schedules' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
   -d '{
