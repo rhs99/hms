@@ -2,6 +2,7 @@ import axios from 'axios';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { SearchInput } from "@optiaxiom/react";
 import Table from '../../design-library/table/Table';
 import Config from '../../config';
 
@@ -37,7 +38,7 @@ const Homepage = () => {
 
   return (
     <div className="homepage">
-      <input
+      <SearchInput
         className="homepage-search-box"
         placeholder="Search"
         value={searchTerm}
