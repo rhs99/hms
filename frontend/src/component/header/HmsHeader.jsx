@@ -1,10 +1,14 @@
 import { useNavigate, NavLink } from 'react-router-dom';
 import { useContext } from 'react';
 import { Button, Badge, Heading, Flex } from '@optiaxiom/react';
+import { EllipsisMenuButton, Menu, MenuContent, MenuTrigger } from '@optiaxiom/react';
+
+import { FiLogOut } from 'react-icons/fi';
+import { FaRegUser } from 'react-icons/fa';
 
 import AuthContext from '../../store/auth';
 
-const Navigation = () => {
+const HmsHeader = () => {
   const navigate = useNavigate();
   const authCtx = useContext(AuthContext);
 
@@ -16,35 +20,44 @@ const Navigation = () => {
   };
 
   return (
-    <Flex flexDirection="row" justifyContent="space-between" alignItems="center" style={{ padding: '10px' }}>
-      <Heading level="3" style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
+    <Flex
+      flexDirection="row"
+      justifyContent="space-between"
+      alignItems="center"
+      style={{ padding: '10px', backgroundColor: 'white', borderBottom: '1px solid #ccc' }}
+    >
+      <Heading level="4" style={{ cursor: 'pointer' }} onClick={() => navigate('/')}>
         Healthcare Management System
       </Heading>
       <>
         {isLoggedIn ? (
           <Flex flexDirection="row" justifyContent="center" gap="12">
-            <NavLink
-              to="/activities"
-              style={({ isActive }) => ({
-                textDecoration: 'none',
-                color: isActive ? 'darkblue' : 'blue',
-                fontWeight: isActive ? 'bold' : 'normal',
-              })}
+            <Menu
+              options={[
+                {
+                  addon: <FaRegUser />,
+                  group: {
+                    label: 'My Account',
+                  },
+                  label: 'View Profile',
+                },
+                {
+                  addon: <FiLogOut />,
+                  group: {
+                    hidden: true,
+                    label: 'Logout',
+                    separator: true,
+                  },
+                  label: 'Logout',
+                  execute: () => handleLogOut(),
+                },
+              ]}
             >
-              Activities
-            </NavLink>
-            <NavLink
-              to="/workplaces"
-              style={({ isActive }) => ({
-                textDecoration: 'none',
-                color: isActive ? 'darkblue' : 'blue',
-                fontWeight: isActive ? 'bold' : 'normal',
-              })}
-            >
-              Work Places
-            </NavLink>
-            <Button onClick={handleLogOut}>Log Out</Button>
-            <Badge>{authCtx.getStoredValue().userName}</Badge>
+              <MenuTrigger asChild>
+                <Badge style={{ cursor: 'pointer' }}>{authCtx.getStoredValue().userName}</Badge>
+              </MenuTrigger>
+              <MenuContent />
+            </Menu>
           </Flex>
         ) : (
           <Flex flexDirection="row" justifyContent="center" gap="12">
@@ -75,4 +88,4 @@ const Navigation = () => {
   );
 };
 
-export default Navigation;
+export default HmsHeader;
