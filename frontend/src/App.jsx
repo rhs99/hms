@@ -11,6 +11,8 @@ import SignIn from './pages/sign-in/SignIn';
 import Activities from './pages/activities/Activities';
 import Workplace from './pages/workplace/Workplace';
 import HmsSidebar from './component/sidebar/HmsSidebar';
+import Profile from './pages/profile/Profile';
+
 import { Layout, LayoutContent } from '@optiaxiom/react/unstable';
 
 const RootLayout = () => {
@@ -44,6 +46,7 @@ const router = createBrowserRouter([
           { index: true, element: <Homepage /> },
           { path: '/sign-up', element: <SignUp /> },
           { path: '/sign-in', element: <SignIn /> },
+          { path: '/users/:userName', element: <Profile /> },
           { path: '/activities', element: <Activities /> },
           { path: '/workplaces', element: <Workplace /> },
           { path: '/branches/:branchId', element: <Branch /> },

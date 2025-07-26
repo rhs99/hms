@@ -10,6 +10,10 @@ class UserService:
         return await UserRepo.get_user(id)
 
     @staticmethod
+    async def get_user_by_username(user_name: str):
+        return await UserRepo.get_user_by_username(user_name)
+
+    @staticmethod
     async def create_user(
         user_name: str,
         password: str,

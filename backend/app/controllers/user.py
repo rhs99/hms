@@ -27,14 +27,26 @@ class UserSchema:
     class Output(BaseSchema):
         id: int
 
+    class UserDetails(BaseSchema):
+        full_name: str
+        email: str
+        phone: str
+        dob: datetime.date | None = None
+        gender: str
+        blood_group: str | None = None
+
 
 @router.get(
     "/users",
-    response_model=UserSchema.Output,
+    response_model=UserSchema.UserDetails | None,
     status_code=status.HTTP_200_OK,
 )
-async def get_user(id: int):
-    return await UserService.get_user(id)
+async def get_user(id: int | None = None, user_name: str | None = None):
+    if id is not None:
+        return await UserService.get_user(id)
+    if user_name is not None:
+        return await UserService.get_user_by_username(user_name)
+    return None
 
 
 @router.post(
