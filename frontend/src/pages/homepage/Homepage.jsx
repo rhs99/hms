@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createColumnHelper } from '@tanstack/react-table';
-import { DataTable, DataTableBody, Flex, Checkbox } from '@optiaxiom/react';
+import { DataTable, DataTableBody, Flex, Checkbox, Heading } from '@optiaxiom/react';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 
 import { SearchInput } from '@optiaxiom/react';
@@ -111,11 +111,11 @@ const Homepage = () => {
 
   return (
     <Flex flexDirection="column" gap="16">
-      <Flex flexDirection="row" justifyContent="flex-end" style={{ margin: '16px 0' }}>
+      <Heading level="3">Hospitals</Heading>
+      <Flex flexDirection="row" justifyContent="flex-end">
         <SearchInput placeholder="Search" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
       </Flex>
-
-      <DataTable maxH="xs" maxW="full" table={table}>
+      <DataTable maxH="lg" maxW="full" table={table}>
         <DataTableBody />
       </DataTable>
     </Flex>

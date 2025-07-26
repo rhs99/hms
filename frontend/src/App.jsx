@@ -2,7 +2,7 @@ import { RouterProvider, createBrowserRouter, Outlet } from 'react-router-dom';
 import { AxiomProvider } from '@optiaxiom/react';
 
 import { AuthContextProvider } from './store/auth';
-import Navigation from './component/navigation/Navigation';
+import HmsHeader from './component/header/HmsHeader';
 import Homepage from './pages/homepage/Homepage';
 import Branch from './pages/branch/Branch';
 import Doctor from './pages/doctor/Doctor';
@@ -10,18 +10,16 @@ import SignUp from './pages/sign-up/SignUp';
 import SignIn from './pages/sign-in/SignIn';
 import Activities from './pages/activities/Activities';
 import Workplace from './pages/workplace/Workplace';
+import HmsSidebar from './component/sidebar/HmsSidebar';
+import { Layout, LayoutContent } from '@optiaxiom/react/unstable';
 
 const RootLayout = () => {
   return (
-    <>
-      <Navigation />
-      <hr></hr>
-      <main
-        style={{ marginLeft: 'auto', marginRight: 'auto', maxWidth: '60%', display: 'flex', justifyContent: 'center' }}
-      >
+    <Layout header={<HmsHeader />} sidebar={<HmsSidebar />} size="full">
+      <LayoutContent>
         <Outlet />
-      </main>
-    </>
+      </LayoutContent>
+    </Layout>
   );
 };
 
@@ -63,7 +61,7 @@ const App = () => {
   return (
     <AxiomProvider>
       <AuthContextProvider>
-        <RouterProvider router={router} />;
+        <RouterProvider router={router} />
       </AuthContextProvider>
     </AxiomProvider>
   );
