@@ -40,6 +40,7 @@ const HmsHeader = () => {
                     label: 'My Account',
                   },
                   label: 'Profile',
+                  execute: () => navigate(`/users/${authCtx.getStoredValue().userName}`),
                 },
                 {
                   addon: <FiLogOut />,

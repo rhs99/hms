@@ -5,8 +5,6 @@ import { Flex, Box, Text, Menu, MenuContent, MenuTrigger, Badge } from '@optiaxi
 import Config from '../../config';
 import { Card, CardHeader, CardImage, CardPreview } from '@optiaxiom/react';
 
-import { FaUserDoctor } from 'react-icons/fa6';
-
 const Branch = () => {
   const [depts, setDepts] = useState([]);
   const [doctors, setDoctors] = useState([]);
