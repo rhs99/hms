@@ -1,7 +1,7 @@
 import { useNavigate, NavLink } from 'react-router-dom';
 import { useContext } from 'react';
-import { Button, Badge, Heading, Flex } from '@optiaxiom/react';
-import { EllipsisMenuButton, Menu, MenuContent, MenuTrigger } from '@optiaxiom/react';
+import { Avatar, Heading, Flex } from '@optiaxiom/react';
+import { Menu, MenuContent, MenuTrigger } from '@optiaxiom/react';
 
 import { FiLogOut } from 'react-icons/fi';
 import { FaRegUser } from 'react-icons/fa';
@@ -39,7 +39,7 @@ const HmsHeader = () => {
                   group: {
                     label: 'My Account',
                   },
-                  label: 'View Profile',
+                  label: 'Profile',
                 },
                 {
                   addon: <FiLogOut />,
@@ -54,7 +54,7 @@ const HmsHeader = () => {
               ]}
             >
               <MenuTrigger asChild>
-                <Badge style={{ cursor: 'pointer' }}>{authCtx.getStoredValue().userName}</Badge>
+                <Avatar size="lg" name={authCtx.getStoredValue().userName} style={{ cursor: 'pointer' }} />
               </MenuTrigger>
               <MenuContent />
             </Menu>

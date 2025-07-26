@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createColumnHelper, flexRender } from '@tanstack/react-table';
-import { DataTable, DataTableBody, Flex, Checkbox } from '@optiaxiom/react';
+import { createColumnHelper } from '@tanstack/react-table';
+import { DataTable, DataTableBody, Flex, Checkbox, Text } from '@optiaxiom/react';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 
 import utils from '../../utils';
@@ -75,7 +75,6 @@ const Workplace = () => {
   const [selectedSlotScheduleId, setSelectedSlotScheduleId] = useState(null);
   const [workplaceRowSelection, setWorkplaceRowSelection] = useState({});
   const [pendingRowSelection, setPendingRowSelection] = useState({});
-  const [resolvedRowSelection, setResolvedRowSelection] = useState({});
 
   const authCtx = useContext(AuthContext);
   const navigate = useNavigate();
@@ -159,14 +158,9 @@ const Workplace = () => {
   });
 
   const resolvedAppointmentsTable = useReactTable({
-    columns: getAppointmentColumns(),
+    columns: getAppointmentColumns().filter((col) => col.id !== 'select'),
     data: resolvedAppointments,
     getCoreRowModel: getCoreRowModel(),
-    enableMultiRowSelection: false,
-    onRowSelectionChange: setResolvedRowSelection,
-    state: {
-      rowSelection: resolvedRowSelection,
-    },
   });
 
   if (!authCtx.isLoggedIn) {
@@ -175,8 +169,8 @@ const Workplace = () => {
 
   return (
     <Flex flexDirection="column" gap="16" className="workplace">
-      <h2>My Workplaces</h2>
-      <DataTable table={workplaceTable}>
+      <Text>My Workplaces</Text>
+      <DataTable maxH="xs" table={workplaceTable}>
         <DataTableBody />
       </DataTable>
 
@@ -193,8 +187,8 @@ const Workplace = () => {
 
       {pendingAppointments.length > 0 && (
         <>
-          <h2>Pending Appointments</h2>
-          <DataTable table={pendingAppointmentsTable}>
+          <Text>Pending Appointments</Text>
+          <DataTable maxH="xs" maxW="md" table={pendingAppointmentsTable}>
             <DataTableBody />
           </DataTable>
         </>
@@ -202,8 +196,8 @@ const Workplace = () => {
 
       {resolvedAppointments.length > 0 && (
         <>
-          <h2>Resolved Appointments</h2>
-          <DataTable table={resolvedAppointmentsTable}>
+          <Text>Resolved Appointments</Text>
+          <DataTable maxH="xs" maxW="md" table={resolvedAppointmentsTable}>
             <DataTableBody />
           </DataTable>
         </>

@@ -1,19 +1,16 @@
 import axios from 'axios';
 import { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { createColumnHelper } from '@tanstack/react-table';
-import { DataTable, DataTableBody, Flex, Checkbox } from '@optiaxiom/react';
-import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import { Flex, Grid, Text, Menu, MenuContent, MenuTrigger } from '@optiaxiom/react';
 import Config from '../../config';
+import { Card, CardHeader, CardImage, CardPreview } from '@optiaxiom/react';
 
-const columnHelper = createColumnHelper();
+import { FaUserDoctor } from 'react-icons/fa6';
 
 const Branch = () => {
   const [depts, setDepts] = useState([]);
   const [doctors, setDoctors] = useState([]);
   const [selectedDeptId, setSelectedDeptId] = useState(null);
-  const [deptRowSelection, setDeptRowSelection] = useState({});
-  const [doctorRowSelection, setDoctorRowSelection] = useState({});
 
   const { branchId } = useParams();
   const navigate = useNavigate();
@@ -26,100 +23,25 @@ const Branch = () => {
   }, [branchId]);
 
   useEffect(() => {
-    const selectedIds = Object.keys(deptRowSelection);
-    if (selectedIds.length > 0) {
-      const selectedDeptId = selectedIds[0];
-      setSelectedDeptId(selectedDeptId);
-      setDoctorRowSelection({});
-      const url = Config.SERVER_URL + `/branch-depts/doctors?branch_id=${branchId}&dept_id=${selectedDeptId}`;
-      axios.get(url).then(({ data }) => {
-        setDoctors(data);
-      });
-    } else {
-      setSelectedDeptId(null);
-      setDoctors([]);
-      setDoctorRowSelection({});
-    }
-  }, [deptRowSelection, branchId]);
-
-  useEffect(() => {
     if (!selectedDeptId) return;
-    const selectedIds = Object.keys(doctorRowSelection);
-    if (selectedIds.length > 0) {
-      const selectedDoctorId = selectedIds[0];
-      navigate(`/branches/${branchId}/departments/${selectedDeptId}/doctors/${selectedDoctorId}`);
-    }
-  }, [doctorRowSelection, selectedDeptId, branchId, navigate]);
+    const url = Config.SERVER_URL + `/branch-depts/doctors?branch_id=${branchId}&dept_id=${selectedDeptId}`;
+    axios.get(url).then(({ data }) => {
+      setDoctors(data);
+    });
+  }, [selectedDeptId, branchId]);
 
-  const deptColumns = useMemo(
-    () => [
-      {
-        id: 'select',
-        size: 50,
-        cell: ({ row }) => (
-          <Checkbox
-            checked={row.getIsSelected()}
-            onChange={row.getToggleSelectedHandler()}
-            disabled={!row.getCanSelect()}
-          />
-        ),
-      },
-      columnHelper.accessor('name', {
-        id: 'name',
-        header: 'Department',
-      }),
-    ],
-    []
-  );
+  const getDeptName = (deptId) => {
+    const dept = depts.find((d) => d.id === deptId);
+    return dept ? dept.name : null;
+  };
 
-  const deptData = useMemo(
+  const departmentOptions = useMemo(
     () =>
       depts.map((dept) => ({
-        id: dept.id,
-        name: dept.name,
+        label: dept.name,
+        execute: () => setSelectedDeptId(dept.id),
       })),
     [depts]
-  );
-
-  const deptTable = useReactTable({
-    columns: deptColumns,
-    data: deptData,
-    getCoreRowModel: getCoreRowModel(),
-    enableMultiRowSelection: false,
-    onRowSelectionChange: setDeptRowSelection,
-    getRowId: (row) => row.id,
-    state: {
-      rowSelection: deptRowSelection,
-    },
-  });
-
-  const doctorColumns = useMemo(
-    () => [
-      {
-        id: 'select',
-        size: 50,
-        cell: ({ row }) => (
-          <Checkbox
-            checked={row.getIsSelected()}
-            onChange={row.getToggleSelectedHandler()}
-            disabled={!row.getCanSelect()}
-          />
-        ),
-      },
-      columnHelper.accessor('name', {
-        id: 'name',
-        header: 'Name',
-      }),
-      columnHelper.accessor('degree', {
-        id: 'degree',
-        header: 'Degree',
-      }),
-      columnHelper.accessor('experience', {
-        id: 'experience',
-        header: 'Experience',
-      }),
-    ],
-    []
   );
 
   const doctorData = useMemo(
@@ -133,31 +55,36 @@ const Branch = () => {
     [doctors]
   );
 
-  const doctorTable = useReactTable({
-    columns: doctorColumns,
-    data: doctorData,
-    getCoreRowModel: getCoreRowModel(),
-    enableRowSelection: true,
-    onRowSelectionChange: setDoctorRowSelection,
-    getRowId: (row) => row.id,
-    state: {
-      rowSelection: doctorRowSelection,
-    },
-  });
+  const gotoDoctor = (selectedDoctorId) => {
+    if (!selectedDeptId) return;
+    navigate(`/branches/${branchId}/departments/${selectedDeptId}/doctors/${selectedDoctorId}`);
+  };
 
   return (
     <Flex gap="32" style={{ display: 'flex' }}>
-      <div style={{ minWidth: '300px' }}>
-        <DataTable maxH="xs" maxW="full" table={deptTable}>
-          <DataTableBody />
-        </DataTable>
-      </div>
+      <Flex flexDirection="row" justifyContent="flex-end">
+        <Menu options={departmentOptions}>
+          <MenuTrigger>{getDeptName(selectedDeptId) || 'Select Department'}</MenuTrigger>
+          <MenuContent />
+        </Menu>
+      </Flex>
       {selectedDeptId && (
-        <div style={{ minWidth: '400px' }}>
-          <DataTable maxH="xs" maxW="full" table={doctorTable}>
-            <DataTableBody />
-          </DataTable>
-        </div>
+        <Grid gridTemplateColumns="4">
+          {doctorData.map((doctor) => (
+            <Card maxW="xs" onClick={() => gotoDoctor(doctor.id)} key={doctor.id} style={{ cursor: 'pointer' }}>
+              <CardPreview>
+                <CardImage size="224" style={{ padding: '8px' }} asChild>
+                  <FaUserDoctor />
+                </CardImage>
+              </CardPreview>
+              <CardHeader>
+                <Text>{doctor.name}</Text>
+                <Text>{doctor.degree}</Text>
+                <Text>{doctor.experience}</Text>
+              </CardHeader>
+            </Card>
+          ))}
+        </Grid>
       )}
     </Flex>
   );

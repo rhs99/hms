@@ -170,28 +170,29 @@ const Doctor = () => {
 
   return (
     <Flex flexDirection="column" gap="12">
-      <div>
-        <DataTable maxH="xs" maxW="full" table={slotTable}>
+      <Flex flexDirection="column" gap="12" maxW="xs">
+        <DataTable table={slotTable}>
           <DataTableBody />
         </DataTable>
-      </div>
-      <Text>Selected Slot: {getSelectedSlotSchedule()}</Text>
-      <Text>Selected date: </Text>
-      <DateInput value={date} onValueChange={setDate} />
-      <Field label="Parent Appointment Id (optional)">
-        <Input value={parent} onChange={(e) => setParent(e.target.value)} />
-      </Field>
-      <Flex flexDirection="row" gap="12">
-        <Button appearance="inverse" onClick={getAppointments}>
-          View Appointment
-        </Button>
-        <Button
-          appearance="primary"
-          disabled={!authCtx.isLoggedIn || date < new Date().setHours(0, 0, 0, 0) || !Boolean(selectedSlotSchedule)}
-          onClick={makeAppointment}
-        >
-          Make Appointment
-        </Button>
+        <Field label="Selected Slot">{getSelectedSlotSchedule()}</Field>
+        <Field label="Selected date">
+          <DateInput value={date} onValueChange={setDate} />
+        </Field>
+        <Field label="Parent Appointment Id (optional)">
+          <Input value={parent} onChange={(e) => setParent(e.target.value)} />
+        </Field>
+        <Flex flexDirection="row" gap="12">
+          <Button appearance="inverse" onClick={getAppointments}>
+            View Appointment
+          </Button>
+          <Button
+            appearance="primary"
+            disabled={!authCtx.isLoggedIn || date < new Date().setHours(0, 0, 0, 0) || !Boolean(selectedSlotSchedule)}
+            onClick={makeAppointment}
+          >
+            Make Appointment
+          </Button>
+        </Flex>
       </Flex>
       {appointments && (
         <div>

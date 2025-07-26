@@ -111,9 +111,7 @@ const Homepage = () => {
 
   return (
     <Flex flexDirection="column" gap="16">
-      <Heading level="3">
-        Hospitals
-      </Heading>
+      <Heading level="3">Hospitals</Heading>
       <Flex flexDirection="row" justifyContent="flex-end">
         <SearchInput placeholder="Search" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
       </Flex>

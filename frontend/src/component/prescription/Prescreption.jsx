@@ -94,15 +94,6 @@ const Prescreption = ({ data, onUpdate, onCancel, viewOnly }) => {
         <PDFViewer>
           <PdfDocument pages={pages} />
         </PDFViewer>
-        {viewOnly && (
-          <Button
-            appearance="danger"
-            onClick={onCancel}
-            style={{ width: 'auto', alignSelf: 'flex-start', minWidth: 0 }}
-          >
-            Close
-          </Button>
-        )}
       </Flex>
     );
   };

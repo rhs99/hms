@@ -5,6 +5,16 @@ import { createColumnHelper } from '@tanstack/react-table';
 import { DataTable, DataTableBody, Flex, Checkbox } from '@optiaxiom/react';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 
+import {
+  Dialog,
+  DialogBody,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTrigger,
+} from '@optiaxiom/react';
+
 import Prescription from '../../component/prescription/Prescreption';
 import AuthContext from '../../store/auth';
 import Config from '../../config';
@@ -57,7 +67,6 @@ const Activities = () => {
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
   const [pastAppointments, setPastAppointments] = useState([]);
   const [appointmentToView, setAppointmentToView] = useState(null);
-  const [upcomingRowSelection, setUpcomingRowSelection] = useState({});
   const [pastRowSelection, setPastRowSelection] = useState({});
 
   const authCtx = useContext(AuthContext);
@@ -98,14 +107,9 @@ const Activities = () => {
   }, [pastRowSelection]);
 
   const upcomingAppointmentsTable = useReactTable({
-    columns: getAppointmentColumns(),
+    columns: getAppointmentColumns().filter((col) => col.id !== 'select'),
     data: upcomingAppointments,
     getCoreRowModel: getCoreRowModel(),
-    enableMultiRowSelection: false,
-    onRowSelectionChange: setUpcomingRowSelection,
-    state: {
-      rowSelection: upcomingRowSelection,
-    },
   });
 
   const pastAppointmentsTable = useReactTable({
@@ -119,16 +123,33 @@ const Activities = () => {
     },
   });
 
+  const closePrescriptionDialog = () => {
+    setAppointmentToView(null);
+    setPastRowSelection({});
+  };
+
   if (!authCtx.isLoggedIn) {
     return null;
   }
 
   return (
     <Flex flexDirection="column" gap="16">
-      <h1>My Activities</h1>
-
       {appointmentToView && (
-        <Prescription data={appointmentToView} onCancel={() => setAppointmentToView(null)} viewOnly={true} />
+        <Dialog open={!!appointmentToView} onOpenChange={closePrescriptionDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <h2>Appointment Details</h2>
+            </DialogHeader>
+            <DialogBody>
+              <Prescription data={appointmentToView} viewOnly={true} />
+            </DialogBody>
+            <DialogFooter>
+              <DialogClose appearance="primary" onClick={closePrescriptionDialog}>
+                Close
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       )}
 
       <Flex flexDirection="column" gap="16">
