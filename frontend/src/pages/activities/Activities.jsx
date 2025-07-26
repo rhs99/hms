@@ -5,15 +5,7 @@ import { createColumnHelper } from '@tanstack/react-table';
 import { DataTable, DataTableBody, Flex, Checkbox } from '@optiaxiom/react';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 
-import {
-  Dialog,
-  DialogBody,
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTrigger,
-} from '@optiaxiom/react';
+import { Dialog, DialogBody, DialogClose, DialogContent, DialogFooter, DialogHeader } from '@optiaxiom/react';
 
 import Prescription from '../../component/prescription/Prescreption';
 import AuthContext from '../../store/auth';
@@ -35,15 +27,17 @@ const getAppointmentColumns = () => [
   },
   columnHelper.accessor('serial_no', {
     header: 'SL No',
+    size: 80,
   }),
   columnHelper.accessor('id', {
     header: 'Id',
+    size: 100,
   }),
   columnHelper.accessor('date', {
     header: 'Date',
   }),
   columnHelper.accessor('parent', {
-    header: 'Parent',
+    header: 'Previous Appointment',
     cell: (info) => info.getValue() || 'N/A',
   }),
   columnHelper.accessor('hospital', {
@@ -107,7 +101,7 @@ const Activities = () => {
   }, [pastRowSelection]);
 
   const upcomingAppointmentsTable = useReactTable({
-    columns: getAppointmentColumns().filter((col) => col.id !== 'select'),
+    columns: getAppointmentColumns(),
     data: upcomingAppointments,
     getCoreRowModel: getCoreRowModel(),
   });

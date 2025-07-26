@@ -4,14 +4,34 @@ import { useParams } from 'react-router-dom';
 
 import AuthContext from '../../store/auth';
 import { createColumnHelper } from '@tanstack/react-table';
-import { DataTable, DataTableBody, Flex, Checkbox, Text, Field, Input, Button, DateInput } from '@optiaxiom/react';
+import {
+  DataTable,
+  DataTableBody,
+  Flex,
+  Checkbox,
+  Field,
+  Input,
+  Button,
+  DateInput,
+  Heading,
+  Text,
+} from '@optiaxiom/react';
+import {
+  Dialog,
+  DialogBody,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTrigger,
+} from '@optiaxiom/react';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import Config from '../../config';
 
 const Doctor = () => {
   const [slotSchedules, setSlotSchedules] = useState([]);
   const [selectedSlotSchedule, setSelectedSlotSchedule] = useState(null);
-  const [date, setDate] = useState(new Date().setHours(23, 59, 59));
+  const [date, setDate] = useState(null);
   const [parent, setParent] = useState('');
   const [appointments, setAppointments] = useState(null);
 
@@ -72,6 +92,10 @@ const Doctor = () => {
           />
         ),
       },
+      columnHelper.accessor('day', {
+        id: 'day',
+        header: 'Day',
+      }),
       columnHelper.accessor('start_at', {
         id: 'start_at',
         header: 'Starting Time',
@@ -79,10 +103,6 @@ const Doctor = () => {
       columnHelper.accessor('end_at', {
         id: 'end_at',
         header: 'Ending Time',
-      }),
-      columnHelper.accessor('day', {
-        id: 'day',
-        header: 'Day',
       }),
     ],
     []
@@ -132,11 +152,10 @@ const Doctor = () => {
         id: 'full_name',
         header: 'Patient',
       }),
-      {
+      columnHelper.accessor('created_at', {
         id: 'created_at',
-        header: 'Appointment Given At',
-        cell: ({ row }) => new Date(row.original.created_at).toString(),
-      },
+        header: 'Created At',
+      }),
     ],
     []
   );
@@ -158,7 +177,6 @@ const Doctor = () => {
     columns: appointmentColumns,
     data: appointmentData,
     getCoreRowModel: getCoreRowModel(),
-    getRowId: (row) => row.id,
   });
 
   const getSelectedSlotSchedule = () => {
@@ -170,37 +188,47 @@ const Doctor = () => {
 
   return (
     <Flex flexDirection="column" gap="12">
-      <Flex flexDirection="column" gap="12" maxW="xs">
-        <DataTable table={slotTable}>
-          <DataTableBody />
-        </DataTable>
+      <Flex flexDirection="column" gap="12" maxW="full">
+        <Heading level="1">Appointments</Heading>
+        <Field label="Available Slots">
+          <DataTable table={slotTable}>
+            <DataTableBody />
+          </DataTable>
+        </Field>
         <Field label="Selected Slot">{getSelectedSlotSchedule()}</Field>
         <Field label="Selected date">
-          <DateInput value={date} onValueChange={setDate} />
+          <DateInput value={date} onValueChange={setDate} w="224" />
         </Field>
         <Field label="Parent Appointment Id (optional)">
-          <Input value={parent} onChange={(e) => setParent(e.target.value)} />
+          <Input value={parent} onChange={(e) => setParent(e.target.value)} w="224" />
         </Field>
-        <Flex flexDirection="row" gap="12">
-          <Button appearance="inverse" onClick={getAppointments}>
-            View Appointment
+        <Flex justifyContent="flex-end" flexDirection="row" gap="12">
+          <Button appearance="inverse" disabled={!Boolean(selectedSlotSchedule) || !date} onClick={getAppointments}>
+            View
           </Button>
           <Button
             appearance="primary"
-            disabled={!authCtx.isLoggedIn || date < new Date().setHours(0, 0, 0, 0) || !Boolean(selectedSlotSchedule)}
+            disabled={!authCtx.isLoggedIn || !date || !Boolean(selectedSlotSchedule)}
             onClick={makeAppointment}
           >
-            Make Appointment
+            Create
           </Button>
         </Flex>
       </Flex>
-      {appointments && (
-        <div>
-          <DataTable maxH="xs" maxW="full" table={appointmentTable}>
-            <DataTableBody />
-          </DataTable>
-        </div>
-      )}
+
+      <Dialog open={appointments !== null} onOpenChange={(open) => setAppointments(open ? appointments : null)}>
+        <DialogContent size="md">
+          <DialogHeader>Appointment Details</DialogHeader>
+          <DialogBody>
+            <DataTable maxH="xs" maxW="full" table={appointmentTable}>
+              <DataTableBody />
+            </DataTable>
+          </DialogBody>
+          <DialogFooter>
+            <DialogClose appearance="primary">Close</DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Flex>
   );
 };

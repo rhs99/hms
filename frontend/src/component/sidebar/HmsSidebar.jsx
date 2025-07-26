@@ -15,8 +15,8 @@ const HmsSidebar = () => {
 
   const { isLoggedIn } = authCtx;
 
-  const goToHome = () => {
-    setSelected('home');
+  const goToHospitals = () => {
+    setSelected('hospitals');
     navigate('/');
   };
 
@@ -36,8 +36,8 @@ const HmsSidebar = () => {
         <Nav>
           <NavBody>
             <NavList>
-              <NavItem active={selected === 'home'} icon={<TbHome />} onClick={goToHome}>
-                Home
+              <NavItem active={selected === 'hospitals'} icon={<TbHome />} onClick={goToHospitals}>
+                Hospitals
               </NavItem>
               {isLoggedIn && (
                 <NavItem active={selected === 'activities'} icon={<TbTimelineEventText />} onClick={goToActivities}>

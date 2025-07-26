@@ -1,20 +1,26 @@
 import axios from 'axios';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createColumnHelper } from '@tanstack/react-table';
-import { DataTable, DataTableBody, Flex, Checkbox, Heading } from '@optiaxiom/react';
-import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
+
+import { Flex, Box, Card, CardHeader, CardPreview, CardImage, Text, Heading } from '@optiaxiom/react';
+import { FaPhone } from 'react-icons/fa';
+import { MdOutlineEmail } from 'react-icons/md';
+import { CiLocationOn } from 'react-icons/ci';
 
 import { SearchInput } from '@optiaxiom/react';
 import Config from '../../config';
 
-const columnHelper = createColumnHelper();
+const HospitalBuildingImages = [
+  'https://images.unsplash.com/photo-1626315869436-d6781ba69d6e?w=224',
+  'https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=224',
+  'https://images.unsplash.com/photo-1533042789716-e9a9c97cf4ee?w=224',
+  'https://images.unsplash.com/photo-1586773860383-dab5f3bc1bcc?w=224',
+];
 
 const Homepage = () => {
   const [hospitals, setHospitals] = useState([]);
   const [matchedHospitals, setMatchedHospitals] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
-  const [rowSelection, setRowSelection] = useState({});
 
   const navigate = useNavigate();
 
@@ -39,85 +45,61 @@ const Homepage = () => {
     }
   }, [searchTerm]);
 
-  const columns = useMemo(
-    () => [
-      {
-        id: 'select',
-        size: 50,
-        cell: ({ row }) => (
-          <Checkbox
-            checked={row.getIsSelected()}
-            onChange={row.getToggleSelectedHandler()}
-            disabled={!row.getCanSelect()}
-          />
-        ),
-      },
-      columnHelper.accessor('name', {
-        id: 'name',
-        header: 'Name',
-      }),
-      columnHelper.accessor('address', {
-        id: 'address',
-        header: 'Address',
-      }),
-      columnHelper.accessor('phone', {
-        id: 'phone',
-        header: 'Phone',
-      }),
-      columnHelper.accessor('email', {
-        id: 'email',
-        header: 'Email',
-        minSize: 200,
-      }),
-    ],
-    []
-  );
-
-  const data = useMemo(
-    () =>
-      matchedHospitals.map((hospital) => ({
-        id: `${hospital.name}-${hospital.branch_id}`,
-        name: hospital.name,
-        address: hospital.address,
-        phone: hospital.phone,
-        email: hospital.email,
-        branch_id: hospital.branch_id,
-      })),
-    [matchedHospitals]
-  );
-
-  const table = useReactTable({
-    columns,
-    data,
-    getCoreRowModel: getCoreRowModel(),
-    enableMultiRowSelection: false,
-    onRowSelectionChange: setRowSelection,
-    state: {
-      rowSelection,
-    },
-  });
-
-  useEffect(() => {
-    const selectedIds = Object.keys(rowSelection);
-    if (selectedIds.length > 0) {
-      const selectedRowId = selectedIds[0];
-      const selectedRowIndex = table.getRowModel().rows.findIndex((row) => row.id === selectedRowId);
-      if (selectedRowIndex !== -1) {
-        const selectedHospital = data[selectedRowIndex];
-        navigate(`/branches/${selectedHospital.branch_id}`);
-      }
-    }
-  }, [rowSelection, data, table]);
-
   return (
-    <Flex flexDirection="column" gap="16">
+    <Flex flexDirection="column" gap="16" style={{ maxHeight: '80vh', overflowY: 'auto', padding: '16px' }}>
       <Heading level="3">Hospitals</Heading>
       <Flex flexDirection="row" justifyContent="flex-end">
-        <SearchInput placeholder="Search" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+        <SearchInput placeholder="Search" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} w="224" />
       </Flex>
-      <DataTable maxH="lg" maxW="full" table={table}>
-        <DataTableBody />
-      </DataTable>
+      <Box style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '16px' }}>
+        {matchedHospitals.map((hospital, index) => (
+          <Card
+            key={`${hospital.name}-${hospital.branch_id}`}
+            maxW="xs"
+            onClick={() => navigate(`/branches/${hospital.branch_id}`)}
+            style={{
+              cursor: 'pointer',
+              transition: 'transform 0.2s',
+              '&:hover': { backgroundColor: '#f0f0f0' },
+              transform: 'scale(1)',
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'scale(1.03)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'scale(1)';
+            }}
+          >
+            <CardPreview>
+              <CardImage asChild>
+                <img
+                  src={HospitalBuildingImages[index % 4]}
+                  alt="Hospital Building"
+                  style={{
+                    transition: 'transform 0.3s',
+                  }}
+                />
+              </CardImage>
+            </CardPreview>
+            <CardHeader>
+              <Flex flexDirection="column" gap="8">
+                <Text fontSize="lg" fontWeight="700">
+                  {hospital.name}
+                </Text>
+                <Flex flexDirection="row" gap="8" alignItems="center">
+                  <CiLocationOn /> <Text>{hospital.address}</Text>
+                </Flex>
+                <Flex flexDirection="row" gap="8" alignItems="center">
+                  <FaPhone /> <Text>{hospital.phone}</Text>
+                </Flex>
+                <Flex flexDirection="row" gap="8" alignItems="center">
+                  <MdOutlineEmail /> <Text fontSize="sm">{hospital.email}</Text>
+                </Flex>
+              </Flex>
+            </CardHeader>
+          </Card>
+        ))}
+      </Box>
     </Flex>
   );
 };
