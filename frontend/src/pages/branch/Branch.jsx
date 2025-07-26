@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Flex, Grid, Text, Menu, MenuContent, MenuTrigger } from '@optiaxiom/react';
+import { Flex, Box, Text, Menu, MenuContent, MenuTrigger, Badge } from '@optiaxiom/react';
 import Config from '../../config';
 import { Card, CardHeader, CardImage, CardPreview } from '@optiaxiom/react';
 
@@ -61,7 +61,7 @@ const Branch = () => {
   };
 
   return (
-    <Flex gap="32" style={{ display: 'flex' }}>
+    <Flex gap="32" style={{ maxHeight: '80vh', overflowY: 'auto', padding: '16px' }}>
       <Flex flexDirection="row" justifyContent="flex-end">
         <Menu options={departmentOptions}>
           <MenuTrigger>{getDeptName(selectedDeptId) || 'Select Department'}</MenuTrigger>
@@ -69,22 +69,47 @@ const Branch = () => {
         </Menu>
       </Flex>
       {selectedDeptId && (
-        <Grid gridTemplateColumns="4">
+        <Box style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '16px' }}>
           {doctorData.map((doctor) => (
-            <Card maxW="xs" onClick={() => gotoDoctor(doctor.id)} key={doctor.id} style={{ cursor: 'pointer' }}>
+            <Card
+              maxW="xs"
+              onClick={() => gotoDoctor(doctor.id)}
+              key={doctor.id}
+              style={{
+                cursor: 'pointer',
+                transition: 'transform 0.2s',
+                '&:hover': { backgroundColor: '#f0f0f0' },
+                transform: 'scale(1)',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.03)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
+              }}
+            >
               <CardPreview>
-                <CardImage size="224" style={{ padding: '8px' }} asChild>
-                  <FaUserDoctor />
+                <CardImage asChild>
+                  <img
+                    src="https://plus.unsplash.com/premium_photo-1673953886016-6f0f3d33dddd?w=224"
+                    alt={doctor.name}
+                  />
                 </CardImage>
               </CardPreview>
               <CardHeader>
-                <Text>{doctor.name}</Text>
-                <Text>{doctor.degree}</Text>
-                <Text>{doctor.experience}</Text>
+                <Flex flexDirection="column" gap="8">
+                  <Badge intent="information" w="fit">
+                    {doctor.experience}
+                  </Badge>
+                  <Text fontSize="2xl" fontWeight="700">
+                    Dr. {doctor.name}
+                  </Text>
+                  <Text color="fg.tertiary">{doctor.degree}</Text>
+                </Flex>
               </CardHeader>
             </Card>
           ))}
-        </Grid>
+        </Box>
       )}
     </Flex>
   );

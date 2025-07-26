@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createColumnHelper } from '@tanstack/react-table';
-import { DataTable, DataTableBody, Flex, Checkbox, Text } from '@optiaxiom/react';
+import { DataTable, DataTableBody, Flex, Checkbox, Text, Badge } from '@optiaxiom/react';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 
 import utils from '../../utils';
@@ -44,6 +44,7 @@ const getWorkplaceColumns = () => [
 const getAppointmentColumns = () => [
   {
     id: 'select',
+    size: 50,
     cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
@@ -54,16 +55,24 @@ const getAppointmentColumns = () => [
   },
   columnHelper.accessor('serial_no', {
     header: 'SL No',
-  }),
-  columnHelper.accessor('parent', {
-    header: 'Parent',
-    cell: (info) => info.getValue() || 'N/A',
+    size: 80,
   }),
   columnHelper.accessor('full_name', {
     header: 'Patient',
+    size: 150,
+    maxSize: 300,
+    enableResizing: true,
+    cell: (info) => <Text truncate>{info.getValue() || 'N/A'}</Text>,
   }),
   columnHelper.accessor('gender', {
     header: 'Gender',
+    size: 100,
+    cell: (info) => <Badge intent="information">{info.getValue() || 'N/A'}</Badge>,
+  }),
+  columnHelper.accessor('parent', {
+    header: 'Previous Appointment',
+    size: 180,
+    cell: (info) => <Text>{info.getValue() || 'N/A'}</Text>,
   }),
 ];
 
@@ -135,9 +144,12 @@ const Workplace = () => {
     }
   }, [pendingRowSelection]);
 
+  const currentDay = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'][new Date().getDay()];
+  const filteredWorkplaces = useMemo(() => workplaces.filter((wp) => wp.day === currentDay), [workplaces, currentDay]);
+
   const workplaceTable = useReactTable({
     columns: getWorkplaceColumns(),
-    data: workplaces,
+    data: filteredWorkplaces,
     getCoreRowModel: getCoreRowModel(),
     enableMultiRowSelection: false,
     onRowSelectionChange: setWorkplaceRowSelection,
@@ -158,7 +170,7 @@ const Workplace = () => {
   });
 
   const resolvedAppointmentsTable = useReactTable({
-    columns: getAppointmentColumns().filter((col) => col.id !== 'select'),
+    columns: getAppointmentColumns(),
     data: resolvedAppointments,
     getCoreRowModel: getCoreRowModel(),
   });
@@ -181,27 +193,34 @@ const Workplace = () => {
             setAppointmentToResolve(null);
             await getAllAppointments();
           }}
-          onCancel={() => setAppointmentToResolve(null)}
+          onCancel={() => {
+            setAppointmentToResolve(null);
+            setPendingRowSelection({});
+          }}
         />
       )}
 
-      {pendingAppointments.length > 0 && (
+      {pendingAppointments.length > 0 ? (
         <>
           <Text>Pending Appointments</Text>
-          <DataTable maxH="xs" maxW="md" table={pendingAppointmentsTable}>
+          <DataTable maxH="xs" w="fit" table={pendingAppointmentsTable}>
             <DataTableBody />
           </DataTable>
         </>
-      )}
+      ) : Object.keys(workplaceRowSelection).length > 0 ? (
+        <Text color="fg.tertiary">No Pending Appointments</Text>
+      ) : null}
 
-      {resolvedAppointments.length > 0 && (
+      {resolvedAppointments.length > 0 ? (
         <>
           <Text>Resolved Appointments</Text>
-          <DataTable maxH="xs" maxW="md" table={resolvedAppointmentsTable}>
+          <DataTable maxH="xs" w="fit" table={resolvedAppointmentsTable}>
             <DataTableBody />
           </DataTable>
         </>
-      )}
+      ) : Object.keys(workplaceRowSelection).length > 0 ? (
+        <Text color="fg.tertiary">No Resolved Appointments</Text>
+      ) : null}
     </Flex>
   );
 };
