@@ -31,7 +31,7 @@ async def get_work_places(employee_id: int):
 
 @router.post(
     "/work-places",
-    response_model=WorkPlaceSchema.Output,
+    response_model=WorkPlaceSchema.Output | None,
     status_code=status.HTTP_201_CREATED,
 )
 async def create_work_place(work_place: WorkPlaceSchema.CreateInput):

@@ -18,7 +18,16 @@ class DoctorSchema:
         pass
 
     class Output(BaseSchema):
+        full_name: str | None = None
         pass
+
+
+@router.get(
+    "/doctors",
+    response_model=DoctorSchema.Output | None,
+)
+async def get_doctor(registration_no: int):
+    return await DoctorService.get_doctor(registration_no)
 
 
 @router.post(

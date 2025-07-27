@@ -5,10 +5,15 @@ import { Flex, Box, Text, Menu, MenuContent, MenuTrigger, Badge } from '@optiaxi
 import Config from '../../config';
 import { Card, CardHeader, CardImage, CardPreview } from '@optiaxiom/react';
 
+import DepartmentAssociationModal from './DepartmentAssociationModal';
+import DoctorAssociationModal from './DoctorAssociationModal';
+
 const Branch = () => {
   const [depts, setDepts] = useState([]);
   const [doctors, setDoctors] = useState([]);
   const [selectedDeptId, setSelectedDeptId] = useState(null);
+  const [showAssociateDepartmentModal, setShowAssociateDepartmentModal] = useState(false);
+  const [showAssociateDoctorModal, setShowAssociateDoctorModal] = useState(false);
 
   const { branchId } = useParams();
   const navigate = useNavigate();
@@ -42,6 +47,27 @@ const Branch = () => {
     [depts]
   );
 
+  const getActionOptions = useMemo(() => {
+    if (selectedDeptId) {
+      return [
+        {
+          label: 'Department',
+          execute: () => setShowAssociateDepartmentModal(true),
+        },
+        {
+          label: 'Doctor',
+          execute: () => setShowAssociateDoctorModal(true),
+        },
+      ];
+    }
+    return [
+      {
+        label: 'Department',
+        execute: () => setShowAssociateDepartmentModal(true),
+      },
+    ];
+  }, [selectedDeptId]);
+
   const doctorData = useMemo(
     () =>
       doctors.map((doctor) => ({
@@ -60,9 +86,13 @@ const Branch = () => {
 
   return (
     <Flex gap="32" style={{ maxHeight: '80vh', overflowY: 'auto', padding: '16px' }}>
-      <Flex flexDirection="row" justifyContent="flex-end">
+      <Flex flexDirection="row" gap="8" justifyContent="flex-end">
         <Menu options={departmentOptions}>
           <MenuTrigger>{getDeptName(selectedDeptId) || 'Select Department'}</MenuTrigger>
+          <MenuContent />
+        </Menu>
+        <Menu options={getActionOptions} style={{ marginLeft: '16px' }}>
+          <MenuTrigger>Add</MenuTrigger>
           <MenuContent />
         </Menu>
       </Flex>
@@ -108,6 +138,24 @@ const Branch = () => {
             </Card>
           ))}
         </Box>
+      )}
+
+      {showAssociateDepartmentModal && (
+        <DepartmentAssociationModal
+          open={showAssociateDepartmentModal}
+          onClose={() => setShowAssociateDepartmentModal(false)}
+          branchId={branchId}
+          branchDepartments={depts}
+        />
+      )}
+
+      {showAssociateDoctorModal && (
+        <DoctorAssociationModal
+          open={showAssociateDoctorModal}
+          onClose={() => setShowAssociateDoctorModal(false)}
+          branchId={branchId}
+          deptId={selectedDeptId}
+        />
       )}
     </Flex>
   );

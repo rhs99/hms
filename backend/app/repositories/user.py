@@ -6,9 +6,9 @@ from app.models import User, GenderEnum, BloodGroupEnum
 
 
 class UserRepo:
-    @staticmethod
-    async def get_user(id: int):
-        user = await session().get(User, id)
+    def _get_user_result(user):
+        if user is None:
+            return None
         return {
             "user_name": user.user_name,
             "full_name": user.full_name,
@@ -20,6 +20,11 @@ class UserRepo:
                 BloodGroupEnum(user.blood_group).name if user.blood_group else "N/A"
             ),
         }
+
+    @staticmethod
+    async def get_user(id: int):
+        user = await session().get(User, id)
+        return UserRepo._get_user_result(user)
 
     @staticmethod
     async def get_user_by_username(user_name: str):
@@ -28,20 +33,7 @@ class UserRepo:
         )
         user = result.scalar_one_or_none()
 
-        if user is None:
-            return None
-
-        return {
-            "user_name": user.user_name,
-            "full_name": user.full_name,
-            "email": user.email,
-            "phone": user.phone,
-            "dob": user.dob,
-            "gender": GenderEnum(user.gender).name if user.gender else "N/A",
-            "blood_group": (
-                BloodGroupEnum(user.blood_group).name if user.blood_group else "N/A"
-            ),
-        }
+        return UserRepo._get_user_result(user)
 
     @staticmethod
     async def create_user(
