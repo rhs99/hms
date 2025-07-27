@@ -20,6 +20,12 @@ class DoctorSchema:
     class Output(BaseSchema):
         pass
 
+@router.get(
+    "/doctors",
+    response_model=DoctorSchema.Output | None,
+)
+async def get_doctor(registration_no: int):
+    return await DoctorService.get_doctor(registration_no)
 
 @router.post(
     "/doctors",

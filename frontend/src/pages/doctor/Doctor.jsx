@@ -4,27 +4,8 @@ import { useParams } from 'react-router-dom';
 
 import AuthContext from '../../store/auth';
 import { createColumnHelper } from '@tanstack/react-table';
-import {
-  DataTable,
-  DataTableBody,
-  Flex,
-  Checkbox,
-  Field,
-  Input,
-  Button,
-  DateInput,
-  Heading,
-  Text,
-} from '@optiaxiom/react';
-import {
-  Dialog,
-  DialogBody,
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTrigger,
-} from '@optiaxiom/react';
+import { DataTable, DataTableBody, Flex, Checkbox, Field, Input, Button, DateInput, Heading } from '@optiaxiom/react';
+import { Dialog, DialogBody, DialogClose, DialogContent, DialogFooter, DialogHeader } from '@optiaxiom/react';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import Config from '../../config';
 
