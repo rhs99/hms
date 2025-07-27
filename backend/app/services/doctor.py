@@ -1,4 +1,5 @@
 from app.repositories.doctor import DoctorRepo
+from app.repositories.user import UserRepo
 
 
 class DoctorService:
@@ -14,7 +15,16 @@ class DoctorService:
             user_id, dept_id, registration_no, degree, experience
         )
 
-
     @staticmethod
     async def get_doctor(registration_no: int):
-        return await DoctorRepo.get_doctor(registration_no)
+        doctor = await DoctorRepo.get_doctor(registration_no)
+        user = await UserRepo.get_user(doctor.user_id)
+
+        return {
+            "user_id": doctor.user_id,
+            "dept_id": doctor.dept_id,
+            "registration_no": doctor.registration_no,
+            "degree": doctor.degree,
+            "experience": doctor.experience,
+            "full_name": user["full_name"] if user else None,
+        }

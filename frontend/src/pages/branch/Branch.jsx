@@ -47,19 +47,26 @@ const Branch = () => {
     [depts]
   );
 
-  const actionOptions = useMemo(
-    () => [
+  const getActionOptions = useMemo(() => {
+    if (selectedDeptId) {
+      return [
+        {
+          label: 'Department',
+          execute: () => setShowAssociateDepartmentModal(true),
+        },
+        {
+          label: 'Doctor',
+          execute: () => setShowAssociateDoctorModal(true),
+        },
+      ];
+    }
+    return [
       {
         label: 'Department',
         execute: () => setShowAssociateDepartmentModal(true),
       },
-      {
-        label: 'Doctor',
-        execute: () => setShowAssociateDoctorModal(true),
-      },
-    ],
-    []
-  );
+    ];
+  }, [selectedDeptId]);
 
   const doctorData = useMemo(
     () =>
@@ -84,7 +91,7 @@ const Branch = () => {
           <MenuTrigger>{getDeptName(selectedDeptId) || 'Select Department'}</MenuTrigger>
           <MenuContent />
         </Menu>
-        <Menu options={actionOptions} style={{ marginLeft: '16px' }}>
+        <Menu options={getActionOptions} style={{ marginLeft: '16px' }}>
           <MenuTrigger>Add</MenuTrigger>
           <MenuContent />
         </Menu>
@@ -147,6 +154,7 @@ const Branch = () => {
           open={showAssociateDoctorModal}
           onClose={() => setShowAssociateDoctorModal(false)}
           branchId={branchId}
+          deptId={selectedDeptId}
         />
       )}
     </Flex>

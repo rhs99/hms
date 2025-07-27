@@ -38,6 +38,15 @@ class WorkPlaceRepo:
         ]
 
     @staticmethod
+    async def check_work_place_exists(branch_id: int, employee_id: int):
+        result = await session().execute(
+            select(WorkPlace).filter_by(
+                branch_id=branch_id, employee_id=employee_id, end_date=None
+            )
+        )
+        return result.scalars().first() is not None
+
+    @staticmethod
     async def create_work_place(
         branch_id: int,
         employee_id: int,

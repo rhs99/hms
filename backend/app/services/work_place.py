@@ -20,6 +20,9 @@ class WorkPlaceService:
         start_date: datetime.date,
         end_date: datetime.date | None,
     ):
+        exists = await WorkPlaceRepo.check_work_place_exists(branch_id, employee_id)
+        if exists:
+            return None
         return await WorkPlaceRepo.create_work_place(
             branch_id, employee_id, start_date, end_date
         )

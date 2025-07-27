@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { Flex, Button, Text, Input } from '@optiaxiom/react';
+import { Flex, Button, Text, SearchInput, Badge } from '@optiaxiom/react';
 
-import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader, DialogForm } from '@optiaxiom/react';
+import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader } from '@optiaxiom/react';
 
 import Utils from '../../utils';
 import Config from '../../config';
 
-const DoctorAssociationModal = ({ open, onClose, branchId }) => {
+const DoctorAssociationModal = ({ open, onClose, branchId, deptId }) => {
   const [reginstrationNo, setRegistrationNo] = useState('');
   const [doctor, setDoctor] = useState(null);
 
@@ -20,11 +20,11 @@ const DoctorAssociationModal = ({ open, onClose, branchId }) => {
 
   const handleAssociateDoctor = () => {
     if (!doctor) return;
-    const url = Config.SERVER_URL + `/workplaces`;
+    const url = Config.SERVER_URL + `/work-places`;
     const data = {
       branch_id: branchId,
       employee_id: doctor.user_id,
-      state_date: Utils.getFormatedDate(new Date()),
+      start_date: Utils.getFormatedDate(new Date()),
     };
     axios.post(url, data).then(() => {
       onClose();
@@ -33,34 +33,38 @@ const DoctorAssociationModal = ({ open, onClose, branchId }) => {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent>
+      <DialogContent size="sm">
         <DialogHeader>Associate Doctor</DialogHeader>
-        <DialogForm>
-          <DialogBody>
-            <Flex>
-              <Text>Registration No:</Text>
-              <Input
+        <DialogBody>
+          <Flex direction="column" gap="8">
+            <Flex flexDirection="row" gap="8">
+              <SearchInput
                 value={reginstrationNo}
                 onChange={(e) => setRegistrationNo(e.target.value)}
                 placeholder="Enter Registration No"
-                required
               />
+              <Button onClick={getDoctor}>Search</Button>
             </Flex>
-          </DialogBody>
-          <DialogFooter>
-            <Flex flexDirection="row" gap="8">
-              <Button appearance="danger" onClick={onClose}>
-                Cancel
-              </Button>
-              {!doctor && <Button disabled={!reginstrationNo} appearance="primary" onClick={getDoctor}>
-                Get
-              </Button>}
-              {doctor && <Button appearance="primary" onClick={handleAssociateDoctor}>
-                Associate
-              </Button>}
-            </Flex>
-          </DialogFooter>
-        </DialogForm>
+            {doctor && (
+              <Flex flexDirection="column" gap="8">
+                <Badge w="fit" intent="success">
+                  Found
+                </Badge>
+                <Text>{doctor.full_name}</Text>
+                <Text>{doctor.degree}</Text>
+                <Text>{doctor.experience}</Text>
+              </Flex>
+            )}
+          </Flex>
+        </DialogBody>
+        <DialogFooter>
+          <Button appearance="danger" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button appearance="primary" onClick={handleAssociateDoctor} disabled={!doctor}>
+            Associate
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
