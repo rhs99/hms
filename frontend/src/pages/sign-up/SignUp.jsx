@@ -27,7 +27,7 @@ const SignUp = () => {
   const handleSignUp = (e) => {
     e.preventDefault();
 
-    const URL = Config.SERVER_URL + '/users/sign-up';
+    const URL = Config.SERVER_URL + '/users';
     const data = {
       user_name: userName,
       password: password,

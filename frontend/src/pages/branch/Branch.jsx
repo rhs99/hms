@@ -24,7 +24,7 @@ const Branch = () => {
 
   // Fetch all departments for this branch
   useEffect(() => {
-    const url = Config.SERVER_URL + `/branch-depts?branch_id=${branchId}`;
+    const url = Config.SERVER_URL + `/branches/${branchId}/departments`;
     axios.get(url).then(({ data }) => {
       setDepts(data);
     });
@@ -39,7 +39,7 @@ const Branch = () => {
 
       for (const dept of depts) {
         try {
-          const url = Config.SERVER_URL + `/branch-depts/doctors?branch_id=${branchId}&dept_id=${dept.id}`;
+          const url = Config.SERVER_URL + `/branches/${branchId}/departments/${dept.id}/doctors`;
           const { data } = await axios.get(url);
           doctorsData[dept.id] = data;
         } catch (error) {
@@ -69,7 +69,7 @@ const Branch = () => {
     setSelectedDeptForDoctor(null);
 
     // Refresh data
-    const url = Config.SERVER_URL + `/branch-depts?branch_id=${branchId}`;
+    const url = Config.SERVER_URL + `/branches/${branchId}/departments`;
     axios.get(url).then(({ data }) => {
       setDepts(data);
     });

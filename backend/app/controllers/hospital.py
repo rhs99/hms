@@ -16,21 +16,6 @@ class HospitalSchema:
     class Output(BaseSchema):
         id: int
 
-    class ExtendedOutput(BaseSchema):
-        address: str
-        phone: str
-        email: str
-        branch_id: int
-
-
-@router.get(
-    "/hospitals",
-    response_model=list[HospitalSchema.ExtendedOutput],
-    status_code=status.HTTP_200_OK,
-)
-async def get_hospitals():
-    return await HospitalService.get_hospitals()
-
 
 @router.post(
     "/hospitals",
@@ -39,3 +24,21 @@ async def get_hospitals():
 )
 async def create_hospital(hospital: HospitalSchema.CreateInput):
     return await HospitalService.create_hospital(hospital.name)
+
+
+@router.get(
+    "/hospitals/{hospital_id}",
+    response_model=HospitalSchema.Output,
+    status_code=status.HTTP_200_OK,
+)
+async def get_hospital(hospital_id: int):
+    return await HospitalService.get_hospital(hospital_id)
+
+
+@router.get(
+    "/hospitals",
+    response_model=list[HospitalSchema.Output],
+    status_code=status.HTTP_200_OK,
+)
+async def get_hospitals():
+    return await HospitalService.get_hospitals()

@@ -70,8 +70,8 @@ const Activities = () => {
   const navigate = useNavigate();
 
   const fetchAppointments = async () => {
-    const UPCOMING_URL = Config.SERVER_URL + `/appointments/users/${authCtx.getStoredValue().userId}`;
-    const PAST_URL = Config.SERVER_URL + `/appointments/users/${authCtx.getStoredValue().userId}?past=True`;
+    const UPCOMING_URL = Config.SERVER_URL + `/users/${authCtx.getStoredValue().userId}/appointments`;
+    const PAST_URL = Config.SERVER_URL + `/users/${authCtx.getStoredValue().userId}/appointments?past=True`;
 
     const [upcomingResponse, pastResponse] = await Promise.all([axios.get(UPCOMING_URL), axios.get(PAST_URL)]);
 

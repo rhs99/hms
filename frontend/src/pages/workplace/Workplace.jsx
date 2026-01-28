@@ -97,7 +97,7 @@ const Workplace = () => {
       return;
     }
 
-    const URL = Config.SERVER_URL + `/work-places/employees/${authCtx.getStoredValue().userId}`;
+    const URL = Config.SERVER_URL + `/employees/${authCtx.getStoredValue().userId}/work-places`;
     axios.get(URL).then(({ data }) => {
       setWorkplaces(data);
     });
@@ -112,8 +112,8 @@ const Workplace = () => {
   const getAllAppointments = async () => {
     if (!selectedSlotScheduleId) return;
 
-    const PENDING_URL = `${Config.SERVER_URL}/appointments/slot-schedules/${selectedSlotScheduleId}?date=${utils.getFormatedDate(new Date())}&pending=True`;
-    const RESOLVED_URL = `${Config.SERVER_URL}/appointments/slot-schedules/${selectedSlotScheduleId}?date=${utils.getFormatedDate(new Date())}&pending=False`;
+    const PENDING_URL = `${Config.SERVER_URL}/slot-schedules/${selectedSlotScheduleId}/appointments?date=${utils.getFormatedDate(new Date())}&pending=True`;
+    const RESOLVED_URL = `${Config.SERVER_URL}/slot-schedules/${selectedSlotScheduleId}/appointments?date=${utils.getFormatedDate(new Date())}&pending=False`;
 
     const [pendingResponse, resolvedResponse] = await Promise.all([axios.get(PENDING_URL), axios.get(RESOLVED_URL)]);
 

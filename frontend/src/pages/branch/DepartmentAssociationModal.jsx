@@ -28,9 +28,8 @@ const DepartmentAssociationModal = ({ open, onClose, branchId, branchDepartments
     if (selectedDepartmentIds.length === 0) {
       return;
     }
-    const url = Config.SERVER_URL + `/branch-depts`;
+    const url = Config.SERVER_URL + `/branches/${branchId}/departments`;
     const data = {
-      branch_id: branchId,
       dept_id: selectedDepartmentIds[0],
     };
     axios.post(url, data).then(() => {

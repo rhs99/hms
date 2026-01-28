@@ -18,15 +18,6 @@ class SlotSchema:
         id: int
 
 
-@router.get(
-    "/slots",
-    response_model=list[SlotSchema.Output],
-    status_code=status.HTTP_200_OK,
-)
-async def get_slots():
-    return await SlotService.get_slots()
-
-
 @router.post(
     "/slots",
     response_model=SlotSchema.Output,
@@ -34,3 +25,21 @@ async def get_slots():
 )
 async def create_slot(slot: SlotSchema.CreateInput):
     return await SlotService.create_slot(slot.start_at, slot.end_at)
+
+
+@router.get(
+    "/slots/{slot_id}",
+    response_model=SlotSchema.Output,
+    status_code=status.HTTP_200_OK,
+)
+async def get_slot(slot_id: int):
+    return await SlotService.get_slot(slot_id)
+
+
+@router.get(
+    "/slots",
+    response_model=list[SlotSchema.Output],
+    status_code=status.HTTP_200_OK,
+)
+async def get_slots():
+    return await SlotService.get_slots()

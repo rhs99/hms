@@ -31,3 +31,17 @@ class DoctorRepo:
         )
         doctor = result.scalar_one_or_none()
         return doctor if doctor else None
+
+    @staticmethod
+    async def get_doctor_by_id(doctor_id: int):
+        result = await session().execute(
+            select(Doctor).filter(Doctor.user_id == doctor_id)
+        )
+        doctor = result.scalar_one_or_none()
+        return doctor if doctor else None
+
+    @staticmethod
+    async def get_all_doctors():
+        result = await session().execute(select(Doctor))
+        doctors = result.scalars().all()
+        return doctors

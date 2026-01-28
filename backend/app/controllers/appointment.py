@@ -48,19 +48,3 @@ async def get_appointment(appointment_id: int):
 @router.patch("/appointments/{appointment_id}", status_code=status.HTTP_200_OK)
 async def update_appointment(appointment_id: int, data: AppointmentSchema.UpdateInput):
     return await AppointmentService.update_appointment(appointment_id, data)
-
-
-@router.get("/appointments/users/{user_id}", status_code=status.HTTP_200_OK)
-async def get_user_appointments(user_id: int, past: bool | None = None):
-    return await AppointmentService.get_user_appointments(user_id, past)
-
-
-@router.get(
-    "/appointments/slot-schedules/{slot_schedule_id}", status_code=status.HTTP_200_OK
-)
-async def get_slot_schedule_appointments(
-    slot_schedule_id: int, date: datetime.date, pending: bool | None = None
-):
-    return await AppointmentService.get_slot_schedule_appointments(
-        slot_schedule_id, date, pending
-    )

@@ -67,7 +67,7 @@ const Doctor = () => {
       return;
     }
 
-    const URL = Config.SERVER_URL + `/appointments/slot-schedules/${selectedSlotSchedule.id}?date=${date}`;
+    const URL = Config.SERVER_URL + `/slot-schedules/${selectedSlotSchedule.id}/appointments?date=${date}`;
     axios.get(URL).then(({ data }) => {
       setAppointments(data);
     });

@@ -18,32 +18,57 @@ const HospitalBuildingImages = [
 ];
 
 const Homepage = () => {
-  const [hospitals, setHospitals] = useState([]);
-  const [matchedHospitals, setMatchedHospitals] = useState([]);
+  const [hospitalBranches, setHospitalBranches] = useState([]);
+  const [matchedHospitalBranches, setMatchedHospitalBranches] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    const url = Config.SERVER_URL + '/hospitals';
-    axios.get(url).then(({ data }) => {
-      setHospitals(data);
-      setMatchedHospitals(data);
-    });
+    const fetchData = async () => {
+      try {
+        // Fetch hospitals and branches separately
+        const hospitalsResponse = await axios.get(`${Config.SERVER_URL}/hospitals`);
+        const branchesResponse = await axios.get(`${Config.SERVER_URL}/branches`);
+
+        const hospitals = hospitalsResponse.data;
+        const branches = branchesResponse.data;
+
+        // Combine hospital and branch data
+        const combined = branches.map((branch) => {
+          const hospital = hospitals.find((h) => h.id === branch.hospital_id);
+          return {
+            hospitalId: hospital?.id,
+            hospitalName: hospital?.name || 'Unknown Hospital',
+            branchId: branch.id,
+            address: branch.address,
+            phone: branch.phone,
+            email: branch.email,
+          };
+        });
+
+        setHospitalBranches(combined);
+        setMatchedHospitalBranches(combined);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+
+    fetchData();
   }, []);
 
   useEffect(() => {
     if (searchTerm.length === 0) {
-      setMatchedHospitals(hospitals);
+      setMatchedHospitalBranches(hospitalBranches);
     } else {
-      const matched = hospitals.filter(
-        (hospital) =>
-          hospital.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          hospital.address.toLowerCase().includes(searchTerm.toLocaleLowerCase())
+      const matched = hospitalBranches.filter(
+        (item) =>
+          item.hospitalName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.address.toLowerCase().includes(searchTerm.toLowerCase())
       );
-      setMatchedHospitals(matched);
+      setMatchedHospitalBranches(matched);
     }
-  }, [searchTerm]);
+  }, [searchTerm, hospitalBranches]);
 
   return (
     <Flex
@@ -62,11 +87,11 @@ const Homepage = () => {
           gap: 'var(--spacing-lg)',
         }}
       >
-        {matchedHospitals.map((hospital, index) => (
+        {matchedHospitalBranches.map((item, index) => (
           <Card
-            key={`${hospital.name}-${hospital.branch_id}`}
+            key={`${item.hospitalName}-${item.branchId}`}
             maxW="xs"
-            onClick={() => navigate(`/branches/${hospital.branch_id}`)}
+            onClick={() => navigate(`/branches/${item.branchId}`)}
             style={{
               cursor: 'pointer',
               transition: 'transform var(--transition-base)',
@@ -94,16 +119,16 @@ const Homepage = () => {
             <CardHeader>
               <Flex flexDirection="column" gap="8">
                 <Text fontSize="lg" fontWeight="700">
-                  {hospital.name}
+                  {item.hospitalName}
                 </Text>
                 <Flex flexDirection="row" gap="8" alignItems="center">
-                  <CiLocationOn /> <Text>{hospital.address}</Text>
+                  <CiLocationOn /> <Text>{item.address}</Text>
                 </Flex>
                 <Flex flexDirection="row" gap="8" alignItems="center">
-                  <FaPhone /> <Text>{hospital.phone}</Text>
+                  <FaPhone /> <Text>{item.phone}</Text>
                 </Flex>
                 <Flex flexDirection="row" gap="8" alignItems="center">
-                  <MdOutlineEmail /> <Text fontSize="sm">{hospital.email}</Text>
+                  <MdOutlineEmail /> <Text fontSize="sm">{item.email}</Text>
                 </Flex>
               </Flex>
             </CardHeader>

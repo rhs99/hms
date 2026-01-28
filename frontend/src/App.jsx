@@ -12,6 +12,7 @@ import Activities from './pages/activities/Activities';
 import Workplace from './pages/workplace/Workplace';
 import HmsSidebar from './component/sidebar/HmsSidebar';
 import Profile from './pages/profile/Profile';
+import Settings from './pages/settings/Settings';
 
 import { Layout, LayoutContent } from '@optiaxiom/react/unstable';
 
@@ -49,6 +50,7 @@ const router = createBrowserRouter([
           { path: '/users/:userName', element: <Profile /> },
           { path: '/activities', element: <Activities /> },
           { path: '/workplaces', element: <Workplace /> },
+          { path: '/settings', element: <Settings /> },
           { path: '/branches/:branchId', element: <Branch /> },
           {
             path: '/branches/:branchId/departments/:deptId/doctors/:doctorId',

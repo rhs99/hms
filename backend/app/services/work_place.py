@@ -14,15 +14,19 @@ class WorkPlaceService:
         return work_places
 
     @staticmethod
+    async def get_work_place(branch_id: int, employee_id: int):
+        return await WorkPlaceRepo.get_work_place(branch_id, employee_id)
+
+    @staticmethod
     async def create_work_place(
         branch_id: int,
         employee_id: int,
         start_date: datetime.date,
         end_date: datetime.date | None,
     ):
-        exists = await WorkPlaceRepo.check_work_place_exists(branch_id, employee_id)
-        if exists:
-            return None
+        existing = await WorkPlaceRepo.get_work_place(branch_id, employee_id)
+        if existing:
+            return existing
         return await WorkPlaceRepo.create_work_place(
             branch_id, employee_id, start_date, end_date
         )

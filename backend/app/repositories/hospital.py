@@ -1,36 +1,31 @@
 from sqlalchemy.future import select
 
 from app.db import session
-from app.models import Hospital, Branch
+from app.models import Hospital
 
 
 class HospitalRepo:
     @staticmethod
     async def get_hospitals():
-        results = await session().execute(
-            select(
-                Hospital.id,
-                Hospital.name,
-                Branch.address,
-                Branch.phone,
-                Branch.email,
-                Branch.id,
-            )
-            .select_from(Hospital)
-            .join(Branch, Hospital.id == Branch.hospital_id)
-        )
-        hospitals = [res for res in results.all()]
-
+        results = await session().execute(select(Hospital))
+        hospitals = results.scalars().all()
         return [
             {
-                "name": hospital[1],
-                "address": hospital[2],
-                "phone": hospital[3],
-                "email": hospital[4],
-                "branch_id": hospital[5],
+                "id": hospital.id,
+                "name": hospital.name,
             }
             for hospital in hospitals
         ]
+
+    @staticmethod
+    async def get_hospital(hospital_id: int):
+        hospital = await session().get(Hospital, hospital_id)
+        if hospital is None:
+            return None
+        return {
+            "id": hospital.id,
+            "name": hospital.name,
+        }
 
     @staticmethod
     async def create_hospital(name: str):

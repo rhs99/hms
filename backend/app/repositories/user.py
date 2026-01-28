@@ -10,6 +10,7 @@ class UserRepo:
         if user is None:
             return None
         return {
+            "id": user.id,
             "user_name": user.user_name,
             "full_name": user.full_name,
             "email": user.email,

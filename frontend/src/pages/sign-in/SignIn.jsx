@@ -19,7 +19,7 @@ const SignIn = () => {
   const handleSignIn = (e) => {
     e.preventDefault();
 
-    const URL = Config.SERVER_URL + '/users/sign-in';
+    const URL = Config.SERVER_URL + '/sessions';
     const data = {
       user_name: userName,
       password: password,

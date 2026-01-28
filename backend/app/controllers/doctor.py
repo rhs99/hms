@@ -22,14 +22,6 @@ class DoctorSchema:
         pass
 
 
-@router.get(
-    "/doctors",
-    response_model=DoctorSchema.Output | None,
-)
-async def get_doctor(registration_no: int):
-    return await DoctorService.get_doctor(registration_no)
-
-
 @router.post(
     "/doctors",
     response_model=DoctorSchema.Output,
@@ -43,3 +35,23 @@ async def create_doctor(doctor: DoctorSchema.CreateInput):
         doctor.degree,
         doctor.experience,
     )
+
+
+@router.get(
+    "/doctors/{doctor_id}",
+    response_model=DoctorSchema.Output | None,
+    status_code=status.HTTP_200_OK,
+)
+async def get_doctor_by_id(doctor_id: int):
+    return await DoctorService.get_doctor_by_id(doctor_id)
+
+
+@router.get(
+    "/doctors",
+    response_model=list[DoctorSchema.Output] | DoctorSchema.Output | None,
+    status_code=status.HTTP_200_OK,
+)
+async def get_doctors(registration_no: int | None = None):
+    if registration_no:
+        return await DoctorService.get_doctor(registration_no)
+    return await DoctorService.get_all_doctors()
