@@ -58,8 +58,8 @@ const Profile = () => {
   }
 
   return (
-    <Flex justifyContent="center" alignItems="center" style={{ background: '#f7f9fa' }}>
-      <Card style={{ width: 500, boxShadow: '0 4px 24px rgba(0,0,0,0.08)', borderRadius: 16, background: '#fff' }}>
+    <Flex justifyContent="center" alignItems="center" style={{ background: 'var(--color-bg-secondary)' }}>
+      <Card style={{ width: 500, boxShadow: 'var(--shadow-lg)', borderRadius: 'var(--radius-xl)', background: 'var(--color-white)' }}>
         <CardPreview
           style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '32px 0 16px 0' }}
         >
@@ -99,7 +99,7 @@ const Profile = () => {
             </Flex>
           </Flex>
         </CardHeader>
-        <CardFooter style={{ textAlign: 'center', padding: '16px 0', borderTop: '1px solid #f0f0f0' }}>
+        <CardFooter style={{ textAlign: 'center', padding: 'var(--spacing-lg) 0', borderTop: '1px solid var(--color-border-light)' }}>
           <Text fontSize="sm" color="fg.tertiary">
             Profile information is public and can be viewed by others.
           </Text>

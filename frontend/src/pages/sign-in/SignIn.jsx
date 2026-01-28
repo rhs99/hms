@@ -1,7 +1,8 @@
 import axios from 'axios';
 import { useContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button, Box, Input, Field, Text, Flex } from '@optiaxiom/react';
+import { useNavigate, Link } from 'react-router-dom';
+import { Button, Box, Input, Field, Text } from '@optiaxiom/react';
+import { FaUserMd } from 'react-icons/fa';
 
 import AuthContext from '../../store/auth';
 import Config from '../../config';
@@ -32,11 +33,17 @@ const SignIn = () => {
 
   return (
     <Box className="signIn">
-      <Text className="signIn-title">Sign In</Text>
+      <Box className="signIn-header">
+        <Box className="signIn-icon">
+          <FaUserMd size={48} />
+        </Box>
+        <Text className="signIn-title">Welcome Back</Text>
+        <Text className="signIn-subtitle">Sign in to access your healthcare portal</Text>
+      </Box>
       <form onSubmit={handleSignIn} className="signIn-form">
         <Field label="User Name">
           <Input
-            placeholder="Enter user name"
+            placeholder="Enter your username"
             value={userName}
             onChange={(e) => setUserName(e.target.value)}
             required
@@ -44,19 +51,25 @@ const SignIn = () => {
         </Field>
         <Field label="Password">
           <Input
-            placeholder="Enter password"
+            placeholder="Enter your password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
         </Field>
-        <Flex flexDirection="row" justifyContent="flex-end">
-          <Button appearance="primary" type="submit">
-            Submit
-          </Button>
-        </Flex>
+        <Button appearance="primary" type="submit" className="signIn-submit-button">
+          Sign In
+        </Button>
       </form>
+      <Box className="signIn-footer">
+        <Text>
+          Don't have an account?{' '}
+          <Link to="/sign-up" style={{ color: 'var(--color-primary)', fontWeight: 'var(--font-weight-semibold)', textDecoration: 'none' }}>
+            Sign Up
+          </Link>
+        </Text>
+      </Box>
     </Box>
   );
 };

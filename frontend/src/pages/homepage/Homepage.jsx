@@ -46,12 +46,12 @@ const Homepage = () => {
   }, [searchTerm]);
 
   return (
-    <Flex flexDirection="column" gap="16" style={{ maxHeight: '80vh', overflowY: 'auto', padding: '16px' }}>
+    <Flex flexDirection="column" gap="16" style={{ maxHeight: '80vh', overflowY: 'auto', padding: 'var(--spacing-lg)' }}>
       <Heading level="3">Hospitals</Heading>
       <Flex flexDirection="row" justifyContent="flex-end">
         <SearchInput placeholder="Search" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} w="224" />
       </Flex>
-      <Box style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '16px' }}>
+      <Box style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 'var(--spacing-lg)' }}>
         {matchedHospitals.map((hospital, index) => (
           <Card
             key={`${hospital.name}-${hospital.branch_id}`}
@@ -59,8 +59,8 @@ const Homepage = () => {
             onClick={() => navigate(`/branches/${hospital.branch_id}`)}
             style={{
               cursor: 'pointer',
-              transition: 'transform 0.2s',
-              '&:hover': { backgroundColor: '#f0f0f0' },
+              transition: 'transform var(--transition-base)',
+              boxShadow: 'var(--shadow-md)',
               transform: 'scale(1)',
             }}
             onMouseEnter={(e) => {

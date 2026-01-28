@@ -1,5 +1,5 @@
 import { RouterProvider, createBrowserRouter, Outlet } from 'react-router-dom';
-import { AxiomProvider } from '@optiaxiom/react';
+import { AxiomProvider, Box, Text } from '@optiaxiom/react';
 
 import { AuthContextProvider } from './store/auth';
 import HmsHeader from './component/header/HmsHeader';
@@ -27,10 +27,10 @@ const RootLayout = () => {
 
 const ErrorPage = () => {
   return (
-    <div id="error-page">
-      <h1>Oops!</h1>
-      <p>Sorry, an unexpected error has occurred.</p>
-    </div>
+    <Box id="error-page">
+      <Text>Oops!</Text>
+      <Text color='fg.tertiary'>Sorry, an unexpected error has occurred.</Text>
+    </Box>
   );
 };
 
