@@ -1,4 +1,4 @@
-.workplace {
+.activities {
   padding: var(--spacing-2xl);
   max-height: 85vh;
   overflow-y: auto;
@@ -78,10 +78,5 @@
     background-color: var(--color-bg-secondary);
     border-radius: var(--radius-md);
     border: 2px dashed var(--color-border-medium);
-    font-size: var(--font-size-base);
-  }
-
-  &-prescription-wrapper {
-    margin-top: var(--spacing-2xl);
   }
 }

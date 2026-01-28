@@ -65,7 +65,10 @@ const SignIn = () => {
       <Box className="signIn-footer">
         <Text>
           Don't have an account?{' '}
-          <Link to="/sign-up" style={{ color: 'var(--color-primary)', fontWeight: 'var(--font-weight-semibold)', textDecoration: 'none' }}>
+          <Link
+            to="/sign-up"
+            style={{ color: 'var(--color-primary)', fontWeight: 'var(--font-weight-semibold)', textDecoration: 'none' }}
+          >
             Sign Up
           </Link>
         </Text>

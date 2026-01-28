@@ -46,12 +46,22 @@ const Homepage = () => {
   }, [searchTerm]);
 
   return (
-    <Flex flexDirection="column" gap="16" style={{ maxHeight: '80vh', overflowY: 'auto', padding: 'var(--spacing-lg)' }}>
+    <Flex
+      flexDirection="column"
+      gap="16"
+      style={{ maxHeight: '80vh', overflowY: 'auto', padding: 'var(--spacing-lg)' }}
+    >
       <Heading level="3">Hospitals</Heading>
       <Flex flexDirection="row" justifyContent="flex-end">
         <SearchInput placeholder="Search" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} w="224" />
       </Flex>
-      <Box style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 'var(--spacing-lg)' }}>
+      <Box
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))',
+          gap: 'var(--spacing-lg)',
+        }}
+      >
         {matchedHospitals.map((hospital, index) => (
           <Card
             key={`${hospital.name}-${hospital.branch_id}`}

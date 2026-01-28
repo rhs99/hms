@@ -102,7 +102,16 @@ const Prescreption = ({ data, onUpdate, onCancel, viewOnly }) => {
     const disabled = prescreption.length === 0;
 
     return (
-      <Flex flexDirection="column" gap="12" style={{ border: '1px solid var(--color-border-light)', padding: 'var(--spacing-lg)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--color-white)' }}>
+      <Flex
+        flexDirection="column"
+        gap="12"
+        style={{
+          border: '1px solid var(--color-border-light)',
+          padding: 'var(--spacing-lg)',
+          borderRadius: 'var(--radius-md)',
+          backgroundColor: 'var(--color-white)',
+        }}
+      >
         <Flex flexDirection="row" justifyContent="space-between">
           <Flex flexDirection="column" gap="12">
             <Text>Patient</Text>

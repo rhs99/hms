@@ -2,7 +2,8 @@ import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createColumnHelper } from '@tanstack/react-table';
-import { DataTable, DataTableBody, Flex, Checkbox } from '@optiaxiom/react';
+import { FaCalendarCheck, FaHistory, FaClipboardList } from 'react-icons/fa';
+import { DataTable, DataTableBody, Box, Checkbox, Heading, Text } from '@optiaxiom/react';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 
 import { Dialog, DialogBody, DialogClose, DialogContent, DialogFooter, DialogHeader } from '@optiaxiom/react';
@@ -10,6 +11,8 @@ import { Dialog, DialogBody, DialogClose, DialogContent, DialogFooter, DialogHea
 import Prescription from '../../component/prescription/Prescreption';
 import AuthContext from '../../store/auth';
 import Config from '../../config';
+
+import './_index.scss';
 
 const columnHelper = createColumnHelper();
 
@@ -127,12 +130,20 @@ const Activities = () => {
   }
 
   return (
-    <Flex flexDirection="column" gap="16">
+    <Box className="activities">
+      <Box className="activities-header">
+        <Heading level="2" className="activities-title">
+          <FaClipboardList size={32} />
+          My Activities
+        </Heading>
+        <Text className="activities-subtitle">View your upcoming and past appointments</Text>
+      </Box>
+
       {appointmentToView && (
         <Dialog open={!!appointmentToView} onOpenChange={closePrescriptionDialog}>
           <DialogContent>
             <DialogHeader>
-              <h2>Appointment Details</h2>
+              <Heading level="3">Appointment Details</Heading>
             </DialogHeader>
             <DialogBody>
               <Prescription data={appointmentToView} viewOnly={true} />
@@ -146,18 +157,48 @@ const Activities = () => {
         </Dialog>
       )}
 
-      <Flex flexDirection="column" gap="16">
-        <h2>Upcoming Appointments</h2>
-        <DataTable table={upcomingAppointmentsTable}>
-          <DataTableBody />
-        </DataTable>
+      <Box className="activities-content">
+        <Box className="activities-section">
+          <Box className="activities-section-header">
+            <Heading level="3" className="activities-section-title">
+              <FaCalendarCheck />
+              Upcoming Appointments
+            </Heading>
+          </Box>
+          {upcomingAppointments.length > 0 ? (
+            <Box className="activities-table-wrapper">
+              <DataTable table={upcomingAppointmentsTable}>
+                <DataTableBody />
+              </DataTable>
+            </Box>
+          ) : (
+            <Box className="activities-empty-state">
+              <Text>No upcoming appointments</Text>
+            </Box>
+          )}
+        </Box>
 
-        <h2>Past Appointments</h2>
-        <DataTable table={pastAppointmentsTable}>
-          <DataTableBody />
-        </DataTable>
-      </Flex>
-    </Flex>
+        <Box className="activities-section">
+          <Box className="activities-section-header">
+            <Heading level="3" className="activities-section-title">
+              <FaHistory />
+              Past Appointments
+            </Heading>
+          </Box>
+          {pastAppointments.length > 0 ? (
+            <Box className="activities-table-wrapper">
+              <DataTable table={pastAppointmentsTable}>
+                <DataTableBody />
+              </DataTable>
+            </Box>
+          ) : (
+            <Box className="activities-empty-state">
+              <Text>No past appointments</Text>
+            </Box>
+          )}
+        </Box>
+      </Box>
+    </Box>
   );
 };
 

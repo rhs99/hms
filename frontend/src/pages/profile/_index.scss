@@ -1,0 +1,111 @@
+.profile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 85vh;
+  background: var(--color-bg-secondary);
+  padding: var(--spacing-2xl);
+
+  &-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+  }
+
+  &-card {
+    width: 100%;
+    max-width: 500px;
+    box-shadow: var(--shadow-xl);
+    border-radius: var(--radius-xl);
+    background: var(--color-white);
+    border: 1px solid var(--color-border-light);
+  }
+
+  &-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--spacing-3xl) 0 var(--spacing-xl) 0;
+    background: linear-gradient(to bottom, var(--color-primary-lighter), var(--color-white));
+    border-bottom: 1px solid var(--color-border-light);
+  }
+
+  &-header {
+    padding: 0 var(--spacing-3xl);
+    margin-top: var(--spacing-md);
+  }
+
+  &-user-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    padding-bottom: var(--spacing-lg);
+    border-bottom: 2px solid var(--color-border-light);
+  }
+
+  &-name {
+    font-size: var(--font-size-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-primary-dark);
+    margin-top: var(--spacing-sm);
+  }
+
+  &-username-badge {
+    background-color: var(--color-primary-lighter);
+    color: var(--color-primary-dark);
+    padding: var(--spacing-xs) var(--spacing-md);
+    border-radius: var(--radius-full);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+  }
+
+  &-details {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+
+  &-detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-sm) 0;
+    transition: var(--transition-fast);
+
+    &:hover {
+      background-color: var(--color-bg-secondary);
+      margin: 0 calc(-1 * var(--spacing-sm));
+      padding: var(--spacing-sm);
+      border-radius: var(--radius-md);
+    }
+  }
+
+  &-label {
+    color: var(--color-text-tertiary);
+    font-weight: var(--font-weight-medium);
+    font-size: var(--font-size-sm);
+  }
+
+  &-value {
+    font-weight: var(--font-weight-semibold);
+    color: var(--color-text-primary);
+  }
+
+  &-footer {
+    text-align: center;
+    padding: var(--spacing-lg) var(--spacing-2xl);
+    border-top: 1px solid var(--color-border-light);
+    background-color: var(--color-bg-secondary);
+    border-bottom-left-radius: var(--radius-xl);
+    border-bottom-right-radius: var(--radius-xl);
+  }
+
+  &-footer-text {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-tertiary);
+    font-style: italic;
+  }
+}

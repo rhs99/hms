@@ -29,7 +29,7 @@ const ErrorPage = () => {
   return (
     <Box id="error-page">
       <Text>Oops!</Text>
-      <Text color='fg.tertiary'>Sorry, an unexpected error has occurred.</Text>
+      <Text color="fg.tertiary">Sorry, an unexpected error has occurred.</Text>
     </Box>
   );
 };

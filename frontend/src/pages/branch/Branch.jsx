@@ -1,23 +1,28 @@
 import axios from 'axios';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Flex, Box, Text, Menu, MenuContent, MenuTrigger, Badge } from '@optiaxiom/react';
-import Config from '../../config';
+import { Flex, Box, Text, Heading, Badge, Button } from '@optiaxiom/react';
 import { Card, CardHeader, CardImage, CardPreview } from '@optiaxiom/react';
+import { FaHospitalAlt, FaUserMd, FaPlus, FaStethoscope } from 'react-icons/fa';
+import { MdLocalHospital } from 'react-icons/md';
 
+import Config from '../../config';
 import DepartmentAssociationModal from './DepartmentAssociationModal';
 import DoctorAssociationModal from './DoctorAssociationModal';
 
+import './_index.scss';
+
 const Branch = () => {
   const [depts, setDepts] = useState([]);
-  const [doctors, setDoctors] = useState([]);
-  const [selectedDeptId, setSelectedDeptId] = useState(null);
+  const [departmentDoctors, setDepartmentDoctors] = useState({});
   const [showAssociateDepartmentModal, setShowAssociateDepartmentModal] = useState(false);
   const [showAssociateDoctorModal, setShowAssociateDoctorModal] = useState(false);
+  const [selectedDeptForDoctor, setSelectedDeptForDoctor] = useState(null);
 
   const { branchId } = useParams();
   const navigate = useNavigate();
 
+  // Fetch all departments for this branch
   useEffect(() => {
     const url = Config.SERVER_URL + `/branch-depts?branch_id=${branchId}`;
     axios.get(url).then(({ data }) => {
@@ -25,117 +30,145 @@ const Branch = () => {
     });
   }, [branchId]);
 
+  // Fetch doctors for each department
   useEffect(() => {
-    if (!selectedDeptId) return;
-    const url = Config.SERVER_URL + `/branch-depts/doctors?branch_id=${branchId}&dept_id=${selectedDeptId}`;
-    axios.get(url).then(({ data }) => {
-      setDoctors(data);
-    });
-  }, [selectedDeptId, branchId]);
+    if (depts.length === 0) return;
 
-  const getDeptName = (deptId) => {
-    const dept = depts.find((d) => d.id === deptId);
-    return dept ? dept.name : null;
+    const fetchDoctorsForAllDepartments = async () => {
+      const doctorsData = {};
+
+      for (const dept of depts) {
+        try {
+          const url = Config.SERVER_URL + `/branch-depts/doctors?branch_id=${branchId}&dept_id=${dept.id}`;
+          const { data } = await axios.get(url);
+          doctorsData[dept.id] = data;
+        } catch (error) {
+          console.error(`Error fetching doctors for department ${dept.id}:`, error);
+          doctorsData[dept.id] = [];
+        }
+      }
+
+      setDepartmentDoctors(doctorsData);
+    };
+
+    fetchDoctorsForAllDepartments();
+  }, [depts, branchId]);
+
+  const gotoDoctor = (deptId, doctorId) => {
+    navigate(`/branches/${branchId}/departments/${deptId}/doctors/${doctorId}`);
   };
 
-  const departmentOptions = useMemo(
-    () =>
-      depts.map((dept) => ({
-        label: dept.name,
-        execute: () => setSelectedDeptId(dept.id),
-      })),
-    [depts]
-  );
+  const handleAddDoctor = (deptId) => {
+    setSelectedDeptForDoctor(deptId);
+    setShowAssociateDoctorModal(true);
+  };
 
-  const getActionOptions = useMemo(() => {
-    if (selectedDeptId) {
-      return [
-        {
-          label: 'Department',
-          execute: () => setShowAssociateDepartmentModal(true),
-        },
-        {
-          label: 'Doctor',
-          execute: () => setShowAssociateDoctorModal(true),
-        },
-      ];
-    }
-    return [
-      {
-        label: 'Department',
-        execute: () => setShowAssociateDepartmentModal(true),
-      },
-    ];
-  }, [selectedDeptId]);
+  const handleModalClose = () => {
+    setShowAssociateDepartmentModal(false);
+    setShowAssociateDoctorModal(false);
+    setSelectedDeptForDoctor(null);
 
-  const doctorData = useMemo(
-    () =>
-      doctors.map((doctor) => ({
-        id: doctor.id,
-        name: doctor.name,
-        degree: doctor.degree,
-        experience: doctor.experience,
-      })),
-    [doctors]
-  );
-
-  const gotoDoctor = (selectedDoctorId) => {
-    if (!selectedDeptId) return;
-    navigate(`/branches/${branchId}/departments/${selectedDeptId}/doctors/${selectedDoctorId}`);
+    // Refresh data
+    const url = Config.SERVER_URL + `/branch-depts?branch_id=${branchId}`;
+    axios.get(url).then(({ data }) => {
+      setDepts(data);
+    });
   };
 
   return (
-    <Flex gap="32" style={{ maxHeight: '80vh', overflowY: 'auto', padding: '16px' }}>
-      <Flex flexDirection="row" gap="8" justifyContent="flex-end">
-        <Menu options={departmentOptions}>
-          <MenuTrigger>{getDeptName(selectedDeptId) || 'Select Department'}</MenuTrigger>
-          <MenuContent />
-        </Menu>
-        <Menu options={getActionOptions} style={{ marginLeft: '16px' }}>
-          <MenuTrigger>Add</MenuTrigger>
-          <MenuContent />
-        </Menu>
-      </Flex>
-      {selectedDeptId && (
-        <Box style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '16px' }}>
-          {doctorData.map((doctor) => (
-            <Card
-              maxW="xs"
-              onClick={() => gotoDoctor(doctor.id)}
-              key={doctor.id}
-              style={{
-                cursor: 'pointer',
-                transition: 'transform 0.2s',
-                '&:hover': { backgroundColor: '#f0f0f0' },
-                transform: 'scale(1)',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'scale(1.03)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'scale(1)';
-              }}
-            >
-              <CardPreview>
-                <CardImage asChild>
-                  <img
-                    src="https://plus.unsplash.com/premium_photo-1673953886016-6f0f3d33dddd?w=224"
-                    alt={doctor.name}
-                  />
-                </CardImage>
-              </CardPreview>
-              <CardHeader>
-                <Flex flexDirection="column" gap="8">
-                  <Badge intent="information" w="fit">
-                    {doctor.experience}
-                  </Badge>
-                  <Text fontSize="2xl" fontWeight="700">
-                    Dr. {doctor.name}
-                  </Text>
-                  <Text color="fg.tertiary">{doctor.degree}</Text>
+    <Box className="branch">
+      <Box className="branch-header">
+        <Flex alignItems="center" gap="12">
+          <FaHospitalAlt size={32} style={{ color: 'var(--color-primary)' }} />
+          <Heading level="2" className="branch-title">
+            Departments & Doctors
+          </Heading>
+        </Flex>
+        <Box className="branch-actions">
+          <Button
+            appearance="primary"
+            onClick={() => setShowAssociateDepartmentModal(true)}
+            className="branch-add-button"
+            icon={<FaPlus />}
+          >
+            Add Department
+          </Button>
+        </Box>
+      </Box>
+
+      {depts.length === 0 ? (
+        <Box className="branch-empty-state">
+          <Box className="branch-empty-icon">
+            <MdLocalHospital size={64} />
+          </Box>
+          <Heading level="3" className="branch-empty-title">
+            No Departments Yet
+          </Heading>
+          <Text className="branch-empty-description">Get started by adding departments to this branch</Text>
+          <Button appearance="primary" onClick={() => setShowAssociateDepartmentModal(true)} icon={<FaPlus />}>
+            Add Your First Department
+          </Button>
+        </Box>
+      ) : (
+        <Box className="branch-departments">
+          {depts.map((dept) => (
+            <Box key={dept.id} className="branch-department-section">
+              <Box className="branch-department-header">
+                <Flex alignItems="center" gap="12">
+                  <FaStethoscope size={24} />
+                  <Heading level="3" className="branch-department-name">
+                    {dept.name}
+                  </Heading>
+                  <Badge className="branch-doctor-count">{departmentDoctors[dept.id]?.length || 0} Doctors</Badge>
                 </Flex>
-              </CardHeader>
-            </Card>
+                <Button appearance="primary" size="sm" onClick={() => handleAddDoctor(dept.id)} icon={<FaPlus />}>
+                  Add Doctor
+                </Button>
+              </Box>
+
+              {departmentDoctors[dept.id]?.length > 0 ? (
+                <Box className="branch-doctors-grid">
+                  {departmentDoctors[dept.id].map((doctor) => (
+                    <Card key={doctor.id} className="branch-doctor-card" onClick={() => gotoDoctor(dept.id, doctor.id)}>
+                      <CardPreview>
+                        <CardImage asChild>
+                          <img
+                            src="https://plus.unsplash.com/premium_photo-1673953886016-6f0f3d33dddd?w=280"
+                            alt={`Dr. ${doctor.name}`}
+                          />
+                        </CardImage>
+                      </CardPreview>
+                      <CardHeader>
+                        <Flex flexDirection="column" gap="8">
+                          <Badge intent="information" w="fit">
+                            {doctor.experience}
+                          </Badge>
+                          <Text fontSize="lg" fontWeight="700">
+                            <FaUserMd style={{ display: 'inline', marginRight: '8px' }} />
+                            Dr. {doctor.name}
+                          </Text>
+                          <Text color="fg.tertiary" fontSize="sm">
+                            {doctor.degree}
+                          </Text>
+                        </Flex>
+                      </CardHeader>
+                    </Card>
+                  ))}
+                </Box>
+              ) : (
+                <Box className="branch-no-doctors">
+                  <Text>No doctors available in this department yet.</Text>
+                  <Button
+                    appearance="primary"
+                    onClick={() => handleAddDoctor(dept.id)}
+                    style={{ marginTop: 'var(--spacing-md)' }}
+                    icon={<FaPlus />}
+                  >
+                    Add Doctor
+                  </Button>
+                </Box>
+              )}
+            </Box>
           ))}
         </Box>
       )}
@@ -143,7 +176,7 @@ const Branch = () => {
       {showAssociateDepartmentModal && (
         <DepartmentAssociationModal
           open={showAssociateDepartmentModal}
-          onClose={() => setShowAssociateDepartmentModal(false)}
+          onClose={handleModalClose}
           branchId={branchId}
           branchDepartments={depts}
         />
@@ -152,12 +185,12 @@ const Branch = () => {
       {showAssociateDoctorModal && (
         <DoctorAssociationModal
           open={showAssociateDoctorModal}
-          onClose={() => setShowAssociateDoctorModal(false)}
+          onClose={handleModalClose}
           branchId={branchId}
-          deptId={selectedDeptId}
+          deptId={selectedDeptForDoctor}
         />
       )}
-    </Flex>
+    </Box>
   );
 };
 

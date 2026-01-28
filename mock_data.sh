@@ -67,7 +67,7 @@ echo "Creating Users..."
 # Create users for doctors
 user_count=1
 first_names=("Ahmed" "Sara" "Mohammed" "Fatima" "Ali" "Hassan" "Ayesha" "Omar" "Zainab" "Ibrahim" "Noor" "Yusuf" "Mariam" "Khalid" "Layla" "Rashid" "Amina" "Tariq" "Huda" "Bilal" "Safiya" "Hamza" "Rabia" "Idris" "Zahra")
-last_names=("Khan" "Rahman" "Ahmed" "Hassan" "Ali" "Hossain" "Islam" "Chowdhury" "Akhter" "Siddique" "Uddin" "Karim" "Mahmud" "Alam" "Begum" "Sheikh" "Miah" "Biswas" "Roy" "Das" "Talukder" "Sarkar" "Haque" "Molla" "Mondal")
+last_names=("Khan" "Rahman" "Ahmed" "Hassan" "Ali" "Hossain" "Islam" "Chowdhury" "Akhter" "Siddique" "Uddin" "Karim" "Mahmud" "Alam" "Begum" "Sheikh" "Miah" "Roy" "Talukder" "Haque" "Molla")
 
 # Create exactly 25 users (all will be doctors)
 for ((i=0; i<25; i++)); do

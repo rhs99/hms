@@ -41,12 +41,12 @@ const HmsHeader = () => {
         style={{ cursor: 'pointer' }}
         onClick={() => navigate('/')}
       >
-        <FaHospital
-          size={28}
-          style={{ color: 'var(--color-primary)' }}
-        />
+        <FaHospital size={28} style={{ color: 'var(--color-primary)' }} />
         <Flex flexDirection="column" gap="0">
-          <Heading level="4" style={{ margin: 0, color: 'var(--color-primary-dark)', fontWeight: 'var(--font-weight-bold)' }}>
+          <Heading
+            level="4"
+            style={{ margin: 0, color: 'var(--color-primary-dark)', fontWeight: 'var(--font-weight-bold)' }}
+          >
             HMS
           </Heading>
           <Text fontSize="xs" style={{ color: 'var(--color-text-tertiary)', marginTop: '-4px' }}>
