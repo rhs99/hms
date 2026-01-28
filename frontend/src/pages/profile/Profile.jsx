@@ -1,20 +1,22 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { FaEnvelope, FaPhone, FaCalendar, FaTint, FaVenusMars } from 'react-icons/fa';
 
-import { Card, CardFooter, CardHeader, CardImage, CardPreview, Text, Flex, Avatar, Badge } from '@optiaxiom/react';
+import { Card, CardFooter, CardHeader, CardImage, CardPreview, Text, Box, Avatar, Badge } from '@optiaxiom/react';
 
 import Config from '../../config';
+
+import './_index.scss';
 
 const Profile = () => {
   const { userName } = useParams();
   const [profileData, setProfileData] = useState(null);
 
   useEffect(() => {
-    // Fetch profile data based on userName
     const fetchProfileData = async () => {
       try {
-        const response = await axios.get(`${Config.SERVER_URL}/users?user_name=${userName}`);
+        const response = await axios.get(`${Config.SERVER_URL}/users?username=${userName}`);
         setProfileData(response.data);
       } catch (error) {
         console.error('Error fetching profile data:', error);
@@ -49,63 +51,69 @@ const Profile = () => {
 
   if (!profileData) {
     return (
-      <Flex justifyContent="center" alignItems="center" style={{ minHeight: '60vh' }}>
+      <Box className="profile-loading">
         <Text fontSize="xl" color="fg.tertiary">
           Loading profile...
         </Text>
-      </Flex>
+      </Box>
     );
   }
 
   return (
-    <Flex justifyContent="center" alignItems="center" style={{ background: '#f7f9fa' }}>
-      <Card style={{ width: 500, boxShadow: '0 4px 24px rgba(0,0,0,0.08)', borderRadius: 16, background: '#fff' }}>
-        <CardPreview
-          style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '32px 0 16px 0' }}
-        >
+    <Box className="profile">
+      <Card className="profile-card">
+        <CardPreview className="profile-preview">
           <CardImage asChild>
             <Avatar size="3xl" color="fg.avatar.purple" name={profileData.full_name || profileData.user_name} />
           </CardImage>
         </CardPreview>
-        <CardHeader style={{ padding: '0 32px' }}>
-          <Flex flexDirection="column" gap="8">
-            <Flex flexDirection="column" gap="4" alignItems="center">
-              <Badge intent="information">{profileData.user_name}</Badge>
-              <Text fontSize="xl" fontWeight="700" style={{ marginBottom: 4 }}>
-                {profileData.full_name}
+        <CardHeader className="profile-header">
+          <Box className="profile-user-info">
+            <Text className="profile-name">{profileData.full_name}</Text>
+          </Box>
+          <Box className="profile-details">
+            <Box className="profile-detail-row">
+              <Text className="profile-label">
+                <FaVenusMars style={{ display: 'inline', marginRight: '8px' }} />
+                Gender
               </Text>
-            </Flex>
-            <Flex flexDirection="column" gap="8">
-              <Flex flexDirection="row" justifyContent="space-between" alignItems="center">
-                <Text color="fg.tertiary">Gender</Text>
-                <Badge intent="success">{profileData.gender}</Badge>
-              </Flex>
-              <Flex flexDirection="row" justifyContent="space-between" alignItems="center">
-                <Text color="fg.tertiary">Blood Group</Text>
-                <Badge intent="danger">{getBloodGroup(profileData.blood_group)}</Badge>
-              </Flex>
-              <Flex flexDirection="row" justifyContent="space-between" alignItems="center">
-                <Text color="fg.tertiary">Date of Birth</Text>
-                <Text fontWeight="500">{profileData.dob}</Text>
-              </Flex>
-              <Flex flexDirection="row" justifyContent="space-between" alignItems="center">
-                <Text color="fg.tertiary">Email</Text>
-                <Text fontWeight="500">{profileData.email}</Text>
-              </Flex>
-              <Flex flexDirection="row" justifyContent="space-between" alignItems="center">
-                <Text color="fg.tertiary">Phone</Text>
-                <Text fontWeight="500">{profileData.phone}</Text>
-              </Flex>
-            </Flex>
-          </Flex>
+              <Badge intent="success">{profileData.gender}</Badge>
+            </Box>
+            <Box className="profile-detail-row">
+              <Text className="profile-label">
+                <FaTint style={{ display: 'inline', marginRight: '8px' }} />
+                Blood Group
+              </Text>
+              <Badge intent="danger">{getBloodGroup(profileData.blood_group)}</Badge>
+            </Box>
+            <Box className="profile-detail-row">
+              <Text className="profile-label">
+                <FaCalendar style={{ display: 'inline', marginRight: '8px' }} />
+                Date of Birth
+              </Text>
+              <Text className="profile-value">{profileData.dob}</Text>
+            </Box>
+            <Box className="profile-detail-row">
+              <Text className="profile-label">
+                <FaEnvelope style={{ display: 'inline', marginRight: '8px' }} />
+                Email
+              </Text>
+              <Text className="profile-value">{profileData.email}</Text>
+            </Box>
+            <Box className="profile-detail-row">
+              <Text className="profile-label">
+                <FaPhone style={{ display: 'inline', marginRight: '8px' }} />
+                Phone
+              </Text>
+              <Text className="profile-value">{profileData.phone}</Text>
+            </Box>
+          </Box>
         </CardHeader>
-        <CardFooter style={{ textAlign: 'center', padding: '16px 0', borderTop: '1px solid #f0f0f0' }}>
-          <Text fontSize="sm" color="fg.tertiary">
-            Profile information is public and can be viewed by others.
-          </Text>
+        <CardFooter className="profile-footer">
+          <Text className="profile-footer-text">Profile information is public and can be viewed by others.</Text>
         </CardFooter>
       </Card>
-    </Flex>
+    </Box>
   );
 };
 

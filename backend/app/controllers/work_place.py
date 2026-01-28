@@ -22,16 +22,25 @@ class WorkPlaceSchema:
 
 
 @router.get(
-    "/work-places/employees/{employee_id}",
+    "/employees/{employee_id}/work-places",
     status_code=status.HTTP_200_OK,
 )
-async def get_work_places(employee_id: int):
+async def get_employee_workplaces(employee_id: int):
     return await WorkPlaceService.get_work_places(employee_id)
+
+
+@router.get(
+    "/work-places",
+    response_model=WorkPlaceSchema.Output | None,
+    status_code=status.HTTP_200_OK,
+)
+async def get_work_place(branch_id: int, employee_id: int):
+    return await WorkPlaceService.get_work_place(branch_id, employee_id)
 
 
 @router.post(
     "/work-places",
-    response_model=WorkPlaceSchema.Output | None,
+    response_model=WorkPlaceSchema.Output,
     status_code=status.HTTP_201_CREATED,
 )
 async def create_work_place(work_place: WorkPlaceSchema.CreateInput):

@@ -3,6 +3,7 @@ from fastapi import APIRouter, status
 from pydantic import BaseModel
 
 from app.services.user import UserService
+from app.services.appointment import AppointmentService
 from app.models import GenderEnum, BloodGroupEnum
 
 router = APIRouter()
@@ -21,13 +22,11 @@ class UserSchema:
         gender: GenderEnum
         blood_group: BloodGroupEnum | None = None
 
-    class SignIn(BaseSchema):
-        password: str
-
     class Output(BaseSchema):
         id: int
 
     class UserDetails(BaseSchema):
+        id: int
         full_name: str
         email: str
         phone: str
@@ -36,22 +35,9 @@ class UserSchema:
         blood_group: str | None = None
 
 
-@router.get(
-    "/users",
-    response_model=UserSchema.UserDetails | None,
-    status_code=status.HTTP_200_OK,
-)
-async def get_user(id: int | None = None, user_name: str | None = None):
-    if id is not None:
-        return await UserService.get_user(id)
-    if user_name is not None:
-        return await UserService.get_user_by_username(user_name)
-    return None
-
-
 @router.post(
-    "/users/sign-up",
-    response_model=UserSchema.SignIn,
+    "/users",
+    response_model=UserSchema.Output,
     status_code=status.HTTP_201_CREATED,
 )
 async def create_user(user: UserSchema.CreateUser):
@@ -67,13 +53,26 @@ async def create_user(user: UserSchema.CreateUser):
     )
 
 
-@router.post(
-    "/users/sign-in",
-    response_model=UserSchema.Output,
-    status_code=status.HTTP_201_CREATED,
+@router.get(
+    "/users/{user_id}",
+    response_model=UserSchema.UserDetails | None,
+    status_code=status.HTTP_200_OK,
 )
-async def create_user(user: UserSchema.SignIn):
-    return await UserService.sign_in(
-        user.user_name,
-        user.password,
-    )
+async def get_user(user_id: int):
+    return await UserService.get_user(user_id)
+
+
+@router.get(
+    "/users",
+    response_model=UserSchema.UserDetails | None,
+    status_code=status.HTTP_200_OK,
+)
+async def search_user(username: str | None = None):
+    if username is not None:
+        return await UserService.get_user_by_username(username)
+    return None
+
+
+@router.get("/users/{user_id}/appointments", status_code=status.HTTP_200_OK)
+async def get_user_appointments(user_id: int, past: bool | None = None):
+    return await AppointmentService.get_user_appointments(user_id, past)

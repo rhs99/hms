@@ -2,13 +2,16 @@ import axios from 'axios';
 import { useState, useContext, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createColumnHelper } from '@tanstack/react-table';
-import { DataTable, DataTableBody, Flex, Checkbox, Text, Badge } from '@optiaxiom/react';
+import { FaBriefcaseMedical, FaClock, FaUserClock, FaCheckCircle } from 'react-icons/fa';
+import { DataTable, DataTableBody, Box, Checkbox, Text, Badge, Heading } from '@optiaxiom/react';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 
 import utils from '../../utils';
 import Prescreption from '../../component/prescription/Prescreption';
 import AuthContext from '../../store/auth';
 import Config from '../../config';
+
+import './_index.scss';
 
 const columnHelper = createColumnHelper();
 
@@ -94,7 +97,7 @@ const Workplace = () => {
       return;
     }
 
-    const URL = Config.SERVER_URL + `/work-places/employees/${authCtx.getStoredValue().userId}`;
+    const URL = Config.SERVER_URL + `/employees/${authCtx.getStoredValue().userId}/work-places`;
     axios.get(URL).then(({ data }) => {
       setWorkplaces(data);
     });
@@ -109,8 +112,8 @@ const Workplace = () => {
   const getAllAppointments = async () => {
     if (!selectedSlotScheduleId) return;
 
-    const PENDING_URL = `${Config.SERVER_URL}/appointments/slot-schedules/${selectedSlotScheduleId}?date=${utils.getFormatedDate(new Date())}&pending=True`;
-    const RESOLVED_URL = `${Config.SERVER_URL}/appointments/slot-schedules/${selectedSlotScheduleId}?date=${utils.getFormatedDate(new Date())}&pending=False`;
+    const PENDING_URL = `${Config.SERVER_URL}/slot-schedules/${selectedSlotScheduleId}/appointments?date=${utils.getFormatedDate(new Date())}&pending=True`;
+    const RESOLVED_URL = `${Config.SERVER_URL}/slot-schedules/${selectedSlotScheduleId}/appointments?date=${utils.getFormatedDate(new Date())}&pending=False`;
 
     const [pendingResponse, resolvedResponse] = await Promise.all([axios.get(PENDING_URL), axios.get(RESOLVED_URL)]);
 
@@ -180,48 +183,97 @@ const Workplace = () => {
   }
 
   return (
-    <Flex flexDirection="column" gap="16" className="workplace">
-      <Text>My Workplaces</Text>
-      <DataTable maxH="xs" table={workplaceTable}>
-        <DataTableBody />
-      </DataTable>
+    <Box className="workplace">
+      <Box className="workplace-header">
+        <Heading level="2" className="workplace-title">
+          <FaBriefcaseMedical size={32} />
+          My Workplace
+        </Heading>
+        <Text className="workplace-subtitle">Manage your workplaces and appointments</Text>
+      </Box>
 
-      {appointmentToResolve && (
-        <Prescreption
-          data={appointmentToResolve}
-          onUpdate={async () => {
-            setAppointmentToResolve(null);
-            await getAllAppointments();
-          }}
-          onCancel={() => {
-            setAppointmentToResolve(null);
-            setPendingRowSelection({});
-          }}
-        />
-      )}
+      <Box className="workplace-content">
+        <Box className="workplace-section">
+          <Box className="workplace-section-header">
+            <Heading level="3" className="workplace-section-title">
+              <FaClock />
+              Today's Workplaces
+            </Heading>
+          </Box>
+          {filteredWorkplaces.length > 0 ? (
+            <Box className="workplace-table-wrapper">
+              <DataTable maxH="xs" table={workplaceTable}>
+                <DataTableBody />
+              </DataTable>
+            </Box>
+          ) : (
+            <Box className="workplace-empty-state">
+              <Text>No workplaces scheduled for today</Text>
+            </Box>
+          )}
+        </Box>
 
-      {pendingAppointments.length > 0 ? (
-        <>
-          <Text>Pending Appointments</Text>
-          <DataTable maxH="xs" w="fit" table={pendingAppointmentsTable}>
-            <DataTableBody />
-          </DataTable>
-        </>
-      ) : Object.keys(workplaceRowSelection).length > 0 ? (
-        <Text color="fg.tertiary">No Pending Appointments</Text>
-      ) : null}
+        {appointmentToResolve && (
+          <Box className="workplace-prescription-wrapper">
+            <Prescreption
+              data={appointmentToResolve}
+              onUpdate={async () => {
+                setAppointmentToResolve(null);
+                await getAllAppointments();
+              }}
+              onCancel={() => {
+                setAppointmentToResolve(null);
+                setPendingRowSelection({});
+              }}
+            />
+          </Box>
+        )}
 
-      {resolvedAppointments.length > 0 ? (
-        <>
-          <Text>Resolved Appointments</Text>
-          <DataTable maxH="xs" w="fit" table={resolvedAppointmentsTable}>
-            <DataTableBody />
-          </DataTable>
-        </>
-      ) : Object.keys(workplaceRowSelection).length > 0 ? (
-        <Text color="fg.tertiary">No Resolved Appointments</Text>
-      ) : null}
-    </Flex>
+        {Object.keys(workplaceRowSelection).length > 0 && (
+          <>
+            <Box className="workplace-section">
+              <Box className="workplace-section-header">
+                <Heading level="3" className="workplace-section-title">
+                  <FaUserClock />
+                  Pending Appointments
+                </Heading>
+              </Box>
+              {pendingAppointments.length > 0 ? (
+                <Box className="workplace-table-wrapper">
+                  <DataTable maxH="xs" w="fit" table={pendingAppointmentsTable}>
+                    <DataTableBody />
+                  </DataTable>
+                </Box>
+              ) : (
+                <Box className="workplace-empty-state">
+                  <Text>No pending appointments for today</Text>
+                </Box>
+              )}
+            </Box>
+
+            <Box className="workplace-section">
+              <Box className="workplace-section-header">
+                <Heading level="3" className="workplace-section-title">
+                  <FaCheckCircle />
+                  Resolved Appointments
+                </Heading>
+              </Box>
+              {resolvedAppointments.length > 0 ? (
+                <Box className="workplace-table-wrapper">
+                  <DataTable maxH="xs" w="fit" table={resolvedAppointmentsTable}>
+                    <DataTableBody />
+                  </DataTable>
+                </Box>
+              ) : (
+                <Box className="workplace-empty-state">
+                  <Text>No resolved appointments for today</Text>
+                </Box>
+              )}
+            </Box>
+          </>
+        )}
+      </Box>
+    </Box>
   );
 };
 

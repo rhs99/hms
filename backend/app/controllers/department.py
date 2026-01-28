@@ -17,15 +17,6 @@ class DepartmentSchema:
         id: int
 
 
-@router.get(
-    "/departments",
-    response_model=list[DepartmentSchema.Output],
-    status_code=status.HTTP_200_OK,
-)
-async def get_departments():
-    return await DepartmentService.get_departments()
-
-
 @router.post(
     "/departments",
     response_model=DepartmentSchema.Output,
@@ -33,3 +24,21 @@ async def get_departments():
 )
 async def create_department(dept: DepartmentSchema.CreateInput):
     return await DepartmentService.create_department(dept.name)
+
+
+@router.get(
+    "/departments/{dept_id}",
+    response_model=DepartmentSchema.Output,
+    status_code=status.HTTP_200_OK,
+)
+async def get_department(dept_id: int):
+    return await DepartmentService.get_department(dept_id)
+
+
+@router.get(
+    "/departments",
+    response_model=list[DepartmentSchema.Output],
+    status_code=status.HTTP_200_OK,
+)
+async def get_departments():
+    return await DepartmentService.get_departments()

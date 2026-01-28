@@ -12,6 +12,7 @@ from app.controllers.department import router as department_router
 from app.controllers.doctor import router as doctor_router
 from app.controllers.hospital import router as hospital_router
 from app.controllers.role import router as role_router
+from app.controllers.session import router as session_router
 from app.controllers.slot import router as slot_router
 from app.controllers.slot_schedule import router as slot_schedule_router
 from app.controllers.test import router as test_router
@@ -28,6 +29,7 @@ app.include_router(department_router, tags=["department"])
 app.include_router(doctor_router, tags=["doctor"])
 app.include_router(hospital_router, tags=["hospital"])
 app.include_router(role_router, tags=["role"])
+app.include_router(session_router, tags=["session"])
 app.include_router(slot_router, tags=["slot"])
 app.include_router(slot_schedule_router, tags=["slot-schedule"])
 app.include_router(test_router, tags=["test"])

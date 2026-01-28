@@ -1,13 +1,48 @@
 import axios from 'axios';
 import { useEffect, useState, useContext, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
+import { FaCalendarAlt, FaClock, FaUserMd, FaClipboardList, FaExclamationTriangle } from 'react-icons/fa';
 
 import AuthContext from '../../store/auth';
 import { createColumnHelper } from '@tanstack/react-table';
-import { DataTable, DataTableBody, Flex, Checkbox, Field, Input, Button, DateInput, Heading } from '@optiaxiom/react';
+import {
+  DataTable,
+  DataTableBody,
+  Flex,
+  Checkbox,
+  Field,
+  Input,
+  Button,
+  DateInput,
+  Heading,
+  Box,
+  Text,
+} from '@optiaxiom/react';
 import { Dialog, DialogBody, DialogClose, DialogContent, DialogFooter, DialogHeader } from '@optiaxiom/react';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import Config from '../../config';
+
+import './_index.scss';
+
+const DAYS_OF_WEEK = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const DAY_ABBREVIATIONS = {
+  Sunday: 'SUN',
+  Monday: 'MON',
+  Tuesday: 'TUE',
+  Wednesday: 'WED',
+  Thursday: 'THU',
+  Friday: 'FRI',
+  Saturday: 'SAT',
+};
+const ABBREVIATED_TO_FULL = {
+  SUN: 'Sunday',
+  MON: 'Monday',
+  TUE: 'Tuesday',
+  WED: 'Wednesday',
+  THU: 'Thursday',
+  FRI: 'Friday',
+  SAT: 'Saturday',
+};
 
 const Doctor = () => {
   const [slotSchedules, setSlotSchedules] = useState([]);
@@ -15,6 +50,7 @@ const Doctor = () => {
   const [date, setDate] = useState(null);
   const [parent, setParent] = useState('');
   const [appointments, setAppointments] = useState(null);
+  const [dateValidationError, setDateValidationError] = useState('');
 
   const authCtx = useContext(AuthContext);
   const { branchId, doctorId } = useParams();
@@ -24,14 +60,14 @@ const Doctor = () => {
     axios.get(url).then(({ data }) => {
       setSlotSchedules(data);
     });
-  }, [branchId]);
+  }, [branchId, doctorId]);
 
   const getAppointments = () => {
     if (!selectedSlotSchedule || !date) {
       return;
     }
 
-    const URL = Config.SERVER_URL + `/appointments/slot-schedules/${selectedSlotSchedule.id}?date=${date}`;
+    const URL = Config.SERVER_URL + `/slot-schedules/${selectedSlotSchedule.id}/appointments?date=${date}`;
     axios.get(URL).then(({ data }) => {
       setAppointments(data);
     });
@@ -86,7 +122,7 @@ const Doctor = () => {
         header: 'Ending Time',
       }),
     ],
-    []
+    [columnHelper]
   );
 
   const slotData = useMemo(
@@ -123,6 +159,29 @@ const Doctor = () => {
     }
   }, [slotRowSelection, slotTable]);
 
+  useEffect(() => {
+    if (!selectedSlotSchedule || !date) {
+      setDateValidationError('');
+      return;
+    }
+
+    const selectedDate = new Date(date);
+    const dayOfWeek = DAYS_OF_WEEK[selectedDate.getDay()];
+    const dayAbbreviation = DAY_ABBREVIATIONS[dayOfWeek];
+
+    // Normalize the slot day (handle both full names and abbreviations)
+    const slotDay = selectedSlotSchedule.day.toUpperCase();
+    const slotDayFull = ABBREVIATED_TO_FULL[slotDay] || selectedSlotSchedule.day;
+
+    if (dayOfWeek !== slotDayFull && dayAbbreviation !== slotDay) {
+      setDateValidationError(
+        `The selected date is a ${dayOfWeek}, but the chosen time slot is for ${slotDayFull}. Please select a ${slotDayFull}.`
+      );
+    } else {
+      setDateValidationError('');
+    }
+  }, [date, selectedSlotSchedule]);
+
   const appointmentColumns = useMemo(
     () => [
       columnHelper.accessor('serial_no', {
@@ -138,7 +197,7 @@ const Doctor = () => {
         header: 'Created At',
       }),
     ],
-    []
+    [columnHelper]
   );
 
   const appointmentData = useMemo(
@@ -164,42 +223,99 @@ const Doctor = () => {
     if (!Boolean(selectedSlotSchedule)) {
       return 'N/A';
     }
-    return `${selectedSlotSchedule.start_at}:${selectedSlotSchedule.end_at} (${selectedSlotSchedule.day})`;
+    return `${selectedSlotSchedule.start_at} - ${selectedSlotSchedule.end_at} (${selectedSlotSchedule.day})`;
   };
 
   return (
-    <Flex flexDirection="column" gap="12">
-      <Flex flexDirection="column" gap="12" maxW="full">
-        <Heading level="1">Appointments</Heading>
-        <Field label="Available Slots">
-          <DataTable table={slotTable}>
-            <DataTableBody />
-          </DataTable>
-        </Field>
-        <Field label="Selected Slot">{getSelectedSlotSchedule()}</Field>
-        <Field label="Selected date">
-          <DateInput value={date} onValueChange={setDate} w="224" />
-        </Field>
-        <Field label="Parent Appointment Id (optional)">
-          <Input value={parent} onChange={(e) => setParent(e.target.value)} w="224" />
-        </Field>
-        <Flex justifyContent="flex-end" flexDirection="row" gap="12">
-          <Button appearance="inverse" disabled={!Boolean(selectedSlotSchedule) || !date} onClick={getAppointments}>
-            View
-          </Button>
-          <Button
-            appearance="primary"
-            disabled={!authCtx.isLoggedIn || !date || !Boolean(selectedSlotSchedule)}
-            onClick={makeAppointment}
-          >
-            Create
-          </Button>
-        </Flex>
-      </Flex>
+    <Box className="doctor">
+      <Box className="doctor-header">
+        <Heading level="2" className="doctor-title">
+          <FaUserMd size={32} />
+          Book Appointment
+        </Heading>
+        <Text className="doctor-subtitle">Select an available time slot and book your appointment</Text>
+      </Box>
+
+      <Box className="doctor-content">
+        <Box className="doctor-section">
+          <Heading level="3" className="doctor-section-title">
+            <FaClock />
+            Available Time Slots
+          </Heading>
+          <Box className="doctor-form-fields">
+            <Field label="Select a Time Slot">
+              <Box className="doctor-table-wrapper">
+                <DataTable table={slotTable}>
+                  <DataTableBody />
+                </DataTable>
+              </Box>
+            </Field>
+            {selectedSlotSchedule && (
+              <Box className="doctor-info-card">
+                <Text className="doctor-info-label">Selected Slot</Text>
+                <Text className="doctor-info-value">{getSelectedSlotSchedule()}</Text>
+              </Box>
+            )}
+          </Box>
+        </Box>
+
+        <Box className="doctor-section">
+          <Heading level="3" className="doctor-section-title">
+            <FaCalendarAlt />
+            Appointment Details
+          </Heading>
+          <Box className="doctor-form-fields">
+            <Field label="Select Date">
+              <DateInput value={date} onValueChange={setDate} w="full" />
+            </Field>
+            {dateValidationError && (
+              <Box className="doctor-validation-error">
+                <FaExclamationTriangle />
+                <Text>{dateValidationError}</Text>
+              </Box>
+            )}
+            <Field label="Parent Appointment ID (Optional)">
+              <Input
+                value={parent}
+                onChange={(e) => setParent(e.target.value)}
+                w="full"
+                placeholder="Enter parent appointment ID if follow-up"
+              />
+            </Field>
+            <Box className="doctor-actions">
+              <Button
+                appearance="inverse"
+                disabled={!Boolean(selectedSlotSchedule) || !date || Boolean(dateValidationError)}
+                onClick={getAppointments}
+                className="doctor-button"
+                icon={<FaClipboardList />}
+              >
+                View Appointments
+              </Button>
+              <Button
+                appearance="primary"
+                disabled={
+                  !authCtx.isLoggedIn || !date || !Boolean(selectedSlotSchedule) || Boolean(dateValidationError)
+                }
+                onClick={makeAppointment}
+                className="doctor-button"
+                icon={<FaCalendarAlt />}
+              >
+                Book Appointment
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </Box>
 
       <Dialog open={appointments !== null} onOpenChange={(open) => setAppointments(open ? appointments : null)}>
         <DialogContent size="md">
-          <DialogHeader>Appointment Details</DialogHeader>
+          <DialogHeader>
+            <Flex alignItems="center" gap="8">
+              <FaClipboardList style={{ color: 'var(--color-primary)' }} />
+              Scheduled Appointments
+            </Flex>
+          </DialogHeader>
           <DialogBody>
             <DataTable maxH="xs" maxW="full" table={appointmentTable}>
               <DataTableBody />
@@ -210,7 +326,7 @@ const Doctor = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </Flex>
+    </Box>
   );
 };
 

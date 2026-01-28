@@ -28,3 +28,37 @@ class DoctorService:
             "experience": doctor.experience,
             "full_name": user["full_name"] if user else None,
         }
+
+    @staticmethod
+    async def get_doctor_by_id(doctor_id: int):
+        doctor = await DoctorRepo.get_doctor_by_id(doctor_id)
+        if not doctor:
+            return None
+        user = await UserRepo.get_user(doctor.user_id)
+
+        return {
+            "user_id": doctor.user_id,
+            "dept_id": doctor.dept_id,
+            "registration_no": doctor.registration_no,
+            "degree": doctor.degree,
+            "experience": doctor.experience,
+            "full_name": user["full_name"] if user else None,
+        }
+
+    @staticmethod
+    async def get_all_doctors():
+        doctors = await DoctorRepo.get_all_doctors()
+        result = []
+        for doctor in doctors:
+            user = await UserRepo.get_user(doctor.user_id)
+            result.append(
+                {
+                    "user_id": doctor.user_id,
+                    "dept_id": doctor.dept_id,
+                    "registration_no": doctor.registration_no,
+                    "degree": doctor.degree,
+                    "experience": doctor.experience,
+                    "full_name": user["full_name"] if user else None,
+                }
+            )
+        return result

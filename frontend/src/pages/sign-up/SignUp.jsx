@@ -1,8 +1,9 @@
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useState } from 'react';
-import { Button, Box, Input, Field, Text, Flex, DateInput } from '@optiaxiom/react';
+import { Button, Box, Input, Field, Text, DateInput } from '@optiaxiom/react';
 import { Menu, MenuContent, MenuTrigger } from '@optiaxiom/react';
+import { FaUserPlus } from 'react-icons/fa';
 
 import Config from '../../config';
 
@@ -26,7 +27,7 @@ const SignUp = () => {
   const handleSignUp = (e) => {
     e.preventDefault();
 
-    const URL = Config.SERVER_URL + '/users/sign-up';
+    const URL = Config.SERVER_URL + '/users';
     const data = {
       user_name: userName,
       password: password,
@@ -38,60 +39,84 @@ const SignUp = () => {
       blood_group: bloodGroup,
     };
 
-    axios.post(URL, data).then(({ data }) => {
+    axios.post(URL, data).then(() => {
       navigate('/sign-in');
     });
   };
 
   return (
     <Box className="signUp">
-      <Text className="signUp-title">Sign Up</Text>
+      <Box className="signUp-header">
+        <Box className="signUp-icon">
+          <FaUserPlus size={48} />
+        </Box>
+        <Text className="signUp-title">Create Account</Text>
+        <Text className="signUp-subtitle">Join our healthcare management system</Text>
+      </Box>
       <form onSubmit={handleSignUp} className="signUp-form">
-        <Field label="User Name">
-          <Input
-            placeholder="Enter user name"
-            value={userName}
-            onChange={(e) => setUserName(e.target.value)}
-            required
-          />
-        </Field>
-        <Field label="Password">
-          <Input
-            placeholder="Enter password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </Field>
+        <Box className="form-row">
+          <Field label="User Name">
+            <Input
+              placeholder="Choose a username"
+              value={userName}
+              onChange={(e) => setUserName(e.target.value)}
+              required
+            />
+          </Field>
+          <Field label="Password">
+            <Input
+              placeholder="Create a password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </Field>
+        </Box>
         <Field label="Full Name">
           <Input
-            placeholder="Enter full name"
+            placeholder="Enter your full name"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
             required
           />
         </Field>
-        <Field label="Email">
-          <Input placeholder="Enter email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-        </Field>
-        <Field label="Phone">
-          <Input placeholder="Enter phone" value={phone} onChange={(e) => setPhone(e.target.value)} required />
-        </Field>
-        <Field label="Date of Birth">
-          <DateInput value={dob} onValueChange={setDob} required />
-        </Field>
-        <Field label="Gender">
-          <Menu
-            options={GENDER_OPTIONS.map((option, index) => ({
-              label: option,
-              execute: () => setGender(index + 1),
-            }))}
-          >
-            <MenuTrigger>{gender ? GENDER_OPTIONS[gender - 1] : 'Select gender'}</MenuTrigger>
-            <MenuContent />
-          </Menu>
-        </Field>
+        <Box className="form-row">
+          <Field label="Email">
+            <Input
+              placeholder="your@email.com"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </Field>
+          <Field label="Phone">
+            <Input
+              placeholder="Phone number"
+              type="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              required
+            />
+          </Field>
+        </Box>
+        <Box className="form-row">
+          <Field label="Date of Birth">
+            <DateInput value={dob} onValueChange={setDob} required />
+          </Field>
+          <Field label="Gender">
+            <Menu
+              options={GENDER_OPTIONS.map((option, index) => ({
+                label: option,
+                execute: () => setGender(index + 1),
+              }))}
+            >
+              <MenuTrigger>{gender ? GENDER_OPTIONS[gender - 1] : 'Select gender'}</MenuTrigger>
+              <MenuContent />
+            </Menu>
+          </Field>
+        </Box>
         <Field label="Blood Group">
           <Menu
             options={BLOOD_GROUP_OPTIONS.map((option, index) => ({
@@ -103,12 +128,21 @@ const SignUp = () => {
             <MenuContent />
           </Menu>
         </Field>
-        <Flex flexDirection="row" justifyContent="flex-end">
-          <Button appearance="primary" type="submit">
-            Submit
-          </Button>
-        </Flex>
+        <Button appearance="primary" type="submit" className="signUp-submit-button">
+          Create Account
+        </Button>
       </form>
+      <Box className="signUp-footer">
+        <Text>
+          Already have an account?{' '}
+          <Link
+            to="/sign-in"
+            style={{ color: 'var(--color-primary)', fontWeight: 'var(--font-weight-semibold)', textDecoration: 'none' }}
+          >
+            Sign In
+          </Link>
+        </Text>
+      </Box>
     </Box>
   );
 };

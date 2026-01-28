@@ -17,6 +17,24 @@ class TestSchema:
         id: int
 
 
+@router.post(
+    "/tests",
+    response_model=TestSchema.Output,
+    status_code=status.HTTP_201_CREATED,
+)
+async def create_test(test: TestSchema.CreateInput):
+    return await TestService.create_test(test.name)
+
+
+@router.get(
+    "/tests/{test_id}",
+    response_model=TestSchema.Output,
+    status_code=status.HTTP_200_OK,
+)
+async def get_test(test_id: int):
+    return await TestService.get_test(test_id)
+
+
 @router.get(
     "/tests",
     response_model=list[TestSchema.Output],
@@ -24,12 +42,3 @@ class TestSchema:
 )
 async def get_tests():
     return await TestService.get_tests()
-
-
-@router.post(
-    "/tests",
-    response_model=TestSchema.Output,
-    status_code=status.HTTP_201_CREATED,
-)
-async def create_role(test: TestSchema.CreateInput):
-    return await TestService.create_test(test.name)

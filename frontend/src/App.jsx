@@ -1,5 +1,5 @@
 import { RouterProvider, createBrowserRouter, Outlet } from 'react-router-dom';
-import { AxiomProvider } from '@optiaxiom/react';
+import { AxiomProvider, Box, Text } from '@optiaxiom/react';
 
 import { AuthContextProvider } from './store/auth';
 import HmsHeader from './component/header/HmsHeader';
@@ -12,6 +12,7 @@ import Activities from './pages/activities/Activities';
 import Workplace from './pages/workplace/Workplace';
 import HmsSidebar from './component/sidebar/HmsSidebar';
 import Profile from './pages/profile/Profile';
+import Settings from './pages/settings/Settings';
 
 import { Layout, LayoutContent } from '@optiaxiom/react/unstable';
 
@@ -27,10 +28,10 @@ const RootLayout = () => {
 
 const ErrorPage = () => {
   return (
-    <div id="error-page">
-      <h1>Oops!</h1>
-      <p>Sorry, an unexpected error has occurred.</p>
-    </div>
+    <Box id="error-page">
+      <Text>Oops!</Text>
+      <Text color="fg.tertiary">Sorry, an unexpected error has occurred.</Text>
+    </Box>
   );
 };
 
@@ -49,6 +50,7 @@ const router = createBrowserRouter([
           { path: '/users/:userName', element: <Profile /> },
           { path: '/activities', element: <Activities /> },
           { path: '/workplaces', element: <Workplace /> },
+          { path: '/settings', element: <Settings /> },
           { path: '/branches/:branchId', element: <Branch /> },
           {
             path: '/branches/:branchId/departments/:deptId/doctors/:doctorId',

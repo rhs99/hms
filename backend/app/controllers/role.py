@@ -17,15 +17,6 @@ class RoleSchema:
         id: int
 
 
-@router.get(
-    "/roles",
-    response_model=list[RoleSchema.Output],
-    status_code=status.HTTP_200_OK,
-)
-async def get_roles():
-    return await RoleService.get_roles()
-
-
 @router.post(
     "/roles",
     response_model=RoleSchema.Output,
@@ -33,3 +24,21 @@ async def get_roles():
 )
 async def create_role(role: RoleSchema.CreateInput):
     return await RoleService.create_role(role.name)
+
+
+@router.get(
+    "/roles/{role_id}",
+    response_model=RoleSchema.Output,
+    status_code=status.HTTP_200_OK,
+)
+async def get_role(role_id: int):
+    return await RoleService.get_role(role_id)
+
+
+@router.get(
+    "/roles",
+    response_model=list[RoleSchema.Output],
+    status_code=status.HTTP_200_OK,
+)
+async def get_roles():
+    return await RoleService.get_roles()

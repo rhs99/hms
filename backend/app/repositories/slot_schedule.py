@@ -30,3 +30,15 @@ class SlotScheduleRepo:
         await session().commit()
         await session().refresh(new_slot_schedule)
         return new_slot_schedule
+
+    @staticmethod
+    async def get_slot_schedule(slot_schedule_id: int):
+        result = await session().execute(
+            select(SlotSchedule.id, Slot.start_at, Slot.end_at, SlotSchedule.day)
+            .filter(SlotSchedule.id == slot_schedule_id)
+            .filter(SlotSchedule.slot_id == Slot.id)
+        )
+        slot = result.first()
+        if not slot:
+            return None
+        return {"id": slot[0], "start_at": slot[1], "end_at": slot[2], "day": slot[3]}

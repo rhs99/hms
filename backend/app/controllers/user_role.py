@@ -18,15 +18,6 @@ class UserRoleSchema:
         pass
 
 
-@router.get(
-    "/user-roles",
-    response_model=list[UserRoleSchema.Output],
-    status_code=status.HTTP_200_OK,
-)
-async def get_user_roles(user_id: int):
-    return await UserRoleService.get_user_roles(user_id)
-
-
 @router.post(
     "/user-roles",
     response_model=UserRoleSchema.Output,
@@ -34,3 +25,21 @@ async def get_user_roles(user_id: int):
 )
 async def create_user_role(user_role: UserRoleSchema.CreateInput):
     return await UserRoleService.create_user_role(user_role.user_id, user_role.role_id)
+
+
+@router.get(
+    "/user-roles/{user_role_id}",
+    response_model=UserRoleSchema.Output,
+    status_code=status.HTTP_200_OK,
+)
+async def get_user_role(user_role_id: int):
+    return await UserRoleService.get_user_role(user_role_id)
+
+
+@router.get(
+    "/user-roles",
+    response_model=list[UserRoleSchema.Output],
+    status_code=status.HTTP_200_OK,
+)
+async def get_user_roles(user_id: int):
+    return await UserRoleService.get_user_roles(user_id)

@@ -2,7 +2,7 @@ import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { Box, Nav, NavBody, NavFooter, NavItem, NavList, Sidebar, SidebarToggle } from '@optiaxiom/react';
-import { TbLayoutSidebar, TbTimelineEventText, TbHome } from 'react-icons/tb';
+import { TbLayoutSidebar, TbTimelineEventText, TbHome, TbSettings } from 'react-icons/tb';
 import { RiHomeOfficeLine } from 'react-icons/ri';
 
 import AuthContext from '../../store/auth';
@@ -30,6 +30,11 @@ const HmsSidebar = () => {
     navigate('/workplaces');
   };
 
+  const goToSettings = () => {
+    setSelected('settings');
+    navigate('/settings');
+  };
+
   return (
     <Box style={{ maxWidth: '250px', height: 'calc(100vh - 100px)' }}>
       <Sidebar defaultExpanded>
@@ -47,6 +52,11 @@ const HmsSidebar = () => {
               {isLoggedIn && (
                 <NavItem active={selected === 'workplaces'} icon={<RiHomeOfficeLine />} onClick={goToWorkplaces}>
                   Workplaces
+                </NavItem>
+              )}
+              {isLoggedIn && (
+                <NavItem active={selected === 'settings'} icon={<TbSettings />} onClick={goToSettings}>
+                  Settings
                 </NavItem>
               )}
             </NavList>
