@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Box, Button, Field, Input, Heading, Text, Flex, Checkbox } from '@optiaxiom/react';
+import { Box, Button, Field, Heading, Text, Flex, Checkbox, DateInput } from '@optiaxiom/react';
 import { Menu, MenuContent, MenuTrigger } from '@optiaxiom/react';
 import { FaPlus, FaCheckCircle } from 'react-icons/fa';
 
@@ -281,11 +281,11 @@ const ScheduleTab = () => {
               </Text>
 
               <Field label="Start Date" required>
-                <Input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} required />
+                <DateInput value={startDate} onValueChange={setStartDate} required />
               </Field>
 
               <Field label="End Date (Optional)">
-                <Input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+                <DateInput value={endDate} onValueChange={setEndDate} />
               </Field>
 
               <Button
