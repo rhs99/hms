@@ -78,7 +78,7 @@ const Branch = () => {
   return (
     <Box className="branch">
       <Box className="branch-header">
-        <Flex alignItems="center" gap="12">
+        <Flex flexDirection="row" alignItems="center" gap="12">
           <FaHospitalAlt size={32} style={{ color: 'var(--color-primary)' }} />
           <Heading level="2" className="branch-title">
             Departments & Doctors
@@ -114,7 +114,7 @@ const Branch = () => {
           {depts.map((dept) => (
             <Box key={dept.id} className="branch-department-section">
               <Box className="branch-department-header">
-                <Flex alignItems="center" gap="12">
+                <Flex flexDirection="row" alignItems="center" gap="12">
                   <FaStethoscope size={24} />
                   <Heading level="3" className="branch-department-name">
                     {dept.name}
