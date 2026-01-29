@@ -281,11 +281,11 @@ const ScheduleTab = () => {
               </Text>
 
               <Field label="Start Date" required>
-                <DateInput value={startDate} onChange={(e) => setStartDate(e.target.value)} required />
+                <DateInput value={startDate} onValueChange={setStartDate} required />
               </Field>
 
               <Field label="End Date (Optional)">
-                <DateInput value={endDate} onChange={(e) => setEndDate(e.target.value)} />
+                <DateInput value={endDate} onValueChange={setEndDate} />
               </Field>
 
               <Button
