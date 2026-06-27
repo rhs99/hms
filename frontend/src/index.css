@@ -8,6 +8,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
+  /* Enables Axiom's light-dark() color tokens to react to the html element's
+     color-scheme. The HmsHeader toggle flips html.style.colorScheme. */
+  color-scheme: light dark;
+
   /* Spacing scale */
   --spacing-xs: 4px;
   --spacing-sm: 8px;

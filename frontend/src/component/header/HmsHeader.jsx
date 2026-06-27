@@ -1,18 +1,21 @@
 import { useNavigate, NavLink } from 'react-router-dom';
 import { useContext } from 'react';
-import { Avatar, Heading, Flex, Text } from '@optiaxiom/react';
+import { Avatar, Button, Heading, Flex, Text } from '@optiaxiom/react';
 import { Menu, MenuContent, MenuTrigger } from '@optiaxiom/react';
 
 import { FiLogOut } from 'react-icons/fi';
-import { FaRegUser, FaHospital } from 'react-icons/fa';
+import { FaRegUser, FaHospital, FaMoon, FaSun } from 'react-icons/fa';
 
 import AuthContext from '../../store/auth';
+import { useColorScheme } from '../useColorScheme';
 
 const HmsHeader = () => {
   const navigate = useNavigate();
   const authCtx = useContext(AuthContext);
+  const { scheme, toggle } = useColorScheme();
 
   const { isLoggedIn, logout } = authCtx;
+  const isDark = scheme === 'dark';
 
   const handleLogOut = () => {
     logout();
@@ -54,7 +57,13 @@ const HmsHeader = () => {
           </Text>
         </Flex>
       </Flex>
-      <>
+      <Flex flexDirection="row" alignItems="center" gap="12">
+        <Button
+          appearance="subtle"
+          aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+          icon={isDark ? <FaSun /> : <FaMoon />}
+          onClick={toggle}
+        />
         {isLoggedIn ? (
           <Flex flexDirection="row" justifyContent="center" gap="12">
             <Menu
@@ -143,7 +152,7 @@ const HmsHeader = () => {
             </NavLink>
           </Flex>
         )}
-      </>
+      </Flex>
     </Flex>
   );
 };
