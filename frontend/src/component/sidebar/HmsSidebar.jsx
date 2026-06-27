@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Box, Nav, NavBody, NavFooter, NavItem, NavList, Sidebar, SidebarToggle } from '@optiaxiom/react';
-import { TbLayoutSidebar, TbTimelineEventText, TbHome, TbSettings } from 'react-icons/tb';
+import { TbLayoutSidebar, TbTimelineEventText, TbHome, TbShieldCog } from 'react-icons/tb';
 import { RiHomeOfficeLine } from 'react-icons/ri';
 
 import AuthContext from '../../store/auth';
@@ -45,11 +45,11 @@ const HmsSidebar = () => {
               )}
               {isLoggedIn && isAdmin && (
                 <NavItem
-                  active={isActive('/settings')}
-                  icon={<TbSettings />}
-                  onClick={() => navigate('/settings')}
+                  active={isActive('/admin')}
+                  icon={<TbShieldCog />}
+                  onClick={() => navigate('/admin')}
                 >
-                  Settings
+                  Administration
                 </NavItem>
               )}
             </NavList>

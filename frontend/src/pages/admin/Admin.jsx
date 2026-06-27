@@ -2,7 +2,6 @@ import { useContext, useState } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Box, Heading, Flex, Link, Text, Tabs, TabsList, TabsTrigger, TabsContent } from '@optiaxiom/react';
 import {
-  FaCog,
   FaHospital,
   FaBuilding,
   FaStethoscope,
@@ -12,6 +11,7 @@ import {
   FaMapMarkedAlt,
   FaLock,
 } from 'react-icons/fa';
+import { TbShieldCog } from 'react-icons/tb';
 
 import AuthContext from '../../store/auth';
 import HospitalTab from './tabs/HospitalTab';
@@ -32,7 +32,7 @@ const TABS = [
   { value: 'schedules', label: 'Doctor Schedules', icon: <FaCalendarAlt />, Component: ScheduleTab },
 ];
 
-const Settings = () => {
+const Admin = () => {
   const { isAdmin } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState('hospitals');
 
@@ -66,7 +66,7 @@ const Settings = () => {
             Admins only
           </Heading>
           <Text color="fg.tertiary">
-            Settings are restricted to administrators. Contact an admin if you need access.
+            This area is restricted to administrators. Contact an admin if you need access.
           </Text>
           <Link asChild>
             <RouterLink to="/">Back to home</RouterLink>
@@ -101,11 +101,11 @@ const Settings = () => {
             rounded="lg"
             style={{ width: '48px', height: '48px', fontSize: '24px' }}
           >
-            <FaCog />
+            <TbShieldCog />
           </Flex>
           <Flex flexDirection="column" gap="2">
             <Heading level="2" color="fg.default">
-              System Settings
+              Administration
             </Heading>
             <Text fontSize="sm" color="fg.tertiary">
               Manage hospitals, branches, departments, and clinical schedules
@@ -136,4 +136,4 @@ const Settings = () => {
   );
 };
 
-export default Settings;
+export default Admin;
