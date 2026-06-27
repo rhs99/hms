@@ -1,35 +1,56 @@
 services:
- frontend:
-    build: 
-     context: ./frontend
-    container_name: hms-frontend
+  caddy:
+    image: caddy:2-alpine
+    container_name: hms-caddy
+    restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "443:443"
+      - "80:80"
     volumes:
-      - ./frontend:/code
-      - /code/node_modules
- backend:
-   build:
-    context: ./backend
-   container_name: 'hms-backend'
-   restart: always
-   ports:
-     - "5000:8000"
-   volumes:
+      - ./caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - frontend
+      - backend
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: hms-frontend
+    expose:
+      - "3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+  backend:
+    build:
+      context: ./backend
+    container_name: hms-backend
+    restart: always
+    expose:
+      - "8000"
+    environment:
+      - COOKIE_SECURE=true
+    volumes:
       - ./backend:/code
-   depends_on:
-    - db
- db:
-   image: mysql:8.4
-   restart: always
-   container_name: 'hms-db'
-   ports:
-     - "3306:3306"
-   environment:
-     - MYSQL_ROOT_PASSWORD=zxc90zxc
-     - MYSQL_DATABASE=hms-db
-   volumes:
-     - app-db-data:/var/lib/mysql
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.4
+    restart: always
+    container_name: hms-db
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=zxc90zxc
+      - MYSQL_DATABASE=hms-db
+    volumes:
+      - app-db-data:/var/lib/mysql
 
 volumes:
- app-db-data:
+  app-db-data:
+  caddy_data:
+  caddy_config:

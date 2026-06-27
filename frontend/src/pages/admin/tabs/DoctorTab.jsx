@@ -16,7 +16,8 @@ import {
 import { FaPlus, FaSearch, FaUser, FaUserMd } from 'react-icons/fa';
 
 import Config from '../../../config';
-import { AlertBanner, Card, CardBody, CardHeader, SectionLabel, useAlertState } from '../_components';
+import { AlertBanner, Card, CardBody, CardHeader, SectionLabel } from '../_components';
+import { useAlertState } from '../../../component/useAlertState';
 
 const DoctorTab = () => {
   const [username, setUsername] = useState('');
@@ -36,7 +37,7 @@ const DoctorTab = () => {
       try {
         const { data } = await axios.get(`${Config.SERVER_URL}/departments`);
         setDepartments(data);
-      } catch (error) {
+      } catch {
         show('danger', 'Failed to load departments.');
       }
     };
@@ -61,7 +62,7 @@ const DoctorTab = () => {
       } else {
         show('danger', 'User not found. Please check the username.');
       }
-    } catch (error) {
+    } catch {
       show('danger', 'User not found. Please check the username.');
     } finally {
       setIsSearching(false);
@@ -104,7 +105,7 @@ const DoctorTab = () => {
 
       resetForm();
       show('success', 'Doctor created successfully!');
-    } catch (error) {
+    } catch {
       show('danger', 'Failed to create doctor. Please check all fields and try again.');
     } finally {
       setIsLoading(false);

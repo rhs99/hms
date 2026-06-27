@@ -1,6 +1,7 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Depends, status
 from pydantic import BaseModel
 
+from app.auth import require_admin
 from app.services.district import DistrictService
 
 router = APIRouter()
@@ -22,6 +23,7 @@ class DistrictSchema:
     "/districts",
     response_model=DistrictSchema.Output,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_admin)],
 )
 async def create_district(district: DistrictSchema.CreateInput):
     return await DistrictService.create_district(district.name, district.division_id)

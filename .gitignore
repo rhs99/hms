@@ -3,3 +3,4 @@ __pycache__
 hmsbackendenv
 node_modules
 .claude
+build

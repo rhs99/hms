@@ -1,7 +1,8 @@
 import datetime
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Depends, status
 from pydantic import BaseModel
 
+from app.auth import require_admin
 from app.models import WeekDayEnum
 from app.services.slot_schedule import SlotScheduleService
 from app.services.appointment import AppointmentService
@@ -41,6 +42,7 @@ async def get_slot_schedules(branch_id: int, employee_id: int):
     "/slot-schedules",
     response_model=SlotScheduleSchema.Output,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_admin)],
 )
 async def create_slot_schedule(slot_schedule: SlotScheduleSchema.CreateInput):
     day_enum = WeekDayEnum[slot_schedule.day]

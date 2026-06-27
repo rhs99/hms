@@ -18,7 +18,12 @@ const SignIn = () => {
     e.preventDefault();
     const URL = Config.SERVER_URL + '/sessions';
     axios.post(URL, { user_name: userName, password }).then(({ data }) => {
-      authCtx.login(data.user_name, data.id);
+      authCtx.login({
+        userName: data.user_name,
+        userId: data.id,
+        isAdmin: data.is_admin,
+        isDoctor: data.is_doctor,
+      });
       navigate('/');
     });
   };

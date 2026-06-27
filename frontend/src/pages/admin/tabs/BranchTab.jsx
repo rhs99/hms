@@ -4,7 +4,8 @@ import { Box, Button, Field, Flex, Input, Menu, MenuContent, MenuTrigger, Text }
 import { FaPlus, FaBuilding } from 'react-icons/fa';
 
 import Config from '../../../config';
-import { AlertBanner, Card, CardBody, CardHeader, useAlertState } from '../_components';
+import { AlertBanner, Card, CardBody, CardHeader } from '../_components';
+import { useAlertState } from '../../../component/useAlertState';
 
 const BranchTab = () => {
   const [selectedHospital, setSelectedHospital] = useState(null);
@@ -27,7 +28,7 @@ const BranchTab = () => {
       try {
         const { data } = await axios.get(`${Config.SERVER_URL}/hospitals`);
         setHospitals(data);
-      } catch (error) {
+      } catch {
         show('danger', 'Failed to load hospitals.');
       }
     };
@@ -90,7 +91,7 @@ const BranchTab = () => {
       setEmail('');
       setSelectedDivision(null);
       show('success', 'Branch created successfully!');
-    } catch (error) {
+    } catch {
       show('danger', 'Failed to create branch. Please try again.');
     } finally {
       setIsLoading(false);

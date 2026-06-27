@@ -1,6 +1,7 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Depends, status
 from pydantic import BaseModel
 
+from app.auth import require_admin
 from app.services.doctor import DoctorService
 
 router = APIRouter()
@@ -26,6 +27,7 @@ class DoctorSchema:
     "/doctors",
     response_model=DoctorSchema.Output,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_admin)],
 )
 async def create_doctor(doctor: DoctorSchema.CreateInput):
     return await DoctorService.create_doctor(

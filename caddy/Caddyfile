@@ -1,0 +1,20 @@
+{
+	# Suppress the admin endpoint; we don't need it.
+	admin off
+}
+
+localhost {
+	# Caddy generates and rotates a local-CA cert automatically.
+	# First visit will warn in the browser until you trust the root cert (see README).
+	tls internal
+
+	# Backend API: strip /api prefix and forward to FastAPI on port 8000.
+	handle_path /api/* {
+		reverse_proxy backend:8000
+	}
+
+	# Everything else: Vite dev server (handles HMR websocket too).
+	handle {
+		reverse_proxy frontend:3000
+	}
+}

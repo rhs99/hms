@@ -1,16 +1,19 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Badge, Box, Button, Card, CardHeader, CardImage, CardPreview, Flex, Heading, Text } from '@optiaxiom/react';
 import { FaHospitalAlt, FaUserMd, FaPlus, FaStethoscope } from 'react-icons/fa';
 import { MdLocalHospital } from 'react-icons/md';
 
 import Config from '../../config';
-import { AlertBanner, useAlertState } from '../../component/alerts';
+import AuthContext from '../../store/auth';
+import { AlertBanner } from '../../component/alerts';
+import { useAlertState } from '../../component/useAlertState';
 import DepartmentAssociationModal from './DepartmentAssociationModal';
 import DoctorAssociationModal from './DoctorAssociationModal';
 
 const Branch = () => {
+  const { isAdmin } = useContext(AuthContext);
   const [depts, setDepts] = useState([]);
   const [departmentDoctors, setDepartmentDoctors] = useState({});
   const [showAssociateDepartmentModal, setShowAssociateDepartmentModal] = useState(false);
@@ -41,7 +44,7 @@ const Branch = () => {
           const url = Config.SERVER_URL + `/branches/${branchId}/departments/${dept.id}/doctors`;
           const { data } = await axios.get(url);
           doctorsData[dept.id] = data;
-        } catch (error) {
+        } catch {
           hadError = true;
           doctorsData[dept.id] = [];
         }
@@ -112,9 +115,11 @@ const Branch = () => {
             Departments & Doctors
           </Heading>
         </Flex>
-        <Button appearance="primary" onClick={() => setShowAssociateDepartmentModal(true)} icon={<FaPlus />}>
-          Add Department
-        </Button>
+        {isAdmin && (
+          <Button appearance="primary" onClick={() => setShowAssociateDepartmentModal(true)} icon={<FaPlus />}>
+            Add Department
+          </Button>
+        )}
       </Flex>
 
       {depts.length === 0 ? (
@@ -136,10 +141,16 @@ const Branch = () => {
           <Heading level="3" color="fg.secondary">
             No Departments Yet
           </Heading>
-          <Text color="fg.tertiary">Get started by adding departments to this branch</Text>
-          <Button appearance="primary" onClick={() => setShowAssociateDepartmentModal(true)} icon={<FaPlus />}>
-            Add Your First Department
-          </Button>
+          <Text color="fg.tertiary">
+            {isAdmin
+              ? 'Get started by adding departments to this branch'
+              : 'No departments have been added to this branch yet.'}
+          </Text>
+          {isAdmin && (
+            <Button appearance="primary" onClick={() => setShowAssociateDepartmentModal(true)} icon={<FaPlus />}>
+              Add Your First Department
+            </Button>
+          )}
         </Flex>
       ) : (
         <Flex flexDirection="column" gap="20">
@@ -172,9 +183,11 @@ const Branch = () => {
                   </Heading>
                   <Badge intent="information">{departmentDoctors[dept.id]?.length || 0} Doctors</Badge>
                 </Flex>
-                <Button appearance="primary" size="sm" onClick={() => handleAddDoctor(dept.id)} icon={<FaPlus />}>
-                  Add Doctor
-                </Button>
+                {isAdmin && (
+                  <Button appearance="primary" size="sm" onClick={() => handleAddDoctor(dept.id)} icon={<FaPlus />}>
+                    Add Doctor
+                  </Button>
+                )}
               </Flex>
 
               {departmentDoctors[dept.id]?.length > 0 ? (
@@ -219,9 +232,11 @@ const Branch = () => {
               ) : (
                 <Flex flexDirection="column" alignItems="center" gap="12" p="24">
                   <Text color="fg.tertiary">No doctors available in this department yet.</Text>
-                  <Button appearance="primary" onClick={() => handleAddDoctor(dept.id)} icon={<FaPlus />}>
-                    Add Doctor
-                  </Button>
+                  {isAdmin && (
+                    <Button appearance="primary" onClick={() => handleAddDoctor(dept.id)} icon={<FaPlus />}>
+                      Add Doctor
+                    </Button>
+                  )}
                 </Flex>
               )}
             </Box>

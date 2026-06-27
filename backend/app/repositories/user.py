@@ -1,6 +1,7 @@
 import datetime
 from sqlalchemy.future import select
 
+from app.auth import hash_password, verify_password
 from app.db import session
 from app.models import User, GenderEnum, BloodGroupEnum
 
@@ -49,7 +50,7 @@ class UserRepo:
     ):
         new_user = User(
             user_name=user_name,
-            password=password,
+            password=hash_password(password),
             full_name=full_name,
             email=email,
             phone=phone,
@@ -65,9 +66,9 @@ class UserRepo:
     @staticmethod
     async def sign_in(user_name: str, password: str):
         result = await session().execute(
-            select(User.id, User.user_name).filter(
-                User.user_name == user_name, User.password == password
-            )
+            select(User).filter(User.user_name == user_name)
         )
-        user = result.one_or_none()
+        user = result.scalar_one_or_none()
+        if user is None or not verify_password(password, user.password):
+            return None
         return user

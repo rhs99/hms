@@ -1,7 +1,7 @@
 import { Box, Flex, Heading, Text } from '@optiaxiom/react';
 import { FaCheckCircle, FaExclamationCircle } from 'react-icons/fa';
 
-export { AlertBanner, useAlertState } from '../../component/alerts';
+export { AlertBanner } from '../../component/alerts';
 
 export const Card = ({ children, ...rest }) => (
   <Box

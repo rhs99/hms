@@ -1,41 +1,20 @@
-import { useState, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useContext } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { Box, Nav, NavBody, NavFooter, NavItem, NavList, Sidebar, SidebarToggle } from '@optiaxiom/react';
-import { TbLayoutSidebar, TbTimelineEventText, TbHome, TbSettings } from 'react-icons/tb';
+import { TbLayoutSidebar, TbTimelineEventText, TbHome, TbShieldCog } from 'react-icons/tb';
 import { RiHomeOfficeLine } from 'react-icons/ri';
 
 import AuthContext from '../../store/auth';
 import { useMediaQuery } from '../useMediaQuery';
 
 const HmsSidebar = () => {
-  const [selected, setSelected] = useState('activities');
-
-  const authCtx = useContext(AuthContext);
+  const { isLoggedIn, isAdmin, isDoctor } = useContext(AuthContext);
   const navigate = useNavigate();
+  const { pathname } = useLocation();
   const isDesktop = useMediaQuery('(min-width: 900px)');
 
-  const { isLoggedIn } = authCtx;
-
-  const goToHospitals = () => {
-    setSelected('hospitals');
-    navigate('/');
-  };
-
-  const goToActivities = () => {
-    setSelected('activities');
-    navigate('/activities');
-  };
-
-  const goToWorkplaces = () => {
-    setSelected('workplaces');
-    navigate('/workplaces');
-  };
-
-  const goToSettings = () => {
-    setSelected('settings');
-    navigate('/settings');
-  };
+  const isActive = (path) => (path === '/' ? pathname === '/' : pathname.startsWith(path));
 
   return (
     <Box style={{ maxWidth: '250px', height: 'calc(100vh - 100px)' }}>
@@ -43,22 +22,30 @@ const HmsSidebar = () => {
         <Nav>
           <NavBody>
             <NavList>
-              <NavItem active={selected === 'hospitals'} icon={<TbHome />} onClick={goToHospitals}>
+              <NavItem active={isActive('/')} icon={<TbHome />} onClick={() => navigate('/')}>
                 Hospitals
               </NavItem>
               {isLoggedIn && (
-                <NavItem active={selected === 'activities'} icon={<TbTimelineEventText />} onClick={goToActivities}>
+                <NavItem
+                  active={isActive('/activities')}
+                  icon={<TbTimelineEventText />}
+                  onClick={() => navigate('/activities')}
+                >
                   Activities
                 </NavItem>
               )}
-              {isLoggedIn && (
-                <NavItem active={selected === 'workplaces'} icon={<RiHomeOfficeLine />} onClick={goToWorkplaces}>
+              {isLoggedIn && isDoctor && (
+                <NavItem
+                  active={isActive('/workplaces')}
+                  icon={<RiHomeOfficeLine />}
+                  onClick={() => navigate('/workplaces')}
+                >
                   Workplaces
                 </NavItem>
               )}
-              {isLoggedIn && (
-                <NavItem active={selected === 'settings'} icon={<TbSettings />} onClick={goToSettings}>
-                  Settings
+              {isLoggedIn && isAdmin && (
+                <NavItem active={isActive('/admin')} icon={<TbShieldCog />} onClick={() => navigate('/admin')}>
+                  Administration
                 </NavItem>
               )}
             </NavList>

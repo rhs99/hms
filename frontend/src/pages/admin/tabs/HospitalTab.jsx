@@ -4,7 +4,8 @@ import { Box, Button, Field, Flex, Input } from '@optiaxiom/react';
 import { FaPlus, FaHospital } from 'react-icons/fa';
 
 import Config from '../../../config';
-import { AlertBanner, Card, CardBody, CardHeader, useAlertState } from '../_components';
+import { AlertBanner, Card, CardBody, CardHeader } from '../_components';
+import { useAlertState } from '../../../component/useAlertState';
 
 const HospitalTab = () => {
   const [hospitalName, setHospitalName] = useState('');
@@ -23,7 +24,7 @@ const HospitalTab = () => {
 
       setHospitalName('');
       show('success', 'Hospital created successfully!');
-    } catch (error) {
+    } catch {
       show('danger', 'Failed to create hospital. Please try again.');
     } finally {
       setIsLoading(false);
