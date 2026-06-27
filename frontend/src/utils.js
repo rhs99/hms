@@ -5,6 +5,8 @@ const getFormatedDate = (date) => {
   return `${year}-${month}-${day}`;
 };
 
-export default {
+const utils = {
   getFormatedDate,
 };
+
+export default utils;
