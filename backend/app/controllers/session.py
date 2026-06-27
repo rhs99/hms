@@ -20,6 +20,7 @@ class SessionSchema:
         user_name: str
         id: int
         is_admin: bool
+        is_doctor: bool
 
 
 @router.post(
@@ -43,6 +44,7 @@ async def create_session(response: Response, credentials: SessionSchema.CreateIn
         "user_name": result["user_name"],
         "id": result["id"],
         "is_admin": result["is_admin"],
+        "is_doctor": result["is_doctor"],
     }
 
 

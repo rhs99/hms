@@ -1,6 +1,6 @@
 import datetime
 
-from app.auth import create_access_token, is_user_admin
+from app.auth import create_access_token, is_user_admin, is_user_doctor
 from app.repositories.user import UserRepo
 from app.models import GenderEnum, BloodGroupEnum
 
@@ -35,9 +35,11 @@ class UserService:
         if user is None:
             return None
         is_admin = await is_user_admin(user.id)
+        is_doctor = await is_user_doctor(user.id)
         return {
             "id": user.id,
             "user_name": user.user_name,
             "is_admin": is_admin,
+            "is_doctor": is_doctor,
             "access_token": create_access_token(user.id, is_admin),
         }

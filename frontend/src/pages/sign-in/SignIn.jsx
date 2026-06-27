@@ -22,6 +22,7 @@ const SignIn = () => {
         userName: data.user_name,
         userId: data.id,
         isAdmin: data.is_admin,
+        isDoctor: data.is_doctor,
       });
       navigate('/');
     });

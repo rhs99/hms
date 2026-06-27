@@ -8,7 +8,7 @@ from sqlalchemy.future import select
 
 from app.config import Config
 from app.db import session
-from app.models import Role, UserRole
+from app.models import Doctor, Role, UserRole
 
 ADMIN_ROLE_NAME = "admin"
 
@@ -128,6 +128,13 @@ async def is_user_admin(user_id: int) -> bool:
         select(Role.name)
         .join(UserRole, UserRole.role_id == Role.id)
         .where(UserRole.user_id == user_id, Role.name == ADMIN_ROLE_NAME)
+    )
+    return result.scalar_one_or_none() is not None
+
+
+async def is_user_doctor(user_id: int) -> bool:
+    result = await session().execute(
+        select(Doctor.user_id).where(Doctor.user_id == user_id)
     )
     return result.scalar_one_or_none() is not None
 

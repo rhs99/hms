@@ -9,7 +9,7 @@ import AuthContext from '../../store/auth';
 import { useMediaQuery } from '../useMediaQuery';
 
 const HmsSidebar = () => {
-  const { isLoggedIn, isAdmin } = useContext(AuthContext);
+  const { isLoggedIn, isAdmin, isDoctor } = useContext(AuthContext);
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const isDesktop = useMediaQuery('(min-width: 900px)');
@@ -34,7 +34,7 @@ const HmsSidebar = () => {
                   Activities
                 </NavItem>
               )}
-              {isLoggedIn && (
+              {isLoggedIn && isDoctor && (
                 <NavItem
                   active={isActive('/workplaces')}
                   icon={<RiHomeOfficeLine />}

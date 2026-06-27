@@ -36,6 +36,7 @@ const clearLocalAuthState = () => {
   localStorage.removeItem('userName');
   localStorage.removeItem('userId');
   localStorage.removeItem('isAdmin');
+  localStorage.removeItem('isDoctor');
 };
 
 // Auto-logout on 401: server says our session is gone, drop UI state too.
@@ -53,6 +54,7 @@ axios.interceptors.response.use(
 const AuthContext = React.createContext({
   isLoggedIn: false,
   isAdmin: false,
+  isDoctor: false,
   login: () => undefined,
   logout: () => undefined,
   getStoredValue: () => {
@@ -66,13 +68,16 @@ const AuthContext = React.createContext({
 export const AuthContextProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('userName') !== null || false);
   const [isAdmin, setIsAdmin] = useState(localStorage.getItem('isAdmin') === 'true');
+  const [isDoctor, setIsDoctor] = useState(localStorage.getItem('isDoctor') === 'true');
 
-  const login = ({ userName, userId, isAdmin }) => {
+  const login = ({ userName, userId, isAdmin, isDoctor }) => {
     localStorage.setItem('userName', userName);
     localStorage.setItem('userId', userId);
     localStorage.setItem('isAdmin', isAdmin ? 'true' : 'false');
+    localStorage.setItem('isDoctor', isDoctor ? 'true' : 'false');
     setIsLoggedIn(true);
     setIsAdmin(Boolean(isAdmin));
+    setIsDoctor(Boolean(isDoctor));
   };
 
   const logout = () => {
@@ -81,6 +86,7 @@ export const AuthContextProvider = ({ children }) => {
     clearLocalAuthState();
     setIsLoggedIn(false);
     setIsAdmin(false);
+    setIsDoctor(false);
     axios.delete(`${Config.SERVER_URL}/sessions`).catch(() => undefined);
   };
 
@@ -94,6 +100,7 @@ export const AuthContextProvider = ({ children }) => {
   const contextValue = {
     isLoggedIn,
     isAdmin,
+    isDoctor,
     login,
     logout,
     getStoredValue,
