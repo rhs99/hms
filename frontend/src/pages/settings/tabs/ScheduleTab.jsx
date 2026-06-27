@@ -72,8 +72,10 @@ const ScheduleTab = () => {
   const fetchBranches = useCallback(
     async (hospitalId) => {
       try {
-        const { data } = await axios.get(`${Config.SERVER_URL}/branches?hospital_id=${hospitalId}`);
-        setBranches(data);
+        const { data } = await axios.get(
+          `${Config.SERVER_URL}/branches?hospital_id=${hospitalId}&limit=100`
+        );
+        setBranches(data.items);
       } catch (error) {
         show('danger', 'Failed to load branches.');
       }
