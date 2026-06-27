@@ -166,7 +166,8 @@ const Homepage = () => {
     <Flex
       flexDirection="column"
       gap="16"
-      style={{ maxHeight: '80vh', overflowY: 'auto', padding: 'var(--spacing-lg)' }}
+      p="16"
+      style={{ maxHeight: '80vh', overflowY: 'auto' }}
     >
       <AlertBanner alert={alert} onDismiss={dismiss} />
       <Flex flexDirection="row" justifyContent="flex-end" alignItems="center">

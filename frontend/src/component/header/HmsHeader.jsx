@@ -28,7 +28,7 @@ const HmsHeader = () => {
       justifyContent="space-between"
       alignItems="center"
       style={{
-        padding: 'var(--spacing-lg) var(--spacing-2xl)',
+        padding: '16px 32px',
         backgroundColor: 'var(--ax-colors-bg-default)',
         borderBottom: '2px solid var(--ax-colors-fg-accent-strong)',
         boxShadow: 'var(--ax-boxShadow-md)',
@@ -46,10 +46,7 @@ const HmsHeader = () => {
       >
         <FaHospital size={28} style={{ color: 'var(--ax-colors-fg-accent-strong)' }} />
         <Flex flexDirection="column" gap="0">
-          <Heading
-            level="4"
-            style={{ margin: 0, color: 'var(--ax-colors-fg-accent-strong)', fontWeight: 'var(--font-weight-bold)' }}
-          >
+          <Heading level="4" color="fg.accent.strong" fontWeight="700" style={{ margin: 0 }}>
             HMS
           </Heading>
           <Text fontSize="xs" style={{ color: 'var(--ax-colors-fg-tertiary)', marginTop: '-4px' }}>
@@ -101,12 +98,12 @@ const HmsHeader = () => {
               style={({ isActive }) => ({
                 textDecoration: 'none',
                 color: isActive ? 'var(--ax-colors-bg-default)' : 'var(--ax-colors-fg-accent-strong)',
-                fontWeight: 'var(--font-weight-medium)',
+                fontWeight: 500,
                 padding: '8px 20px',
                 borderRadius: 'var(--ax-borderRadius-md)',
                 backgroundColor: isActive ? 'var(--ax-colors-fg-accent-strong)' : 'transparent',
                 border: '2px solid var(--ax-colors-fg-accent-strong)',
-                transition: 'var(--transition-fast)',
+                transition: '150ms ease-in-out',
               })}
               onMouseEnter={(e) => {
                 const isActive = e.currentTarget.getAttribute('aria-current') === 'page';
@@ -128,12 +125,12 @@ const HmsHeader = () => {
               style={({ isActive }) => ({
                 textDecoration: 'none',
                 color: isActive ? 'var(--ax-colors-bg-default)' : 'var(--ax-colors-fg-accent-strong)',
-                fontWeight: 'var(--font-weight-medium)',
+                fontWeight: 500,
                 padding: '8px 20px',
                 borderRadius: 'var(--ax-borderRadius-md)',
                 backgroundColor: isActive ? 'var(--ax-colors-fg-accent-strong)' : 'transparent',
                 border: '2px solid var(--ax-colors-fg-accent-strong)',
-                transition: 'var(--transition-fast)',
+                transition: '150ms ease-in-out',
               })}
               onMouseEnter={(e) => {
                 const isActive = e.currentTarget.getAttribute('aria-current') === 'page';

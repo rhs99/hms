@@ -1,8 +1,18 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Flex, Box, Text, Heading, Badge, Button } from '@optiaxiom/react';
-import { Card, CardHeader, CardImage, CardPreview } from '@optiaxiom/react';
+import {
+  Badge,
+  Box,
+  Button,
+  Card,
+  CardHeader,
+  CardImage,
+  CardPreview,
+  Flex,
+  Heading,
+  Text,
+} from '@optiaxiom/react';
 import { FaHospitalAlt, FaUserMd, FaPlus, FaStethoscope } from 'react-icons/fa';
 import { MdLocalHospital } from 'react-icons/md';
 
@@ -10,8 +20,6 @@ import Config from '../../config';
 import { AlertBanner, useAlertState } from '../../component/alerts';
 import DepartmentAssociationModal from './DepartmentAssociationModal';
 import DoctorAssociationModal from './DoctorAssociationModal';
-
-import './_index.scss';
 
 const Branch = () => {
   const [depts, setDepts] = useState([]);
@@ -24,7 +32,6 @@ const Branch = () => {
   const { branchId } = useParams();
   const navigate = useNavigate();
 
-  // Fetch all departments for this branch
   useEffect(() => {
     const url = Config.SERVER_URL + `/branches/${branchId}/departments`;
     axios
@@ -33,7 +40,6 @@ const Branch = () => {
       .catch(() => show('danger', 'Failed to load departments for this branch.'));
   }, [branchId, show]);
 
-  // Fetch doctors for each department
   useEffect(() => {
     if (depts.length === 0) return;
 
@@ -81,65 +87,119 @@ const Branch = () => {
   };
 
   return (
-    <Box className="branch">
+    <Box bg="bg.page" p="24" style={{ maxHeight: '85vh', overflowY: 'auto' }}>
       {alert && (
         <Box style={{ marginBottom: '16px' }}>
           <AlertBanner alert={alert} onDismiss={dismiss} />
         </Box>
       )}
-      <Box className="branch-header">
-        <Flex flexDirection="row" alignItems="center" gap="12">
-          <FaHospitalAlt size={32} style={{ color: 'var(--ax-colors-fg-accent-strong)' }} />
-          <Heading level="2" className="branch-title">
+
+      <Flex
+        flexDirection="row"
+        alignItems="center"
+        justifyContent="space-between"
+        p="20"
+        bg="bg.default"
+        rounded="xl"
+        border="1"
+        borderColor="border.secondary"
+        shadow="sm"
+        style={{ marginBottom: '24px' }}
+      >
+        <Flex flexDirection="row" alignItems="center" gap="16">
+          <Flex
+            alignItems="center"
+            justifyContent="center"
+            bg="bg.accent.subtle"
+            color="fg.accent.strong"
+            rounded="lg"
+            style={{ width: '48px', height: '48px', fontSize: '24px' }}
+          >
+            <FaHospitalAlt />
+          </Flex>
+          <Heading level="2" color="fg.default">
             Departments & Doctors
           </Heading>
         </Flex>
-        <Box className="branch-actions">
-          <Button
-            appearance="primary"
-            onClick={() => setShowAssociateDepartmentModal(true)}
-            className="branch-add-button"
-            icon={<FaPlus />}
-          >
-            Add Department
-          </Button>
-        </Box>
-      </Box>
+        <Button
+          appearance="primary"
+          onClick={() => setShowAssociateDepartmentModal(true)}
+          icon={<FaPlus />}
+        >
+          Add Department
+        </Button>
+      </Flex>
 
       {depts.length === 0 ? (
-        <Box className="branch-empty-state">
-          <Box className="branch-empty-icon">
-            <MdLocalHospital size={64} />
+        <Flex
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          gap="16"
+          p="48"
+          bg="bg.default"
+          rounded="xl"
+          border="1"
+          borderColor="border.secondary"
+          style={{ borderStyle: 'dashed' }}
+        >
+          <Box color="fg.tertiary" style={{ fontSize: '48px', display: 'flex' }}>
+            <MdLocalHospital />
           </Box>
-          <Heading level="3" className="branch-empty-title">
+          <Heading level="3" color="fg.secondary">
             No Departments Yet
           </Heading>
-          <Text className="branch-empty-description">Get started by adding departments to this branch</Text>
+          <Text color="fg.tertiary">Get started by adding departments to this branch</Text>
           <Button appearance="primary" onClick={() => setShowAssociateDepartmentModal(true)} icon={<FaPlus />}>
             Add Your First Department
           </Button>
-        </Box>
+        </Flex>
       ) : (
-        <Box className="branch-departments">
+        <Flex flexDirection="column" gap="20">
           {depts.map((dept) => (
-            <Box key={dept.id} className="branch-department-section">
-              <Box className="branch-department-header">
+            <Box
+              key={dept.id}
+              bg="bg.default"
+              rounded="xl"
+              border="1"
+              borderColor="border.secondary"
+              shadow="sm"
+              p="20"
+            >
+              <Flex
+                flexDirection="row"
+                alignItems="center"
+                justifyContent="space-between"
+                pb="12"
+                borderColor="border.tertiary"
+                style={{ borderBottomWidth: '1px', borderBottomStyle: 'solid', marginBottom: '16px' }}
+              >
                 <Flex flexDirection="row" alignItems="center" gap="12">
-                  <FaStethoscope size={24} />
-                  <Heading level="3" className="branch-department-name">
+                  <Box color="fg.accent.strong" style={{ fontSize: '20px', display: 'flex' }}>
+                    <FaStethoscope />
+                  </Box>
+                  <Heading level="4" color="fg.default">
                     {dept.name}
                   </Heading>
-                  <Badge className="branch-doctor-count">{departmentDoctors[dept.id]?.length || 0} Doctors</Badge>
+                  <Badge intent="information">
+                    {departmentDoctors[dept.id]?.length || 0} Doctors
+                  </Badge>
                 </Flex>
                 <Button appearance="primary" size="sm" onClick={() => handleAddDoctor(dept.id)} icon={<FaPlus />}>
                   Add Doctor
                 </Button>
-              </Box>
+              </Flex>
 
               {departmentDoctors[dept.id]?.length > 0 ? (
-                <Box className="branch-doctors-grid">
+                <Box
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                    gap: '16px',
+                  }}
+                >
                   {departmentDoctors[dept.id].map((doctor) => (
-                    <Card key={doctor.id} className="branch-doctor-card" onClick={() => gotoDoctor(dept.id, doctor.id)}>
+                    <Card key={doctor.id} onClick={() => gotoDoctor(dept.id, doctor.id)} style={{ cursor: 'pointer' }}>
                       <CardPreview>
                         <CardImage asChild>
                           <img
@@ -153,10 +213,14 @@ const Branch = () => {
                           <Badge intent="information" w="fit">
                             {doctor.experience}
                           </Badge>
-                          <Text fontSize="lg" fontWeight="700">
-                            <FaUserMd style={{ display: 'inline', marginRight: '8px' }} />
-                            Dr. {doctor.name}
-                          </Text>
+                          <Flex flexDirection="row" alignItems="center" gap="8">
+                            <Box color="fg.accent.strong" style={{ display: 'flex' }}>
+                              <FaUserMd />
+                            </Box>
+                            <Text fontSize="lg" fontWeight="700" color="fg.default">
+                              Dr. {doctor.name}
+                            </Text>
+                          </Flex>
                           <Text color="fg.tertiary" fontSize="sm">
                             {doctor.degree}
                           </Text>
@@ -166,21 +230,16 @@ const Branch = () => {
                   ))}
                 </Box>
               ) : (
-                <Box className="branch-no-doctors">
-                  <Text>No doctors available in this department yet.</Text>
-                  <Button
-                    appearance="primary"
-                    onClick={() => handleAddDoctor(dept.id)}
-                    style={{ marginTop: 'var(--spacing-md)' }}
-                    icon={<FaPlus />}
-                  >
+                <Flex flexDirection="column" alignItems="center" gap="12" p="24">
+                  <Text color="fg.tertiary">No doctors available in this department yet.</Text>
+                  <Button appearance="primary" onClick={() => handleAddDoctor(dept.id)} icon={<FaPlus />}>
                     Add Doctor
                   </Button>
-                </Box>
+                </Flex>
               )}
             </Box>
           ))}
-        </Box>
+        </Flex>
       )}
 
       {showAssociateDepartmentModal && (

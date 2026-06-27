@@ -23,8 +23,6 @@ import { Dialog, DialogBody, DialogClose, DialogContent, DialogFooter, DialogHea
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import Config from '../../config';
 
-import './_index.scss';
-
 const DAYS_OF_WEEK = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const DAY_ABBREVIATIONS = {
   Sunday: 'SUN',
@@ -226,52 +224,122 @@ const Doctor = () => {
   };
 
   return (
-    <Box className="doctor">
-      <Box className="doctor-header">
-        <Heading level="2" className="doctor-title">
-          <FaUserMd size={32} />
-          Book Appointment
-        </Heading>
-        <Text className="doctor-subtitle">Select an available time slot and book your appointment</Text>
-      </Box>
-
-      <Box className="doctor-content">
-        <Box className="doctor-section">
-          <Heading level="3" className="doctor-section-title">
-            <FaClock />
-            Available Time Slots
+    <Box bg="bg.page" p="24" style={{ maxHeight: '85vh', overflowY: 'auto' }}>
+      <Flex
+        flexDirection="row"
+        alignItems="center"
+        gap="16"
+        p="20"
+        bg="bg.default"
+        rounded="xl"
+        border="1"
+        borderColor="border.secondary"
+        shadow="sm"
+        style={{ marginBottom: '24px' }}
+      >
+        <Flex
+          alignItems="center"
+          justifyContent="center"
+          bg="bg.accent.subtle"
+          color="fg.accent.strong"
+          rounded="lg"
+          style={{ width: '48px', height: '48px', fontSize: '24px' }}
+        >
+          <FaUserMd />
+        </Flex>
+        <Flex flexDirection="column" gap="2">
+          <Heading level="2" color="fg.default">
+            Book Appointment
           </Heading>
-          <Box className="doctor-form-fields">
+          <Text fontSize="sm" color="fg.tertiary">
+            Select an available time slot and book your appointment
+          </Text>
+        </Flex>
+      </Flex>
+
+      <Box
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
+          gap: '20px',
+        }}
+      >
+        <Box bg="bg.default" rounded="xl" border="1" borderColor="border.secondary" shadow="sm" p="20">
+          <Flex
+            flexDirection="row"
+            alignItems="center"
+            gap="8"
+            pb="12"
+            borderColor="border.tertiary"
+            style={{ borderBottomWidth: '1px', borderBottomStyle: 'solid', marginBottom: '16px' }}
+          >
+            <Box color="fg.accent.strong" style={{ fontSize: '18px', display: 'flex' }}>
+              <FaClock />
+            </Box>
+            <Heading level="4" color="fg.default">
+              Available Time Slots
+            </Heading>
+          </Flex>
+
+          <Flex flexDirection="column" gap="16">
             <Field label="Select a Time Slot">
-              <Box className="doctor-table-wrapper">
+              <Box rounded="md" border="1" borderColor="border.tertiary" style={{ overflow: 'hidden' }}>
                 <DataTable table={slotTable}>
                   <DataTableBody />
                 </DataTable>
               </Box>
             </Field>
             {selectedSlotSchedule && (
-              <Box className="doctor-info-card">
-                <Text className="doctor-info-label">Selected Slot</Text>
-                <Text className="doctor-info-value">{getSelectedSlotSchedule()}</Text>
+              <Box bg="bg.page" p="16" rounded="md" border="1" borderColor="border.tertiary">
+                <Text fontSize="xs" fontWeight="600" color="fg.tertiary" textTransform="uppercase">
+                  Selected Slot
+                </Text>
+                <Text fontSize="md" fontWeight="600" color="fg.default" style={{ marginTop: '4px' }}>
+                  {getSelectedSlotSchedule()}
+                </Text>
               </Box>
             )}
-          </Box>
+          </Flex>
         </Box>
 
-        <Box className="doctor-section">
-          <Heading level="3" className="doctor-section-title">
-            <FaCalendarAlt />
-            Appointment Details
-          </Heading>
-          <Box className="doctor-form-fields">
+        <Box bg="bg.default" rounded="xl" border="1" borderColor="border.secondary" shadow="sm" p="20">
+          <Flex
+            flexDirection="row"
+            alignItems="center"
+            gap="8"
+            pb="12"
+            borderColor="border.tertiary"
+            style={{ borderBottomWidth: '1px', borderBottomStyle: 'solid', marginBottom: '16px' }}
+          >
+            <Box color="fg.accent.strong" style={{ fontSize: '18px', display: 'flex' }}>
+              <FaCalendarAlt />
+            </Box>
+            <Heading level="4" color="fg.default">
+              Appointment Details
+            </Heading>
+          </Flex>
+
+          <Flex flexDirection="column" gap="16">
             <Field label="Select Date">
               <DateInput value={date} onValueChange={setDate} w="full" />
             </Field>
             {dateValidationError && (
-              <Box className="doctor-validation-error">
-                <FaExclamationTriangle />
-                <Text>{dateValidationError}</Text>
-              </Box>
+              <Flex
+                alignItems="center"
+                gap="8"
+                p="12"
+                bg="bg.error.subtle"
+                rounded="md"
+                color="fg.error.strong"
+                style={{ borderLeftWidth: '4px', borderLeftStyle: 'solid', borderLeftColor: 'var(--ax-colors-fg-error)' }}
+              >
+                <Box color="fg.error" style={{ display: 'flex', flexShrink: 0 }}>
+                  <FaExclamationTriangle />
+                </Box>
+                <Text fontSize="sm" fontWeight="500" color="fg.error.strong">
+                  {dateValidationError}
+                </Text>
+              </Flex>
             )}
             <Field label="Parent Appointment ID (Optional)">
               <Input
@@ -281,29 +349,32 @@ const Doctor = () => {
                 placeholder="Enter parent appointment ID if follow-up"
               />
             </Field>
-            <Box className="doctor-actions">
+            <Flex
+              flexDirection="row"
+              gap="12"
+              justifyContent="flex-end"
+              pt="16"
+              borderColor="border.tertiary"
+              style={{ borderTopWidth: '1px', borderTopStyle: 'solid', marginTop: '8px' }}
+            >
               <Button
                 appearance="inverse"
                 disabled={!Boolean(selectedSlotSchedule) || !date || Boolean(dateValidationError)}
                 onClick={getAppointments}
-                className="doctor-button"
                 icon={<FaClipboardList />}
               >
                 View Appointments
               </Button>
               <Button
                 appearance="primary"
-                disabled={
-                  !authCtx.isLoggedIn || !date || !Boolean(selectedSlotSchedule) || Boolean(dateValidationError)
-                }
+                disabled={!authCtx.isLoggedIn || !date || !Boolean(selectedSlotSchedule) || Boolean(dateValidationError)}
                 onClick={makeAppointment}
-                className="doctor-button"
                 icon={<FaCalendarAlt />}
               >
                 Book Appointment
               </Button>
-            </Box>
-          </Box>
+            </Flex>
+          </Flex>
         </Box>
       </Box>
 
@@ -311,7 +382,9 @@ const Doctor = () => {
         <DialogContent size="md">
           <DialogHeader>
             <Flex alignItems="center" gap="8">
-              <FaClipboardList style={{ color: 'var(--ax-colors-fg-accent-strong)' }} />
+              <Box color="fg.accent.strong" style={{ display: 'flex' }}>
+                <FaClipboardList />
+              </Box>
               Scheduled Appointments
             </Flex>
           </DialogHeader>

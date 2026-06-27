@@ -1,18 +1,28 @@
 import axios from 'axios';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createColumnHelper } from '@tanstack/react-table';
+import { createColumnHelper, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { FaCalendarCheck, FaHistory, FaClipboardList } from 'react-icons/fa';
-import { DataTable, DataTableBody, Box, Cover, DataTableCheckbox, Heading, Text } from '@optiaxiom/react';
-import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
-
-import { Dialog, DialogBody, DialogClose, DialogContent, DialogFooter, DialogHeader } from '@optiaxiom/react';
+import {
+  Box,
+  Cover,
+  DataTable,
+  DataTableBody,
+  DataTableCheckbox,
+  Dialog,
+  DialogBody,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  Flex,
+  Heading,
+  Text,
+} from '@optiaxiom/react';
 
 import Prescription from '../../component/prescription/Prescreption';
 import AuthContext from '../../store/auth';
 import Config from '../../config';
-
-import './_index.scss';
 
 const columnHelper = createColumnHelper();
 
@@ -26,37 +36,60 @@ const getAppointmentColumns = () => [
       </Cover>
     ),
   },
-  columnHelper.accessor('serial_no', {
-    header: 'SL No',
-    size: 80,
-  }),
-  columnHelper.accessor('id', {
-    header: 'Id',
-    size: 100,
-  }),
-  columnHelper.accessor('date', {
-    header: 'Date',
-  }),
+  columnHelper.accessor('serial_no', { header: 'SL No', size: 80 }),
+  columnHelper.accessor('id', { header: 'Id', size: 100 }),
+  columnHelper.accessor('date', { header: 'Date' }),
   columnHelper.accessor('parent', {
     header: 'Previous Appointment',
     cell: (info) => info.getValue() || 'N/A',
   }),
-  columnHelper.accessor('hospital', {
-    header: 'Hospital',
-  }),
-  columnHelper.accessor('branch', {
-    header: 'Branch',
-  }),
-  columnHelper.accessor('department', {
-    header: 'Department',
-  }),
-  columnHelper.accessor('doctor', {
-    header: 'Doctor',
-  }),
-  columnHelper.accessor('time', {
-    header: 'Time',
-  }),
+  columnHelper.accessor('hospital', { header: 'Hospital' }),
+  columnHelper.accessor('branch', { header: 'Branch' }),
+  columnHelper.accessor('department', { header: 'Department' }),
+  columnHelper.accessor('doctor', { header: 'Doctor' }),
+  columnHelper.accessor('time', { header: 'Time' }),
 ];
+
+const Section = ({ icon, title, isEmpty, emptyLabel, children }) => (
+  <Box
+    bg="bg.default"
+    rounded="xl"
+    border="1"
+    borderColor="border.secondary"
+    shadow="sm"
+    p="20"
+  >
+    <Flex
+      flexDirection="row"
+      alignItems="center"
+      gap="8"
+      pb="12"
+      borderColor="border.tertiary"
+      style={{ borderBottomWidth: '1px', borderBottomStyle: 'solid', marginBottom: '16px' }}
+    >
+      <Box color="fg.accent.strong" style={{ fontSize: '18px', display: 'flex' }}>
+        {icon}
+      </Box>
+      <Heading level="4" color="fg.default">
+        {title}
+      </Heading>
+    </Flex>
+    {isEmpty ? (
+      <Box
+        p="32"
+        bg="bg.page"
+        rounded="md"
+        border="1"
+        borderColor="border.secondary"
+        style={{ borderStyle: 'dashed', textAlign: 'center' }}
+      >
+        <Text color="fg.tertiary">{emptyLabel}</Text>
+      </Box>
+    ) : (
+      children
+    )}
+  </Box>
+);
 
 const Activities = () => {
   const [upcomingAppointments, setUpcomingAppointments] = useState([]);
@@ -114,9 +147,7 @@ const Activities = () => {
     getCoreRowModel: getCoreRowModel(),
     enableMultiRowSelection: false,
     onRowSelectionChange: setPastRowSelection,
-    state: {
-      rowSelection: pastRowSelection,
-    },
+    state: { rowSelection: pastRowSelection },
   });
 
   const closePrescriptionDialog = () => {
@@ -124,23 +155,47 @@ const Activities = () => {
     setPastRowSelection({});
   };
 
-  if (!authCtx.isLoggedIn) {
-    return null;
-  }
+  if (!authCtx.isLoggedIn) return null;
 
   return (
-    <Box className="activities">
-      <Box className="activities-header">
-        <Heading level="2" className="activities-title">
-          <FaClipboardList size={32} />
-          My Activities
-        </Heading>
-        <Text className="activities-subtitle">View your upcoming and past appointments</Text>
-      </Box>
+    <Box bg="bg.page" p="24" style={{ maxHeight: '85vh', overflowY: 'auto' }}>
+      <Flex
+        flexDirection="row"
+        alignItems="center"
+        justifyContent="space-between"
+        p="20"
+        bg="bg.default"
+        rounded="xl"
+        border="1"
+        borderColor="border.secondary"
+        shadow="sm"
+        style={{ marginBottom: '24px' }}
+      >
+        <Flex flexDirection="row" alignItems="center" gap="16">
+          <Flex
+            alignItems="center"
+            justifyContent="center"
+            bg="bg.accent.subtle"
+            color="fg.accent.strong"
+            rounded="lg"
+            style={{ width: '48px', height: '48px', fontSize: '24px' }}
+          >
+            <FaClipboardList />
+          </Flex>
+          <Flex flexDirection="column" gap="2">
+            <Heading level="2" color="fg.default">
+              My Activities
+            </Heading>
+            <Text fontSize="sm" color="fg.tertiary">
+              View your upcoming and past appointments
+            </Text>
+          </Flex>
+        </Flex>
+      </Flex>
 
       {appointmentToView && (
         <Dialog open={!!appointmentToView} onOpenChange={closePrescriptionDialog}>
-          <DialogContent>
+          <DialogContent size="lg">
             <DialogHeader>
               <Heading level="3">Appointment Details</Heading>
             </DialogHeader>
@@ -156,47 +211,29 @@ const Activities = () => {
         </Dialog>
       )}
 
-      <Box className="activities-content">
-        <Box className="activities-section">
-          <Box className="activities-section-header">
-            <Heading level="3" className="activities-section-title">
-              <FaCalendarCheck />
-              Upcoming Appointments
-            </Heading>
-          </Box>
-          {upcomingAppointments.length > 0 ? (
-            <Box className="activities-table-wrapper">
-              <DataTable table={upcomingAppointmentsTable}>
-                <DataTableBody />
-              </DataTable>
-            </Box>
-          ) : (
-            <Box className="activities-empty-state">
-              <Text>No upcoming appointments</Text>
-            </Box>
-          )}
-        </Box>
+      <Flex flexDirection="column" gap="20">
+        <Section
+          icon={<FaCalendarCheck />}
+          title="Upcoming Appointments"
+          isEmpty={upcomingAppointments.length === 0}
+          emptyLabel="No upcoming appointments"
+        >
+          <DataTable table={upcomingAppointmentsTable}>
+            <DataTableBody />
+          </DataTable>
+        </Section>
 
-        <Box className="activities-section">
-          <Box className="activities-section-header">
-            <Heading level="3" className="activities-section-title">
-              <FaHistory />
-              Past Appointments
-            </Heading>
-          </Box>
-          {pastAppointments.length > 0 ? (
-            <Box className="activities-table-wrapper">
-              <DataTable table={pastAppointmentsTable}>
-                <DataTableBody />
-              </DataTable>
-            </Box>
-          ) : (
-            <Box className="activities-empty-state">
-              <Text>No past appointments</Text>
-            </Box>
-          )}
-        </Box>
-      </Box>
+        <Section
+          icon={<FaHistory />}
+          title="Past Appointments"
+          isEmpty={pastAppointments.length === 0}
+          emptyLabel="No past appointments"
+        >
+          <DataTable table={pastAppointmentsTable}>
+            <DataTableBody />
+          </DataTable>
+        </Section>
+      </Flex>
     </Box>
   );
 };
