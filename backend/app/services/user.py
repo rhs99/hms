@@ -40,5 +40,4 @@ class UserService:
             "user_name": user.user_name,
             "is_admin": is_admin,
             "access_token": create_access_token(user.id, is_admin),
-            "token_type": "bearer",
         }

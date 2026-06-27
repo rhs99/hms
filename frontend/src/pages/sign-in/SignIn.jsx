@@ -22,7 +22,6 @@ const SignIn = () => {
         userName: data.user_name,
         userId: data.id,
         isAdmin: data.is_admin,
-        accessToken: data.access_token,
       });
       navigate('/');
     });
