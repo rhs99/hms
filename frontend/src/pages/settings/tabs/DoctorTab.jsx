@@ -19,18 +19,17 @@ const DoctorTab = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { alert, show, dismiss } = useAlertState();
 
-  const fetchDepartments = async () => {
-    try {
-      const { data } = await axios.get(`${Config.SERVER_URL}/departments`);
-      setDepartments(data);
-    } catch (error) {
-      show('danger', 'Failed to load departments.');
-    }
-  };
-
   useEffect(() => {
+    const fetchDepartments = async () => {
+      try {
+        const { data } = await axios.get(`${Config.SERVER_URL}/departments`);
+        setDepartments(data);
+      } catch (error) {
+        show('danger', 'Failed to load departments.');
+      }
+    };
     fetchDepartments();
-  }, []);
+  }, [show]);
 
   const handleSearchUser = async () => {
     if (!username.trim()) {

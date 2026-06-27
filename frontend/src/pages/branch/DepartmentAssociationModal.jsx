@@ -8,6 +8,8 @@ import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader } from '@
 
 import Config from '../../config';
 
+const columnHelper = createColumnHelper();
+
 const DepartmentAssociationModal = ({ open, onClose, branchId, branchDepartments }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [allDepartments, setAllDepartments] = useState([]);
@@ -37,7 +39,6 @@ const DepartmentAssociationModal = ({ open, onClose, branchId, branchDepartments
     });
   };
 
-  const columnHelper = createColumnHelper();
   const departmentColumns = useMemo(
     () => [
       {

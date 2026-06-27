@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import { Box, Button, DataTable, DataTableBody, Field, Flex, Input, Text } from '@optiaxiom/react';
 import { createColumnHelper, getCoreRowModel, useReactTable } from '@tanstack/react-table';
@@ -15,18 +15,18 @@ const DepartmentTab = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { alert, show, dismiss } = useAlertState();
 
-  const fetchDepartments = async () => {
+  const fetchDepartments = useCallback(async () => {
     try {
       const { data } = await axios.get(`${Config.SERVER_URL}/departments`);
       setDepartments(data);
     } catch (error) {
       show('danger', 'Failed to load departments.');
     }
-  };
+  }, [show]);
 
   useEffect(() => {
     fetchDepartments();
-  }, []);
+  }, [fetchDepartments]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

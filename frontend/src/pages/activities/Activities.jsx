@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createColumnHelper } from '@tanstack/react-table';
 import { FaCalendarCheck, FaHistory, FaClipboardList } from 'react-icons/fa';
@@ -67,15 +67,16 @@ const Activities = () => {
   const authCtx = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const fetchAppointments = async () => {
-    const UPCOMING_URL = Config.SERVER_URL + `/users/${authCtx.getStoredValue().userId}/appointments`;
-    const PAST_URL = Config.SERVER_URL + `/users/${authCtx.getStoredValue().userId}/appointments?past=True`;
+  const fetchAppointments = useCallback(async () => {
+    const userId = authCtx.getStoredValue().userId;
+    const UPCOMING_URL = Config.SERVER_URL + `/users/${userId}/appointments`;
+    const PAST_URL = Config.SERVER_URL + `/users/${userId}/appointments?past=True`;
 
     const [upcomingResponse, pastResponse] = await Promise.all([axios.get(UPCOMING_URL), axios.get(PAST_URL)]);
 
     setUpcomingAppointments(upcomingResponse.data);
     setPastAppointments(pastResponse.data);
-  };
+  }, [authCtx]);
 
   useEffect(() => {
     if (!authCtx.isLoggedIn) {
@@ -83,7 +84,7 @@ const Activities = () => {
       return;
     }
     fetchAppointments().catch((e) => console.log(e));
-  }, [authCtx, navigate]);
+  }, [authCtx, navigate, fetchAppointments]);
 
   const getAppointment = async (id) => {
     const URL = Config.SERVER_URL + `/appointments/${id}`;
@@ -99,7 +100,7 @@ const Activities = () => {
         getAppointment(selectedAppointment.id);
       }
     }
-  }, [pastRowSelection]);
+  }, [pastRowSelection, pastAppointments]);
 
   const upcomingAppointmentsTable = useReactTable({
     columns: getAppointmentColumns(),

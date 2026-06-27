@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import {
   Badge,
@@ -51,68 +51,46 @@ const ScheduleTab = () => {
   const [isAddingSchedule, setIsAddingSchedule] = useState(false);
   const { alert, show, dismiss } = useAlertState();
 
-  useEffect(() => {
-    fetchDoctors();
-    fetchHospitals();
-    fetchSlots();
-  }, []);
-
-  useEffect(() => {
-    if (selectedHospital) {
-      fetchBranches(selectedHospital.id);
-    } else {
-      setBranches([]);
-      setSelectedBranch(null);
-    }
-  }, [selectedHospital]);
-
-  useEffect(() => {
-    if (selectedDoctor && selectedBranch) {
-      checkAssignment();
-    } else {
-      setIsAssigned(false);
-      setWorkPlaceId(null);
-      setExistingSchedules([]);
-    }
-  }, [selectedDoctor, selectedBranch]);
-
-  const fetchDoctors = async () => {
+  const fetchDoctors = useCallback(async () => {
     try {
       const { data } = await axios.get(`${Config.SERVER_URL}/doctors`);
       setDoctors(data);
     } catch (error) {
       show('danger', 'Failed to load doctors.');
     }
-  };
+  }, [show]);
 
-  const fetchHospitals = async () => {
+  const fetchHospitals = useCallback(async () => {
     try {
       const { data } = await axios.get(`${Config.SERVER_URL}/hospitals`);
       setHospitals(data);
     } catch (error) {
       show('danger', 'Failed to load hospitals.');
     }
-  };
+  }, [show]);
 
-  const fetchBranches = async (hospitalId) => {
-    try {
-      const { data } = await axios.get(`${Config.SERVER_URL}/branches?hospital_id=${hospitalId}`);
-      setBranches(data);
-    } catch (error) {
-      show('danger', 'Failed to load branches.');
-    }
-  };
+  const fetchBranches = useCallback(
+    async (hospitalId) => {
+      try {
+        const { data } = await axios.get(`${Config.SERVER_URL}/branches?hospital_id=${hospitalId}`);
+        setBranches(data);
+      } catch (error) {
+        show('danger', 'Failed to load branches.');
+      }
+    },
+    [show]
+  );
 
-  const fetchSlots = async () => {
+  const fetchSlots = useCallback(async () => {
     try {
       const { data } = await axios.get(`${Config.SERVER_URL}/slots`);
       setSlots(data);
     } catch (error) {
       show('danger', 'Failed to load time slots.');
     }
-  };
+  }, [show]);
 
-  const checkAssignment = async () => {
+  const checkAssignment = useCallback(async () => {
     if (!selectedDoctor || !selectedBranch) return;
 
     try {
@@ -138,7 +116,32 @@ const ScheduleTab = () => {
       setWorkPlaceId(null);
       setExistingSchedules([]);
     }
-  };
+  }, [selectedDoctor, selectedBranch]);
+
+  useEffect(() => {
+    fetchDoctors();
+    fetchHospitals();
+    fetchSlots();
+  }, [fetchDoctors, fetchHospitals, fetchSlots]);
+
+  useEffect(() => {
+    if (selectedHospital) {
+      fetchBranches(selectedHospital.id);
+    } else {
+      setBranches([]);
+      setSelectedBranch(null);
+    }
+  }, [selectedHospital, fetchBranches]);
+
+  useEffect(() => {
+    if (selectedDoctor && selectedBranch) {
+      checkAssignment();
+    } else {
+      setIsAssigned(false);
+      setWorkPlaceId(null);
+      setExistingSchedules([]);
+    }
+  }, [selectedDoctor, selectedBranch, checkAssignment]);
 
   const handleAssignBranch = async () => {
     if (!selectedDoctor || !selectedBranch || !startDate) {

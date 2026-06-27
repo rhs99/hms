@@ -15,18 +15,17 @@ const BranchTab = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { alert, show, dismiss } = useAlertState();
 
-  const fetchHospitals = async () => {
-    try {
-      const { data } = await axios.get(`${Config.SERVER_URL}/hospitals`);
-      setHospitals(data);
-    } catch (error) {
-      show('danger', 'Failed to load hospitals.');
-    }
-  };
-
   useEffect(() => {
+    const fetchHospitals = async () => {
+      try {
+        const { data } = await axios.get(`${Config.SERVER_URL}/hospitals`);
+        setHospitals(data);
+      } catch (error) {
+        show('danger', 'Failed to load hospitals.');
+      }
+    };
     fetchHospitals();
-  }, []);
+  }, [show]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

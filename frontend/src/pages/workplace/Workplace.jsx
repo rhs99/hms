@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useState, useContext, useEffect, useMemo } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createColumnHelper } from '@tanstack/react-table';
 import { FaBriefcaseMedical, FaClock, FaUserClock, FaCheckCircle } from 'react-icons/fa';
@@ -99,13 +99,7 @@ const Workplace = () => {
     });
   }, [authCtx, navigate]);
 
-  useEffect(() => {
-    if (selectedSlotScheduleId) {
-      getAllAppointments();
-    }
-  }, [selectedSlotScheduleId]);
-
-  const getAllAppointments = async () => {
+  const getAllAppointments = useCallback(async () => {
     if (!selectedSlotScheduleId) return;
 
     const PENDING_URL = `${Config.SERVER_URL}/slot-schedules/${selectedSlotScheduleId}/appointments?date=${utils.getFormatedDate(new Date())}&pending=True`;
@@ -115,7 +109,13 @@ const Workplace = () => {
 
     setPendingAppointments(pendingResponse.data);
     setResolvedAppointments(resolvedResponse.data);
-  };
+  }, [selectedSlotScheduleId]);
+
+  useEffect(() => {
+    if (selectedSlotScheduleId) {
+      getAllAppointments();
+    }
+  }, [selectedSlotScheduleId, getAllAppointments]);
 
   const resolveAppointment = async (id) => {
     const URL = Config.SERVER_URL + `/appointments/${id}`;
@@ -141,7 +141,7 @@ const Workplace = () => {
         resolveAppointment(selectedAppointment.id);
       }
     }
-  }, [pendingRowSelection]);
+  }, [pendingRowSelection, pendingAppointments]);
 
   const currentDay = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'][new Date().getDay()];
   const filteredWorkplaces = useMemo(() => workplaces.filter((wp) => wp.day === currentDay), [workplaces, currentDay]);

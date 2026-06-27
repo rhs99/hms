@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
 import { Box, Button, DataTable, DataTableBody, Field, Flex, Input, Text } from '@optiaxiom/react';
 import { createColumnHelper, getCoreRowModel, useReactTable } from '@tanstack/react-table';
@@ -16,18 +16,18 @@ const SlotTab = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { alert, show, dismiss } = useAlertState();
 
-  const fetchSlots = async () => {
+  const fetchSlots = useCallback(async () => {
     try {
       const { data } = await axios.get(`${Config.SERVER_URL}/slots`);
       setSlots(data);
     } catch (error) {
       show('danger', 'Failed to load time slots.');
     }
-  };
+  }, [show]);
 
   useEffect(() => {
     fetchSlots();
-  }, []);
+  }, [fetchSlots]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
