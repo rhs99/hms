@@ -40,7 +40,7 @@ const Settings = () => {
             alignItems="center"
             justifyContent="center"
             bg="bg.accent.subtle"
-            color="fg.accent"
+            color="fg.accent.strong"
             rounded="lg"
             style={{ width: '48px', height: '48px', fontSize: '24px' }}
           >

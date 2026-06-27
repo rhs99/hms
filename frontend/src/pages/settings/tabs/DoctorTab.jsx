@@ -137,7 +137,7 @@ const DoctorTab = () => {
             {selectedUser && (
               <Box bg="bg.default" rounded="md" border="1" borderColor="border.tertiary" p="12">
                 <Flex alignItems="center" gap="12" style={{ marginBottom: '8px' }}>
-                  <Box color="fg.accent">
+                  <Box color="fg.accent.strong">
                     <FaUser />
                   </Box>
                   <Text fontSize="sm" fontWeight="600" color="fg.default">

@@ -10,7 +10,7 @@ const lightValue = (token) => {
 const c = (name) => lightValue(tokens.colors[name]);
 
 const COLORS = {
-  primary: c('fg.accent'),
+  primary: c('fg.accent.strong'),
   text: c('fg.default'),
   muted: c('fg.tertiary'),
   secondary: c('fg.secondary'),

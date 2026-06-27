@@ -29,7 +29,7 @@ export const CardHeader = ({ icon, title, subtitle, trailing, level = 4 }) => (
   >
     <Flex flexDirection="row" alignItems="center" gap="12">
       {icon && (
-        <Flex alignItems="center" justifyContent="center" color="fg.accent" style={{ fontSize: '20px' }}>
+        <Flex alignItems="center" justifyContent="center" color="fg.accent.strong" style={{ fontSize: '20px' }}>
           {icon}
         </Flex>
       )}
