@@ -9,8 +9,11 @@ from app.controllers.appointment import router as appointment_router
 from app.controllers.branch import router as branch_router
 from app.controllers.branch_dept import router as branch_dept_router
 from app.controllers.department import router as department_router
+from app.controllers.district import router as district_router
+from app.controllers.division import router as division_router
 from app.controllers.doctor import router as doctor_router
 from app.controllers.hospital import router as hospital_router
+from app.controllers.thana import router as thana_router
 from app.controllers.role import router as role_router
 from app.controllers.session import router as session_router
 from app.controllers.slot import router as slot_router
@@ -26,8 +29,11 @@ app.include_router(appointment_router, tags=["appointment"])
 app.include_router(branch_router, tags=["branch"])
 app.include_router(branch_dept_router, tags=["branch-dept"])
 app.include_router(department_router, tags=["department"])
+app.include_router(district_router, tags=["district"])
+app.include_router(division_router, tags=["division"])
 app.include_router(doctor_router, tags=["doctor"])
 app.include_router(hospital_router, tags=["hospital"])
+app.include_router(thana_router, tags=["thana"])
 app.include_router(role_router, tags=["role"])
 app.include_router(session_router, tags=["session"])
 app.include_router(slot_router, tags=["slot"])

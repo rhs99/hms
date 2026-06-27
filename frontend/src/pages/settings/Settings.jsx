@@ -1,6 +1,15 @@
 import { useState } from 'react';
 import { Box, Heading, Flex, Text, Tabs, TabsList, TabsTrigger, TabsContent } from '@optiaxiom/react';
-import { FaCog, FaHospital, FaBuilding, FaStethoscope, FaClock, FaUserMd, FaCalendarAlt } from 'react-icons/fa';
+import {
+  FaCog,
+  FaHospital,
+  FaBuilding,
+  FaStethoscope,
+  FaClock,
+  FaUserMd,
+  FaCalendarAlt,
+  FaMapMarkedAlt,
+} from 'react-icons/fa';
 
 import HospitalTab from './tabs/HospitalTab';
 import BranchTab from './tabs/BranchTab';
@@ -8,9 +17,11 @@ import DepartmentTab from './tabs/DepartmentTab';
 import SlotTab from './tabs/SlotTab';
 import DoctorTab from './tabs/DoctorTab';
 import ScheduleTab from './tabs/ScheduleTab';
+import RegionTab from './tabs/RegionTab';
 
 const TABS = [
   { value: 'hospitals', label: 'Hospitals', icon: <FaHospital />, Component: HospitalTab },
+  { value: 'regions', label: 'Regions', icon: <FaMapMarkedAlt />, Component: RegionTab },
   { value: 'branches', label: 'Branches', icon: <FaBuilding />, Component: BranchTab },
   { value: 'departments', label: 'Departments', icon: <FaStethoscope />, Component: DepartmentTab },
   { value: 'slots', label: 'Time Slots', icon: <FaClock />, Component: SlotTab },
