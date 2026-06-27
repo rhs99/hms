@@ -85,14 +85,18 @@ class BranchRepo:
             )
             .order_by(Branch.id)
         )
-        items_stmt = _apply_filters(
-            items_stmt,
-            hospital_id=hospital_id,
-            thana_id=thana_id,
-            district_id=district_id,
-            division_id=division_id,
-            search=search,
-        ).limit(limit).offset(offset)
+        items_stmt = (
+            _apply_filters(
+                items_stmt,
+                hospital_id=hospital_id,
+                thana_id=thana_id,
+                district_id=district_id,
+                division_id=division_id,
+                search=search,
+            )
+            .limit(limit)
+            .offset(offset)
+        )
 
         count_stmt = _apply_filters(
             select(func.count(Branch.id)),
