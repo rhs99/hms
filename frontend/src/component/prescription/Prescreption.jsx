@@ -1,11 +1,12 @@
 import axios from 'axios';
 import { useState } from 'react';
-import { PDFViewer } from '@react-pdf/renderer';
-import { FaUserMd, FaPrescriptionBottleAlt, FaFilePdf } from 'react-icons/fa';
+import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
+import { FaUserMd, FaPrescriptionBottleAlt, FaFilePdf, FaDownload } from 'react-icons/fa';
 import { Box, Button, Flex, Heading, Text, Textarea } from '@optiaxiom/react';
 
 import PdfDocument from './PdfDocument';
 import Config from '../../config';
+import { useMediaQuery } from '../useMediaQuery';
 
 const BLOOD_GROUP_LABELS = {
   A_POS: 'A+',
@@ -64,6 +65,73 @@ const Card = ({ children }) => (
   </Box>
 );
 
+const MobilePrescriptionPage = ({ page }) => {
+  const { hospitalData, doctorData, patientData, bodyData } = page;
+  return (
+    <Box bg="bg.default" rounded="lg" border="1" borderColor="border.tertiary" p="16">
+      <Flex flexDirection="column" gap="12">
+        <Flex
+          flexDirection="column"
+          gap="2"
+          pb="12"
+          borderColor="border.tertiary"
+          style={{ borderBottomWidth: '1px', borderBottomStyle: 'solid' }}
+        >
+          <Heading level="4" color="fg.accent.strong">
+            {hospitalData.Hospital || 'Hospital'}
+          </Heading>
+          {hospitalData.Branch && (
+            <Text fontSize="xs" color="fg.tertiary">
+              {hospitalData.Branch}
+            </Text>
+          )}
+          {(hospitalData.Phone || hospitalData.Email) && (
+            <Text fontSize="xs" color="fg.tertiary">
+              {[hospitalData.Phone, hospitalData.Email].filter(Boolean).join(' · ')}
+            </Text>
+          )}
+        </Flex>
+
+        <Flex flexDirection="column" gap="2">
+          <Text fontSize="sm" fontWeight="600" color="fg.default">
+            Dr. {doctorData.Doctor || 'N/A'}
+          </Text>
+          <Text fontSize="xs" color="fg.tertiary">
+            {[doctorData.Degree, doctorData.Department].filter(Boolean).join(' · ')}
+          </Text>
+        </Flex>
+
+        <Box bg="bg.secondary" rounded="md" p="12">
+          <Flex flexDirection="row" style={{ flexWrap: 'wrap', gap: '12px' }}>
+            <PatientField label="Patient" value={patientData.Name} />
+            <PatientField label="Gender" value={patientData.Gender} />
+            <PatientField label="Age" value={patientData.Age} />
+            <PatientField label="Blood" value={patientData['Blood Group']} />
+            <PatientField label="Date" value={patientData.Date} />
+          </Flex>
+        </Box>
+
+        <Flex flexDirection="column" gap="6">
+          <Text
+            fontSize="xs"
+            fontWeight="600"
+            color="fg.tertiary"
+            textTransform="uppercase"
+            style={{ letterSpacing: '0.5px' }}
+          >
+            ℞ Prescription
+          </Text>
+          <Box bg="bg.accent.subtle" rounded="md" p="12">
+            <Text fontSize="sm" color="fg.default" style={{ whiteSpace: 'pre-wrap', lineHeight: 1.6 }}>
+              {bodyData.Prescription || 'No prescription details provided.'}
+            </Text>
+          </Box>
+        </Flex>
+      </Flex>
+    </Box>
+  );
+};
+
 const CardHeader = ({ icon, title, subtitle, trailing }) => (
   <Flex
     flexDirection="row"
@@ -99,6 +167,7 @@ const Prescreption = ({ data, onUpdate, onCancel, viewOnly }) => {
   const { user_data, appointments } = data;
   const latestAppointment = appointments.slice(-1)[0];
   const [prescreption, setPrescreption] = useState(latestAppointment?.details || '');
+  const isMobile = useMediaQuery('(max-width: 600px)');
 
   const updateAppointment = async (id) => {
     const URL = Config.SERVER_URL + `/appointments/${id}`;
@@ -143,13 +212,42 @@ const Prescreption = ({ data, onUpdate, onCancel, viewOnly }) => {
         <CardHeader
           icon={<FaFilePdf />}
           title={viewOnly ? 'Prescription' : 'Patient History'}
-          subtitle={viewOnly ? 'Printable prescription document' : 'Previous appointments and prescriptions'}
+          subtitle={
+            isMobile
+              ? 'Tap download for the printable PDF'
+              : viewOnly
+                ? 'Printable prescription document'
+                : 'Previous appointments and prescriptions'
+          }
+          trailing={
+            <PDFDownloadLink
+              document={<PdfDocument pages={pages} />}
+              fileName="prescription.pdf"
+              style={{ textDecoration: 'none' }}
+            >
+              {({ loading }) => (
+                <Button appearance="subtle" size="sm" icon={<FaDownload />} disabled={loading}>
+                  {loading ? 'Preparing…' : 'Download PDF'}
+                </Button>
+              )}
+            </PDFDownloadLink>
+          }
         />
-        <Box bg="bg.page">
-          <PDFViewer style={{ width: '100%', height: '720px', border: 'none', display: 'block' }}>
-            <PdfDocument pages={pages} />
-          </PDFViewer>
-        </Box>
+        {isMobile ? (
+          <Box p="16" bg="bg.page">
+            <Flex flexDirection="column" gap="12">
+              {pages.map((page, idx) => (
+                <MobilePrescriptionPage key={idx} page={page} />
+              ))}
+            </Flex>
+          </Box>
+        ) : (
+          <Box bg="bg.page">
+            <PDFViewer style={{ width: '100%', height: '720px', border: 'none', display: 'block' }}>
+              <PdfDocument pages={pages} />
+            </PDFViewer>
+          </Box>
+        )}
       </Card>
     );
   };

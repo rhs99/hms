@@ -174,8 +174,13 @@ const Homepage = () => {
         />
       </Flex>
 
-      <Flex flexDirection="row" gap="16">
-        <Flex flexDirection="column" gap="8" style={{ flexBasis: '400px', flexShrink: 0, minWidth: '0' }}>
+      <Flex flexDirection={{ base: 'column', md: 'row' }} gap="16">
+        <Flex
+          flexDirection="column"
+          gap="8"
+          w={{ base: 'full', md: 'auto' }}
+          style={{ flexBasis: '400px', flexShrink: 0, minWidth: 0 }}
+        >
           <Heading level="4">Hospitals</Heading>
           {filteredHospitals.length === 0 ? (
             <Box p="16">
@@ -189,7 +194,7 @@ const Homepage = () => {
         </Flex>
 
         {selectedHospital && (
-          <Flex flexDirection="column" gap="8" style={{ flex: '1', minWidth: '0' }}>
+          <Flex flexDirection="column" gap="8" style={{ flex: '1 1 0', minWidth: 0 }}>
             <Heading level="4">Branches - {selectedHospital.name}</Heading>
             {branches.length === 0 ? (
               <Box p="16">

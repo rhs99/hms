@@ -27,8 +27,11 @@ const HmsHeader = () => {
       flexDirection="row"
       justifyContent="space-between"
       alignItems="center"
+      flexWrap="wrap"
+      gap="12"
+      py="12"
+      px="16"
       style={{
-        padding: '16px 32px',
         backgroundColor: 'var(--ax-colors-bg-default)',
         borderBottom: '2px solid var(--ax-colors-fg-accent-strong)',
         boxShadow: 'var(--ax-boxShadow-md)',

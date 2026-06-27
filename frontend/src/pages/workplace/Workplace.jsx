@@ -150,9 +150,7 @@ const Workplace = () => {
     getCoreRowModel: getCoreRowModel(),
     enableMultiRowSelection: false,
     onRowSelectionChange: setWorkplaceRowSelection,
-    state: {
-      rowSelection: workplaceRowSelection,
-    },
+    state: { rowSelection: workplaceRowSelection },
   });
 
   const pendingAppointmentsTable = useReactTable({
@@ -161,9 +159,7 @@ const Workplace = () => {
     getCoreRowModel: getCoreRowModel(),
     enableMultiRowSelection: false,
     onRowSelectionChange: setPendingRowSelection,
-    state: {
-      rowSelection: pendingRowSelection,
-    },
+    state: { rowSelection: pendingRowSelection },
   });
 
   const resolvedAppointmentsTable = useReactTable({
@@ -211,18 +207,19 @@ const Workplace = () => {
   );
 
   return (
-    <Box bg="bg.page" p="24" style={{ maxHeight: '85vh', overflowY: 'auto' }}>
+    <Box bg="bg.page" p="16" style={{ maxHeight: '85vh', overflowY: 'auto' }}>
       <Flex
         flexDirection="row"
+        flexWrap="wrap"
         alignItems="center"
-        gap="16"
-        p="20"
+        gap="12"
+        p="16"
         bg="bg.default"
         rounded="xl"
         border="1"
         borderColor="border.secondary"
         shadow="sm"
-        style={{ marginBottom: '24px' }}
+        style={{ marginBottom: '20px' }}
       >
         <Flex
           alignItems="center"

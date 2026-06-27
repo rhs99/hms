@@ -142,9 +142,7 @@ const Doctor = () => {
     enableMultiRowSelection: false,
     onRowSelectionChange: setSlotRowSelection,
     getRowId: (row) => row.id,
-    state: {
-      rowSelection: slotRowSelection,
-    },
+    state: { rowSelection: slotRowSelection },
   });
 
   useEffect(() => {
@@ -224,18 +222,19 @@ const Doctor = () => {
   };
 
   return (
-    <Box bg="bg.page" p="24" style={{ maxHeight: '85vh', overflowY: 'auto' }}>
+    <Box bg="bg.page" p="16" style={{ maxHeight: '85vh', overflowY: 'auto' }}>
       <Flex
         flexDirection="row"
+        flexWrap="wrap"
         alignItems="center"
-        gap="16"
-        p="20"
+        gap="12"
+        p="16"
         bg="bg.default"
         rounded="xl"
         border="1"
         borderColor="border.secondary"
         shadow="sm"
-        style={{ marginBottom: '24px' }}
+        style={{ marginBottom: '20px' }}
       >
         <Flex
           alignItems="center"
@@ -260,8 +259,8 @@ const Doctor = () => {
       <Box
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))',
-          gap: '20px',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 360px), 1fr))',
+          gap: '16px',
         }}
       >
         <Box bg="bg.default" rounded="xl" border="1" borderColor="border.secondary" shadow="sm" p="20">

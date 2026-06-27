@@ -23,6 +23,7 @@ import {
 import Prescription from '../../component/prescription/Prescreption';
 import AuthContext from '../../store/auth';
 import Config from '../../config';
+import { useMediaQuery } from '../../component/useMediaQuery';
 
 const columnHelper = createColumnHelper();
 
@@ -92,6 +93,7 @@ const Activities = () => {
 
   const authCtx = useContext(AuthContext);
   const navigate = useNavigate();
+  const isMobile = useMediaQuery('(max-width: 600px)');
 
   const fetchAppointments = useCallback(async () => {
     const userId = authCtx.getStoredValue().userId;
@@ -151,20 +153,22 @@ const Activities = () => {
   if (!authCtx.isLoggedIn) return null;
 
   return (
-    <Box bg="bg.page" p="24" style={{ maxHeight: '85vh', overflowY: 'auto' }}>
+    <Box bg="bg.page" p="16" style={{ maxHeight: '85vh', overflowY: 'auto' }}>
       <Flex
         flexDirection="row"
+        flexWrap="wrap"
         alignItems="center"
         justifyContent="space-between"
-        p="20"
+        gap="12"
+        p="16"
         bg="bg.default"
         rounded="xl"
         border="1"
         borderColor="border.secondary"
         shadow="sm"
-        style={{ marginBottom: '24px' }}
+        style={{ marginBottom: '20px' }}
       >
-        <Flex flexDirection="row" alignItems="center" gap="16">
+        <Flex flexDirection="row" alignItems="center" gap="12">
           <Flex
             alignItems="center"
             justifyContent="center"
@@ -188,7 +192,7 @@ const Activities = () => {
 
       {appointmentToView && (
         <Dialog open={!!appointmentToView} onOpenChange={closePrescriptionDialog}>
-          <DialogContent size="lg">
+          <DialogContent size={isMobile ? 'fullscreen' : 'lg'}>
             <DialogHeader>
               <Heading level="3">Appointment Details</Heading>
             </DialogHeader>
