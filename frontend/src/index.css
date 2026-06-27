@@ -1,65 +1,14 @@
 /* ==========================================
-   Hospital Management System - CSS Variables
+   Hospital Management System base styles
+   Colors, shadows, and radii flow directly through Axiom's --ax-* CSS
+   variables. Only non-design-system tokens (spacing, font sizes, motion)
+   are declared here.
    ========================================== */
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
 :root {
-  /* Primary Colors - Medical Blue Theme */
-  --color-primary: #0066cc;
-  --color-primary-dark: #004c99;
-  --color-primary-light: #3385d6;
-  --color-primary-lighter: #e6f2ff;
-
-  /* Secondary Colors - Medical Green (Health & Wellness) */
-  --color-secondary: #00a651;
-  --color-secondary-dark: #007d3d;
-  --color-secondary-light: #33b874;
-  --color-secondary-lighter: #e6f7ef;
-
-  /* Neutral Colors */
-  --color-white: #ffffff;
-  --color-gray-50: #f8f9fa;
-  --color-gray-100: #f0f2f5;
-  --color-gray-200: #e4e6eb;
-  --color-gray-300: #ced4da;
-  --color-gray-400: #adb5bd;
-  --color-gray-500: #6c757d;
-  --color-gray-600: #495057;
-  --color-gray-700: #343a40;
-  --color-gray-800: #212529;
-  --color-gray-900: #0d0f12;
-
-  /* Semantic Colors */
-  --color-success: #28a745;
-  --color-success-light: #d4edda;
-  --color-info: #17a2b8;
-  --color-info-light: #d1ecf1;
-  --color-warning: #ffc107;
-  --color-warning-light: #fff3cd;
-  --color-danger: #dc3545;
-  --color-danger-light: #f8d7da;
-
-  /* Background Colors */
-  --color-bg-primary: var(--color-white);
-  --color-bg-secondary: var(--color-gray-50);
-  --color-bg-tertiary: var(--color-gray-100);
-
-  /* Text Colors */
-  --color-text-primary: var(--color-gray-800);
-  --color-text-secondary: var(--color-gray-600);
-  --color-text-tertiary: var(--color-gray-500);
-  --color-text-inverse: var(--color-white);
-
-  /* Border Colors */
-  --color-border-light: var(--color-gray-200);
-  --color-border-medium: var(--color-gray-300);
-  --color-border-dark: var(--color-gray-400);
-
-  /* Shadow */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
-  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
-
-  /* Spacing Scale */
+  /* Spacing scale */
   --spacing-xs: 4px;
   --spacing-sm: 8px;
   --spacing-md: 12px;
@@ -68,43 +17,30 @@
   --spacing-2xl: 32px;
   --spacing-3xl: 48px;
 
-  /* Border Radius */
-  --radius-sm: 4px;
-  --radius-md: 6px;
-  --radius-lg: 8px;
-  --radius-xl: 12px;
-  --radius-full: 9999px;
+  /* Typography */
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --font-size-3xl: 1.875rem;
+  --font-size-4xl: 2.25rem;
 
-  /* Typography Scale */
-  --font-size-xs: 0.75rem; /* 12px */
-  --font-size-sm: 0.875rem; /* 14px */
-  --font-size-base: 1rem; /* 16px */
-  --font-size-lg: 1.125rem; /* 18px */
-  --font-size-xl: 1.25rem; /* 20px */
-  --font-size-2xl: 1.5rem; /* 24px */
-  --font-size-3xl: 1.875rem; /* 30px */
-  --font-size-4xl: 2.25rem; /* 36px */
-
-  /* Font Weights */
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
   --font-weight-bold: 700;
 
-  /* Line Heights */
   --line-height-tight: 1.25;
   --line-height-normal: 1.5;
   --line-height-relaxed: 1.75;
 
-  /* Transitions */
+  /* Motion */
   --transition-fast: 150ms ease-in-out;
   --transition-base: 250ms ease-in-out;
   --transition-slow: 350ms ease-in-out;
 }
-
-/* ==========================================
-   Base Styles
-   ========================================== */
 
 html {
   box-sizing: border-box;
@@ -130,80 +66,16 @@ body {
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-normal);
   line-height: var(--line-height-normal);
-  color: var(--color-text-primary);
-  background-color: var(--color-bg-secondary);
+  color: var(--ax-colors-fg-default);
+  background-color: var(--ax-colors-bg-page);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Improved font loading from Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-
 code {
   font-family: 'JetBrains Mono', 'Fira Code', source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
   font-size: 0.9em;
-  background-color: var(--color-gray-100);
+  background-color: var(--ax-colors-bg-secondary);
   padding: 2px 6px;
-  border-radius: var(--radius-sm);
-}
-
-iframe {
-  width: 700px !important;
-  height: 300px !important;
-}
-
-/* ==========================================
-   Utility Classes
-   ========================================== */
-
-.text-primary {
-  color: var(--color-primary);
-}
-.text-secondary {
-  color: var(--color-secondary);
-}
-.text-success {
-  color: var(--color-success);
-}
-.text-danger {
-  color: var(--color-danger);
-}
-.text-warning {
-  color: var(--color-warning);
-}
-.text-info {
-  color: var(--color-info);
-}
-
-.bg-primary {
-  background-color: var(--color-primary);
-}
-.bg-secondary {
-  background-color: var(--color-secondary);
-}
-.bg-white {
-  background-color: var(--color-white);
-}
-.bg-gray-50 {
-  background-color: var(--color-gray-50);
-}
-.bg-gray-100 {
-  background-color: var(--color-gray-100);
-}
-
-.border-light {
-  border: 1px solid var(--color-border-light);
-}
-.border-medium {
-  border: 1px solid var(--color-border-medium);
-}
-
-.shadow-sm {
-  box-shadow: var(--shadow-sm);
-}
-.shadow-md {
-  box-shadow: var(--shadow-md);
-}
-.shadow-lg {
-  box-shadow: var(--shadow-lg);
+  border-radius: var(--ax-borderRadius-sm);
 }

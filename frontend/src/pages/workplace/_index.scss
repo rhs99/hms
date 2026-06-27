@@ -6,25 +6,25 @@
   &-header {
     margin-bottom: var(--spacing-2xl);
     padding-bottom: var(--spacing-lg);
-    border-bottom: 2px solid var(--color-border-light);
+    border-bottom: 2px solid var(--ax-colors-border-tertiary);
   }
 
   &-title {
     font-size: var(--font-size-3xl);
     font-weight: var(--font-weight-bold);
-    color: var(--color-primary-dark);
+    color: var(--ax-colors-fg-accent-strong);
     display: flex;
     align-items: center;
     gap: var(--spacing-md);
 
     svg {
-      color: var(--color-primary);
+      color: var(--ax-colors-fg-accent-strong);
     }
   }
 
   &-subtitle {
     font-size: var(--font-size-base);
-    color: var(--color-text-tertiary);
+    color: var(--ax-colors-fg-tertiary);
     margin-top: var(--spacing-sm);
   }
 
@@ -35,11 +35,11 @@
   }
 
   &-section {
-    background-color: var(--color-white);
-    border-radius: var(--radius-lg);
+    background-color: var(--ax-colors-bg-default);
+    border-radius: var(--ax-borderRadius-lg);
     padding: var(--spacing-2xl);
-    box-shadow: var(--shadow-md);
-    border: 1px solid var(--color-border-light);
+    box-shadow: var(--ax-boxShadow-md);
+    border: 1px solid var(--ax-colors-border-tertiary);
   }
 
   &-section-header {
@@ -48,36 +48,36 @@
     gap: var(--spacing-md);
     margin-bottom: var(--spacing-xl);
     padding-bottom: var(--spacing-md);
-    border-bottom: 1px solid var(--color-border-light);
+    border-bottom: 1px solid var(--ax-colors-border-tertiary);
   }
 
   &-section-title {
     font-size: var(--font-size-xl);
     font-weight: var(--font-weight-semibold);
-    color: var(--color-primary);
+    color: var(--ax-colors-fg-accent-strong);
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
 
     svg {
-      color: var(--color-primary);
+      color: var(--ax-colors-fg-accent-strong);
     }
   }
 
   &-table-wrapper {
-    border: 1px solid var(--color-border-light);
-    border-radius: var(--radius-md);
+    border: 1px solid var(--ax-colors-border-tertiary);
+    border-radius: var(--ax-borderRadius-md);
     overflow: hidden;
-    background-color: var(--color-white);
+    background-color: var(--ax-colors-bg-default);
   }
 
   &-empty-state {
     text-align: center;
     padding: var(--spacing-3xl);
-    color: var(--color-text-tertiary);
-    background-color: var(--color-bg-secondary);
-    border-radius: var(--radius-md);
-    border: 2px dashed var(--color-border-medium);
+    color: var(--ax-colors-fg-tertiary);
+    background-color: var(--ax-colors-bg-page);
+    border-radius: var(--ax-borderRadius-md);
+    border: 2px dashed var(--ax-colors-border-secondary);
     font-size: var(--font-size-base);
   }
 

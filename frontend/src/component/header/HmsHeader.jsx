@@ -26,9 +26,9 @@ const HmsHeader = () => {
       alignItems="center"
       style={{
         padding: 'var(--spacing-lg) var(--spacing-2xl)',
-        backgroundColor: 'var(--color-white)',
-        borderBottom: '2px solid var(--color-primary)',
-        boxShadow: 'var(--shadow-md)',
+        backgroundColor: 'var(--ax-colors-bg-default)',
+        borderBottom: '2px solid var(--ax-colors-fg-accent-strong)',
+        boxShadow: 'var(--ax-boxShadow-md)',
         position: 'sticky',
         top: 0,
         zIndex: 100,
@@ -41,15 +41,15 @@ const HmsHeader = () => {
         style={{ cursor: 'pointer' }}
         onClick={() => navigate('/')}
       >
-        <FaHospital size={28} style={{ color: 'var(--color-primary)' }} />
+        <FaHospital size={28} style={{ color: 'var(--ax-colors-fg-accent-strong)' }} />
         <Flex flexDirection="column" gap="0">
           <Heading
             level="4"
-            style={{ margin: 0, color: 'var(--color-primary-dark)', fontWeight: 'var(--font-weight-bold)' }}
+            style={{ margin: 0, color: 'var(--ax-colors-fg-accent-strong)', fontWeight: 'var(--font-weight-bold)' }}
           >
             HMS
           </Heading>
-          <Text fontSize="xs" style={{ color: 'var(--color-text-tertiary)', marginTop: '-4px' }}>
+          <Text fontSize="xs" style={{ color: 'var(--ax-colors-fg-tertiary)', marginTop: '-4px' }}>
             Healthcare Management
           </Text>
         </Flex>
@@ -91,18 +91,18 @@ const HmsHeader = () => {
               to="/sign-in"
               style={({ isActive }) => ({
                 textDecoration: 'none',
-                color: isActive ? 'var(--color-white)' : 'var(--color-primary)',
+                color: isActive ? 'var(--ax-colors-bg-default)' : 'var(--ax-colors-fg-accent-strong)',
                 fontWeight: 'var(--font-weight-medium)',
                 padding: '8px 20px',
-                borderRadius: 'var(--radius-md)',
-                backgroundColor: isActive ? 'var(--color-primary)' : 'transparent',
-                border: '2px solid var(--color-primary)',
+                borderRadius: 'var(--ax-borderRadius-md)',
+                backgroundColor: isActive ? 'var(--ax-colors-fg-accent-strong)' : 'transparent',
+                border: '2px solid var(--ax-colors-fg-accent-strong)',
                 transition: 'var(--transition-fast)',
               })}
               onMouseEnter={(e) => {
                 const isActive = e.currentTarget.getAttribute('aria-current') === 'page';
                 if (!isActive) {
-                  e.currentTarget.style.backgroundColor = 'var(--color-primary-lighter)';
+                  e.currentTarget.style.backgroundColor = 'var(--ax-colors-bg-accent-subtle)';
                 }
               }}
               onMouseLeave={(e) => {
@@ -118,18 +118,18 @@ const HmsHeader = () => {
               to="/sign-up"
               style={({ isActive }) => ({
                 textDecoration: 'none',
-                color: isActive ? 'var(--color-white)' : 'var(--color-primary)',
+                color: isActive ? 'var(--ax-colors-bg-default)' : 'var(--ax-colors-fg-accent-strong)',
                 fontWeight: 'var(--font-weight-medium)',
                 padding: '8px 20px',
-                borderRadius: 'var(--radius-md)',
-                backgroundColor: isActive ? 'var(--color-primary)' : 'transparent',
-                border: '2px solid var(--color-primary)',
+                borderRadius: 'var(--ax-borderRadius-md)',
+                backgroundColor: isActive ? 'var(--ax-colors-fg-accent-strong)' : 'transparent',
+                border: '2px solid var(--ax-colors-fg-accent-strong)',
                 transition: 'var(--transition-fast)',
               })}
               onMouseEnter={(e) => {
                 const isActive = e.currentTarget.getAttribute('aria-current') === 'page';
                 if (!isActive) {
-                  e.currentTarget.style.backgroundColor = 'var(--color-primary-lighter)';
+                  e.currentTarget.style.backgroundColor = 'var(--ax-colors-bg-accent-subtle)';
                 }
               }}
               onMouseLeave={(e) => {

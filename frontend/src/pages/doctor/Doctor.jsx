@@ -311,7 +311,7 @@ const Doctor = () => {
         <DialogContent size="md">
           <DialogHeader>
             <Flex alignItems="center" gap="8">
-              <FaClipboardList style={{ color: 'var(--color-primary)' }} />
+              <FaClipboardList style={{ color: 'var(--ax-colors-fg-accent-strong)' }} />
               Scheduled Appointments
             </Flex>
           </DialogHeader>

@@ -9,13 +9,13 @@
     align-items: center;
     margin-bottom: var(--spacing-2xl);
     padding-bottom: var(--spacing-lg);
-    border-bottom: 2px solid var(--color-border-light);
+    border-bottom: 2px solid var(--ax-colors-border-tertiary);
   }
 
   &-title {
     font-size: var(--font-size-3xl);
     font-weight: var(--font-weight-bold);
-    color: var(--color-primary-dark);
+    color: var(--ax-colors-fg-accent-strong);
   }
 
   &-actions {
@@ -25,10 +25,10 @@
 
   &-add-button {
     padding: var(--spacing-sm) var(--spacing-lg);
-    background-color: var(--color-primary);
-    color: var(--color-white);
+    background-color: var(--ax-colors-fg-accent-strong);
+    color: var(--ax-colors-bg-default);
     border: none;
-    border-radius: var(--radius-md);
+    border-radius: var(--ax-borderRadius-md);
     font-weight: var(--font-weight-semibold);
     cursor: pointer;
     transition: var(--transition-fast);
@@ -37,9 +37,9 @@
     gap: var(--spacing-sm);
 
     &:hover {
-      background-color: var(--color-primary-dark);
+      background-color: var(--ax-colors-fg-accent-strong);
       transform: translateY(-2px);
-      box-shadow: var(--shadow-md);
+      box-shadow: var(--ax-boxShadow-md);
     }
   }
 
@@ -50,15 +50,15 @@
   }
 
   &-department-section {
-    background-color: var(--color-white);
-    border-radius: var(--radius-lg);
+    background-color: var(--ax-colors-bg-default);
+    border-radius: var(--ax-borderRadius-lg);
     padding: var(--spacing-2xl);
-    box-shadow: var(--shadow-md);
-    border: 1px solid var(--color-border-light);
+    box-shadow: var(--ax-boxShadow-md);
+    border: 1px solid var(--ax-colors-border-tertiary);
     transition: var(--transition-base);
 
     &:hover {
-      box-shadow: var(--shadow-lg);
+      box-shadow: var(--ax-boxShadow-lg);
     }
   }
 
@@ -68,27 +68,27 @@
     align-items: center;
     margin-bottom: var(--spacing-xl);
     padding-bottom: var(--spacing-md);
-    border-bottom: 1px solid var(--color-border-light);
+    border-bottom: 1px solid var(--ax-colors-border-tertiary);
   }
 
   &-department-name {
     font-size: var(--font-size-2xl);
     font-weight: var(--font-weight-semibold);
-    color: var(--color-primary);
+    color: var(--ax-colors-fg-accent-strong);
     display: flex;
     align-items: center;
     gap: var(--spacing-md);
 
     svg {
-      color: var(--color-primary);
+      color: var(--ax-colors-fg-accent-strong);
     }
   }
 
   &-doctor-count {
-    background-color: var(--color-primary-lighter);
-    color: var(--color-primary-dark);
+    background-color: var(--ax-colors-bg-accent-subtle);
+    color: var(--ax-colors-fg-accent-strong);
     padding: var(--spacing-xs) var(--spacing-md);
-    border-radius: var(--radius-full);
+    border-radius: var(--ax-borderRadius-full);
     font-size: var(--font-size-sm);
     font-weight: var(--font-weight-semibold);
   }
@@ -102,50 +102,50 @@
   &-doctor-card {
     cursor: pointer;
     transition: var(--transition-base);
-    border: 1px solid var(--color-border-light);
-    border-radius: var(--radius-md);
+    border: 1px solid var(--ax-colors-border-tertiary);
+    border-radius: var(--ax-borderRadius-md);
     overflow: hidden;
-    background-color: var(--color-white);
+    background-color: var(--ax-colors-bg-default);
 
     &:hover {
       transform: translateY(-4px);
-      box-shadow: var(--shadow-lg);
-      border-color: var(--color-primary-light);
+      box-shadow: var(--ax-boxShadow-lg);
+      border-color: var(--ax-colors-bg-accent);
     }
   }
 
   &-no-doctors {
     text-align: center;
     padding: var(--spacing-3xl);
-    color: var(--color-text-tertiary);
+    color: var(--ax-colors-fg-tertiary);
     font-size: var(--font-size-lg);
   }
 
   &-empty-state {
     text-align: center;
     padding: var(--spacing-3xl);
-    background-color: var(--color-white);
-    border-radius: var(--radius-lg);
-    border: 2px dashed var(--color-border-medium);
+    background-color: var(--ax-colors-bg-default);
+    border-radius: var(--ax-borderRadius-lg);
+    border: 2px dashed var(--ax-colors-border-secondary);
     margin-top: var(--spacing-2xl);
   }
 
   &-empty-icon {
     font-size: var(--font-size-4xl);
-    color: var(--color-text-tertiary);
+    color: var(--ax-colors-fg-tertiary);
     margin-bottom: var(--spacing-lg);
   }
 
   &-empty-title {
     font-size: var(--font-size-xl);
     font-weight: var(--font-weight-semibold);
-    color: var(--color-text-secondary);
+    color: var(--ax-colors-fg-secondary);
     margin-bottom: var(--spacing-sm);
   }
 
   &-empty-description {
     font-size: var(--font-size-base);
-    color: var(--color-text-tertiary);
+    color: var(--ax-colors-fg-tertiary);
     margin-bottom: var(--spacing-xl);
   }
 }

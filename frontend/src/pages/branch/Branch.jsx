@@ -89,7 +89,7 @@ const Branch = () => {
       )}
       <Box className="branch-header">
         <Flex flexDirection="row" alignItems="center" gap="12">
-          <FaHospitalAlt size={32} style={{ color: 'var(--color-primary)' }} />
+          <FaHospitalAlt size={32} style={{ color: 'var(--ax-colors-fg-accent-strong)' }} />
           <Heading level="2" className="branch-title">
             Departments & Doctors
           </Heading>
