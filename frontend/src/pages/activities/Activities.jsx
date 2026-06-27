@@ -51,14 +51,7 @@ const getAppointmentColumns = () => [
 ];
 
 const Section = ({ icon, title, isEmpty, emptyLabel, children }) => (
-  <Box
-    bg="bg.default"
-    rounded="xl"
-    border="1"
-    borderColor="border.secondary"
-    shadow="sm"
-    p="20"
-  >
+  <Box bg="bg.default" rounded="xl" border="1" borderColor="border.secondary" shadow="sm" p="20">
     <Flex
       flexDirection="row"
       alignItems="center"

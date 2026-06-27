@@ -108,12 +108,7 @@ const SignUp = () => {
               </Flex>
 
               <Field label="Full name">
-                <Input
-                  placeholder="Jane Doe"
-                  value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
-                  required
-                />
+                <Input placeholder="Jane Doe" value={fullName} onChange={(e) => setFullName(e.target.value)} required />
               </Field>
 
               <Flex flexDirection="row" gap="16" style={{ flexWrap: 'wrap' }}>

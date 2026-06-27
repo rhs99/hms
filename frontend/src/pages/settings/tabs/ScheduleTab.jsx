@@ -392,7 +392,12 @@ const ScheduleTab = () => {
                   </Field>
 
                   <Box>
-                    <Button onClick={handleAddSchedule} appearance="primary" disabled={isAddingSchedule} icon={<FaPlus />}>
+                    <Button
+                      onClick={handleAddSchedule}
+                      appearance="primary"
+                      disabled={isAddingSchedule}
+                      icon={<FaPlus />}
+                    >
                       {isAddingSchedule ? 'Adding...' : 'Add Schedule'}
                     </Button>
                   </Box>

@@ -52,7 +52,14 @@ const PatientField = ({ label, value }) => (
 );
 
 const Card = ({ children }) => (
-  <Box bg="bg.default" rounded="xl" border="1" borderColor="border.secondary" shadow="sm" style={{ overflow: 'hidden' }}>
+  <Box
+    bg="bg.default"
+    rounded="xl"
+    border="1"
+    borderColor="border.secondary"
+    shadow="sm"
+    style={{ overflow: 'hidden' }}
+  >
     {children}
   </Box>
 );

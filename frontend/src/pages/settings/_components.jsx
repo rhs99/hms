@@ -55,13 +55,7 @@ export const CardBody = ({ children, ...rest }) => (
 );
 
 export const SectionLabel = ({ children }) => (
-  <Text
-    fontSize="xs"
-    fontWeight="600"
-    color="fg.tertiary"
-    textTransform="uppercase"
-    style={{ letterSpacing: '0.5px' }}
-  >
+  <Text fontSize="xs" fontWeight="600" color="fg.tertiary" textTransform="uppercase" style={{ letterSpacing: '0.5px' }}>
     {children}
   </Text>
 );
@@ -79,4 +73,3 @@ export const StatusMessage = ({ tone = 'success', children }) => {
     </Flex>
   );
 };
-

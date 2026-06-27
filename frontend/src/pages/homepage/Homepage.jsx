@@ -163,12 +163,7 @@ const Homepage = () => {
   }, [branchRowSelection, branchTable, navigate]);
 
   return (
-    <Flex
-      flexDirection="column"
-      gap="16"
-      p="16"
-      style={{ maxHeight: '80vh', overflowY: 'auto' }}
-    >
+    <Flex flexDirection="column" gap="16" p="16" style={{ maxHeight: '80vh', overflowY: 'auto' }}>
       <AlertBanner alert={alert} onDismiss={dismiss} />
       <Flex flexDirection="row" justifyContent="flex-end" alignItems="center">
         <SearchInput

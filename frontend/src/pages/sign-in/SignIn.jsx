@@ -38,7 +38,13 @@ const SignIn = () => {
           <Flex flexDirection="column" gap="8">
             <Flex alignItems="center" gap="8" color="fg.accent.strong">
               <FaUserMd />
-              <Text fontSize="xs" fontWeight="600" textTransform="uppercase" color="fg.accent.strong" style={{ letterSpacing: '1px' }}>
+              <Text
+                fontSize="xs"
+                fontWeight="600"
+                textTransform="uppercase"
+                color="fg.accent.strong"
+                style={{ letterSpacing: '1px' }}
+              >
                 Healthcare Portal
               </Text>
             </Flex>

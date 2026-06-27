@@ -1,6 +1,18 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Badge, Box, Button, Field, Flex, Input, Menu, MenuContent, MenuTrigger, SearchInput, Text } from '@optiaxiom/react';
+import {
+  Badge,
+  Box,
+  Button,
+  Field,
+  Flex,
+  Input,
+  Menu,
+  MenuContent,
+  MenuTrigger,
+  SearchInput,
+  Text,
+} from '@optiaxiom/react';
 import { FaPlus, FaSearch, FaUser, FaUserMd } from 'react-icons/fa';
 
 import Config from '../../../config';

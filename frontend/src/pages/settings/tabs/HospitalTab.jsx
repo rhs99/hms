@@ -32,11 +32,7 @@ const HospitalTab = () => {
 
   return (
     <Card>
-      <CardHeader
-        icon={<FaHospital />}
-        title="Add New Hospital"
-        subtitle="Register a new hospital in the system"
-      />
+      <CardHeader icon={<FaHospital />} title="Add New Hospital" subtitle="Register a new hospital in the system" />
       <CardBody>
         <Flex flexDirection="column" gap="16">
           <AlertBanner alert={alert} onDismiss={dismiss} />

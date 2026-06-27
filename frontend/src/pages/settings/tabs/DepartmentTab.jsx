@@ -70,11 +70,7 @@ const DepartmentTab = () => {
   return (
     <Flex flexDirection="column" gap="20">
       <Card>
-        <CardHeader
-          icon={<FaStethoscope />}
-          title="Add New Department"
-          subtitle="Create a clinical department"
-        />
+        <CardHeader icon={<FaStethoscope />} title="Add New Department" subtitle="Create a clinical department" />
         <CardBody>
           <Flex flexDirection="column" gap="16">
             <AlertBanner alert={alert} onDismiss={dismiss} />

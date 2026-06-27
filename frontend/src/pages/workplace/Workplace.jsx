@@ -3,17 +3,7 @@ import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createColumnHelper } from '@tanstack/react-table';
 import { FaBriefcaseMedical, FaClock, FaUserClock, FaCheckCircle } from 'react-icons/fa';
-import {
-  Badge,
-  Box,
-  Cover,
-  DataTable,
-  DataTableBody,
-  DataTableCheckbox,
-  Flex,
-  Heading,
-  Text,
-} from '@optiaxiom/react';
+import { Badge, Box, Cover, DataTable, DataTableBody, DataTableCheckbox, Flex, Heading, Text } from '@optiaxiom/react';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 
 import utils from '../../utils';

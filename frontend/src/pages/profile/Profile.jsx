@@ -3,18 +3,7 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FaEnvelope, FaPhone, FaCalendar, FaTint, FaVenusMars, FaUser } from 'react-icons/fa';
 
-import {
-  Avatar,
-  Badge,
-  Box,
-  Card,
-  CardFooter,
-  CardHeader,
-  CardPreview,
-  Flex,
-  Heading,
-  Text,
-} from '@optiaxiom/react';
+import { Avatar, Badge, Box, Card, CardFooter, CardHeader, CardPreview, Flex, Heading, Text } from '@optiaxiom/react';
 
 import Config from '../../config';
 import { AlertBanner, useAlertState } from '../../component/alerts';
@@ -33,14 +22,7 @@ const BLOOD_GROUP_LABELS = {
 const formatBloodGroup = (bg) => BLOOD_GROUP_LABELS[bg] || 'Unknown';
 
 const DetailRow = ({ icon, label, children }) => (
-  <Flex
-    flexDirection="row"
-    alignItems="center"
-    justifyContent="space-between"
-    p="12"
-    rounded="md"
-    gap="16"
-  >
+  <Flex flexDirection="row" alignItems="center" justifyContent="space-between" p="12" rounded="md" gap="16">
     <Flex flexDirection="row" alignItems="center" gap="8" color="fg.tertiary">
       {icon}
       <Text fontSize="sm" fontWeight="500" color="fg.tertiary">

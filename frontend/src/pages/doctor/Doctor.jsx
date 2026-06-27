@@ -331,7 +331,11 @@ const Doctor = () => {
                 bg="bg.error.subtle"
                 rounded="md"
                 color="fg.error.strong"
-                style={{ borderLeftWidth: '4px', borderLeftStyle: 'solid', borderLeftColor: 'var(--ax-colors-fg-error)' }}
+                style={{
+                  borderLeftWidth: '4px',
+                  borderLeftStyle: 'solid',
+                  borderLeftColor: 'var(--ax-colors-fg-error)',
+                }}
               >
                 <Box color="fg.error" style={{ display: 'flex', flexShrink: 0 }}>
                   <FaExclamationTriangle />
@@ -367,7 +371,9 @@ const Doctor = () => {
               </Button>
               <Button
                 appearance="primary"
-                disabled={!authCtx.isLoggedIn || !date || !Boolean(selectedSlotSchedule) || Boolean(dateValidationError)}
+                disabled={
+                  !authCtx.isLoggedIn || !date || !Boolean(selectedSlotSchedule) || Boolean(dateValidationError)
+                }
                 onClick={makeAppointment}
                 icon={<FaCalendarAlt />}
               >

@@ -76,11 +76,7 @@ const SlotTab = () => {
   return (
     <Flex flexDirection="column" gap="20">
       <Card>
-        <CardHeader
-          icon={<FaClock />}
-          title="Add New Time Slot"
-          subtitle="Define a reusable appointment time window"
-        />
+        <CardHeader icon={<FaClock />} title="Add New Time Slot" subtitle="Define a reusable appointment time window" />
         <CardBody>
           <Flex flexDirection="column" gap="16">
             <AlertBanner alert={alert} onDismiss={dismiss} />

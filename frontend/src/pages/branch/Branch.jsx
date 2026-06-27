@@ -1,18 +1,7 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import {
-  Badge,
-  Box,
-  Button,
-  Card,
-  CardHeader,
-  CardImage,
-  CardPreview,
-  Flex,
-  Heading,
-  Text,
-} from '@optiaxiom/react';
+import { Badge, Box, Button, Card, CardHeader, CardImage, CardPreview, Flex, Heading, Text } from '@optiaxiom/react';
 import { FaHospitalAlt, FaUserMd, FaPlus, FaStethoscope } from 'react-icons/fa';
 import { MdLocalHospital } from 'react-icons/md';
 
@@ -121,11 +110,7 @@ const Branch = () => {
             Departments & Doctors
           </Heading>
         </Flex>
-        <Button
-          appearance="primary"
-          onClick={() => setShowAssociateDepartmentModal(true)}
-          icon={<FaPlus />}
-        >
+        <Button appearance="primary" onClick={() => setShowAssociateDepartmentModal(true)} icon={<FaPlus />}>
           Add Department
         </Button>
       </Flex>
@@ -181,9 +166,7 @@ const Branch = () => {
                   <Heading level="4" color="fg.default">
                     {dept.name}
                   </Heading>
-                  <Badge intent="information">
-                    {departmentDoctors[dept.id]?.length || 0} Doctors
-                  </Badge>
+                  <Badge intent="information">{departmentDoctors[dept.id]?.length || 0} Doctors</Badge>
                 </Flex>
                 <Button appearance="primary" size="sm" onClick={() => handleAddDoctor(dept.id)} icon={<FaPlus />}>
                   Add Doctor

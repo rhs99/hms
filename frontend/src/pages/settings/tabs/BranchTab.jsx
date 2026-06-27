@@ -69,45 +69,45 @@ const BranchTab = () => {
           <AlertBanner alert={alert} onDismiss={dismiss} />
           <form onSubmit={handleSubmit}>
             <Flex flexDirection="column" gap="16">
-            <Field label="Hospital" required>
-              <Menu
-                options={hospitals.map((hospital) => ({
-                  label: hospital.name,
-                  execute: () => setSelectedHospital(hospital),
-                }))}
-              >
-                <MenuTrigger>{selectedHospital ? selectedHospital.name : 'Select hospital'}</MenuTrigger>
-                <MenuContent />
-              </Menu>
-            </Field>
-            <Field label="Address" required>
-              <Input
-                placeholder="Enter branch address"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                required
-              />
-            </Field>
-            <Flex flexDirection="row" gap="16" style={{ flexWrap: 'wrap' }}>
-              <Field label="Phone" required style={{ flex: '1 1 200px' }}>
+              <Field label="Hospital" required>
+                <Menu
+                  options={hospitals.map((hospital) => ({
+                    label: hospital.name,
+                    execute: () => setSelectedHospital(hospital),
+                  }))}
+                >
+                  <MenuTrigger>{selectedHospital ? selectedHospital.name : 'Select hospital'}</MenuTrigger>
+                  <MenuContent />
+                </Menu>
+              </Field>
+              <Field label="Address" required>
                 <Input
-                  placeholder="Enter phone number"
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="Enter branch address"
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
                   required
                 />
               </Field>
-              <Field label="Email" required style={{ flex: '1 1 200px' }}>
-                <Input
-                  placeholder="Enter email address"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </Field>
-            </Flex>
+              <Flex flexDirection="row" gap="16" style={{ flexWrap: 'wrap' }}>
+                <Field label="Phone" required style={{ flex: '1 1 200px' }}>
+                  <Input
+                    placeholder="Enter phone number"
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    required
+                  />
+                </Field>
+                <Field label="Email" required style={{ flex: '1 1 200px' }}>
+                  <Input
+                    placeholder="Enter email address"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </Field>
+              </Flex>
               <Box>
                 <Button type="submit" appearance="primary" disabled={isLoading} icon={<FaPlus />}>
                   {isLoading ? 'Creating...' : 'Create Branch'}
