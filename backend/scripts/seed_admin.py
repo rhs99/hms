@@ -20,7 +20,7 @@ import os
 
 from sqlalchemy.future import select
 
-from app.auth import ADMIN_ROLE_NAME
+from app.auth import ADMIN_ROLE_NAME, hash_password
 from app.db import engine, session_factory, session_var
 from app.models import GenderEnum, Role, User, UserRole
 
@@ -52,7 +52,7 @@ async def _ensure_user(
     if user is None:
         user = User(
             user_name=user_name,
-            password=password,
+            password=hash_password(password),
             full_name=full_name,
             email=email,
             phone=phone,

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel
 
 from app.services.user import UserService
@@ -15,6 +15,8 @@ class SessionSchema:
         user_name: str
         id: int
         is_admin: bool
+        access_token: str
+        token_type: str
 
 
 @router.post(
@@ -23,7 +25,13 @@ class SessionSchema:
     status_code=status.HTTP_200_OK,
 )
 async def create_session(credentials: SessionSchema.CreateInput):
-    return await UserService.sign_in(
+    result = await UserService.sign_in(
         credentials.user_name,
         credentials.password,
     )
+    if result is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid credentials.",
+        )
+    return result

@@ -1,6 +1,7 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Depends, status
 from pydantic import BaseModel
 
+from app.auth import require_admin
 from app.services.user_role import UserRoleService
 
 router = APIRouter()
@@ -22,6 +23,7 @@ class UserRoleSchema:
     "/user-roles",
     response_model=UserRoleSchema.Output,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_admin)],
 )
 async def create_user_role(user_role: UserRoleSchema.CreateInput):
     return await UserRoleService.create_user_role(user_role.user_id, user_role.role_id)

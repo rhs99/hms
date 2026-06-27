@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
-const USER_ID_HEADER = 'X-User-Id';
-
-const applyUserIdHeader = (userId) => {
-  if (userId) {
-    axios.defaults.headers.common[USER_ID_HEADER] = userId;
+const applyAuthHeader = (token) => {
+  if (token) {
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
   } else {
-    delete axios.defaults.headers.common[USER_ID_HEADER];
+    delete axios.defaults.headers.common['Authorization'];
   }
 };
 
-const storedUserId = localStorage.getItem('userId');
-if (storedUserId) {
-  applyUserIdHeader(storedUserId);
+const storedToken = localStorage.getItem('accessToken');
+if (storedToken) {
+  applyAuthHeader(storedToken);
 }
 
 const AuthContext = React.createContext({
@@ -33,11 +31,12 @@ export const AuthContextProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('userName') !== null || false);
   const [isAdmin, setIsAdmin] = useState(localStorage.getItem('isAdmin') === 'true');
 
-  const login = (userName, userId, isAdmin) => {
+  const login = ({ userName, userId, isAdmin, accessToken }) => {
     localStorage.setItem('userName', userName);
     localStorage.setItem('userId', userId);
     localStorage.setItem('isAdmin', isAdmin ? 'true' : 'false');
-    applyUserIdHeader(userId);
+    localStorage.setItem('accessToken', accessToken);
+    applyAuthHeader(accessToken);
     setIsLoggedIn(true);
     setIsAdmin(Boolean(isAdmin));
   };
@@ -46,7 +45,8 @@ export const AuthContextProvider = ({ children }) => {
     localStorage.removeItem('userName');
     localStorage.removeItem('userId');
     localStorage.removeItem('isAdmin');
-    applyUserIdHeader(null);
+    localStorage.removeItem('accessToken');
+    applyAuthHeader(null);
     setIsLoggedIn(false);
     setIsAdmin(false);
   };
