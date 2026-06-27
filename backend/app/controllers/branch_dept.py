@@ -1,6 +1,7 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Depends, status
 from pydantic import BaseModel
 
+from app.auth import require_admin
 from app.services.branch_dept import BranchDeptService
 
 router = APIRouter()
@@ -38,6 +39,7 @@ async def get_branch_departments(branch_id: int):
     "/branches/{branch_id}/departments",
     response_model=BranchDeptSchema.BaseSchema,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_admin)],
 )
 async def create_branch_department(branch_id: int, dept: BranchDeptSchema.CreateInput):
     return await BranchDeptService.create_branch_dept(branch_id, dept.dept_id)

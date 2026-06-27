@@ -1,7 +1,8 @@
 import datetime
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Depends, status
 from pydantic import BaseModel
 
+from app.auth import require_admin
 from app.services.work_place import WorkPlaceService
 
 router = APIRouter()
@@ -42,6 +43,7 @@ async def get_work_place(branch_id: int, employee_id: int):
     "/work-places",
     response_model=WorkPlaceSchema.Output,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_admin)],
 )
 async def create_work_place(work_place: WorkPlaceSchema.CreateInput):
     return await WorkPlaceService.create_work_place(

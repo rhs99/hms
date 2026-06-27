@@ -9,7 +9,7 @@ import AuthContext from '../../store/auth';
 import { useMediaQuery } from '../useMediaQuery';
 
 const HmsSidebar = () => {
-  const { isLoggedIn } = useContext(AuthContext);
+  const { isLoggedIn, isAdmin } = useContext(AuthContext);
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const isDesktop = useMediaQuery('(min-width: 900px)');
@@ -43,7 +43,7 @@ const HmsSidebar = () => {
                   Workplaces
                 </NavItem>
               )}
-              {isLoggedIn && (
+              {isLoggedIn && isAdmin && (
                 <NavItem
                   active={isActive('/settings')}
                   icon={<TbSettings />}

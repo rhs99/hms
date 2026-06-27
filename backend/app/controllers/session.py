@@ -14,6 +14,7 @@ class SessionSchema:
     class Output(BaseModel):
         user_name: str
         id: int
+        is_admin: bool
 
 
 @router.post(

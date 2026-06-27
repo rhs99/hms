@@ -1,6 +1,7 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Depends, status
 from pydantic import BaseModel
 
+from app.auth import require_admin
 from app.services.division import DivisionService
 
 router = APIRouter()
@@ -21,6 +22,7 @@ class DivisionSchema:
     "/divisions",
     response_model=DivisionSchema.Output,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_admin)],
 )
 async def create_division(division: DivisionSchema.CreateInput):
     return await DivisionService.create_division(division.name)

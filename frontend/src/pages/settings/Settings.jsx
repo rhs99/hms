@@ -1,5 +1,6 @@
-import { useState } from 'react';
-import { Box, Heading, Flex, Text, Tabs, TabsList, TabsTrigger, TabsContent } from '@optiaxiom/react';
+import { useContext, useState } from 'react';
+import { Link as RouterLink } from 'react-router-dom';
+import { Box, Heading, Flex, Link, Text, Tabs, TabsList, TabsTrigger, TabsContent } from '@optiaxiom/react';
 import {
   FaCog,
   FaHospital,
@@ -9,8 +10,10 @@ import {
   FaUserMd,
   FaCalendarAlt,
   FaMapMarkedAlt,
+  FaLock,
 } from 'react-icons/fa';
 
+import AuthContext from '../../store/auth';
 import HospitalTab from './tabs/HospitalTab';
 import BranchTab from './tabs/BranchTab';
 import DepartmentTab from './tabs/DepartmentTab';
@@ -30,7 +33,48 @@ const TABS = [
 ];
 
 const Settings = () => {
+  const { isAdmin } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState('hospitals');
+
+  if (!isAdmin) {
+    return (
+      <Box bg="bg.page" p="16" style={{ minHeight: '85vh' }}>
+        <Flex
+          flexDirection="column"
+          alignItems="center"
+          justifyContent="center"
+          gap="16"
+          p="32"
+          bg="bg.default"
+          rounded="xl"
+          border="1"
+          borderColor="border.secondary"
+          shadow="sm"
+          style={{ maxWidth: '480px', margin: '64px auto', textAlign: 'center' }}
+        >
+          <Flex
+            alignItems="center"
+            justifyContent="center"
+            bg="bg.danger.subtle"
+            color="fg.danger.strong"
+            rounded="lg"
+            style={{ width: '48px', height: '48px', fontSize: '24px' }}
+          >
+            <FaLock />
+          </Flex>
+          <Heading level="3" color="fg.default">
+            Admins only
+          </Heading>
+          <Text color="fg.tertiary">
+            Settings are restricted to administrators. Contact an admin if you need access.
+          </Text>
+          <Link asChild>
+            <RouterLink to="/">Back to home</RouterLink>
+          </Link>
+        </Flex>
+      </Box>
+    );
+  }
 
   return (
     <Box bg="bg.page" p="16" style={{ maxHeight: '85vh', overflowY: 'auto' }}>

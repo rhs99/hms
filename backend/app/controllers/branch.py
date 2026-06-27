@@ -1,6 +1,7 @@
-from fastapi import APIRouter, Query, status
+from fastapi import APIRouter, Depends, Query, status
 from pydantic import BaseModel
 
+from app.auth import require_admin
 from app.services.branch import BranchService
 
 router = APIRouter()
@@ -45,6 +46,7 @@ BranchSchema.Page.model_rebuild()
     "/branches",
     response_model=BranchSchema.Output,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_admin)],
 )
 async def create_branch(branch: BranchSchema.CreateInput):
     created = await BranchService.create_branch(

@@ -1,5 +1,6 @@
 import datetime
 
+from app.auth import is_user_admin
 from app.repositories.user import UserRepo
 from app.models import GenderEnum, BloodGroupEnum
 
@@ -30,4 +31,11 @@ class UserService:
 
     @staticmethod
     async def sign_in(user_name: str, password: str):
-        return await UserRepo.sign_in(user_name, password)
+        user = await UserRepo.sign_in(user_name, password)
+        if user is None:
+            return None
+        return {
+            "id": user.id,
+            "user_name": user.user_name,
+            "is_admin": await is_user_admin(user.id),
+        }

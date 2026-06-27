@@ -1,6 +1,7 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Depends, status
 from pydantic import BaseModel
 
+from app.auth import require_admin
 from app.services.slot import SlotService
 
 router = APIRouter()
@@ -22,6 +23,7 @@ class SlotSchema:
     "/slots",
     response_model=SlotSchema.Output,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_admin)],
 )
 async def create_slot(slot: SlotSchema.CreateInput):
     return await SlotService.create_slot(slot.start_at, slot.end_at)

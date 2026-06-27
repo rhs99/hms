@@ -1,6 +1,7 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Depends, status
 from pydantic import BaseModel
 
+from app.auth import require_admin
 from app.services.thana import ThanaService
 
 router = APIRouter()
@@ -22,6 +23,7 @@ class ThanaSchema:
     "/thanas",
     response_model=ThanaSchema.Output,
     status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(require_admin)],
 )
 async def create_thana(thana: ThanaSchema.CreateInput):
     return await ThanaService.create_thana(thana.name, thana.district_id)
