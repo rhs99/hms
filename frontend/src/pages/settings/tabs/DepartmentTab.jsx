@@ -1,11 +1,11 @@
 import { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
-import { Box, Button, Field, Input, Heading, Text, Flex } from '@optiaxiom/react';
-import { DataTable, DataTableBody } from '@optiaxiom/react';
+import { Box, Button, DataTable, DataTableBody, Field, Flex, Input, Text } from '@optiaxiom/react';
 import { createColumnHelper, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { FaPlus, FaCheckCircle } from 'react-icons/fa';
+import { FaPlus, FaStethoscope, FaList } from 'react-icons/fa';
 
 import Config from '../../../config';
+import { Card, CardBody, CardHeader, StatusMessage } from '../_components';
 
 const columnHelper = createColumnHelper();
 
@@ -69,43 +69,54 @@ const DepartmentTab = () => {
   });
 
   return (
-    <Box className="settings-tab">
-      <Box className="settings-tab-form">
-        <Heading level="3">Add New Department</Heading>
-        <form onSubmit={handleSubmit}>
-          <Field label="Department Name" required>
-            <Input
-              placeholder="Enter department name"
-              value={departmentName}
-              onChange={(e) => setDepartmentName(e.target.value)}
-              required
-            />
-          </Field>
-          <Flex gap="12" alignItems="center" style={{ marginTop: '16px' }}>
-            <Button type="submit" appearance="primary" disabled={isLoading} icon={<FaPlus />}>
-              {isLoading ? 'Creating...' : 'Create Department'}
-            </Button>
-            {successMessage && (
-              <Flex alignItems="center" gap="8" style={{ color: 'var(--color-success)' }}>
-                <FaCheckCircle />
-                <Text>{successMessage}</Text>
+    <Flex flexDirection="column" gap="20">
+      <Card>
+        <CardHeader
+          icon={<FaStethoscope />}
+          title="Add New Department"
+          subtitle="Create a clinical department"
+        />
+        <CardBody>
+          <form onSubmit={handleSubmit}>
+            <Flex flexDirection="column" gap="16">
+              <Field label="Department Name" required>
+                <Input
+                  placeholder="Enter department name"
+                  value={departmentName}
+                  onChange={(e) => setDepartmentName(e.target.value)}
+                  required
+                />
+              </Field>
+              <Flex flexDirection="row" gap="16" alignItems="center">
+                <Button type="submit" appearance="primary" disabled={isLoading} icon={<FaPlus />}>
+                  {isLoading ? 'Creating...' : 'Create Department'}
+                </Button>
+                <StatusMessage tone="success">{successMessage}</StatusMessage>
               </Flex>
-            )}
-          </Flex>
-        </form>
-      </Box>
+            </Flex>
+          </form>
+        </CardBody>
+      </Card>
 
-      <Box className="settings-tab-table">
-        <Heading level="3">Existing Departments</Heading>
-        {departments.length === 0 ? (
-          <Text color="fg.tertiary">No departments created yet.</Text>
-        ) : (
-          <DataTable table={table}>
-            <DataTableBody />
-          </DataTable>
-        )}
-      </Box>
-    </Box>
+      <Card>
+        <CardHeader
+          icon={<FaList />}
+          title="Existing Departments"
+          subtitle={`${departments.length} ${departments.length === 1 ? 'department' : 'departments'} configured`}
+        />
+        <CardBody>
+          {departments.length === 0 ? (
+            <Box p="16" bg="bg.secondary" rounded="md">
+              <Text color="fg.tertiary">No departments created yet.</Text>
+            </Box>
+          ) : (
+            <DataTable table={table}>
+              <DataTableBody />
+            </DataTable>
+          )}
+        </CardBody>
+      </Card>
+    </Flex>
   );
 };
 

@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { Box, Heading, Flex } from '@optiaxiom/react';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@optiaxiom/react';
+import { Box, Heading, Flex, Text, Tabs, TabsList, TabsTrigger, TabsContent } from '@optiaxiom/react';
 import { FaCog, FaHospital, FaBuilding, FaStethoscope, FaClock, FaUserMd, FaCalendarAlt } from 'react-icons/fa';
 
 import HospitalTab from './tabs/HospitalTab';
@@ -10,73 +9,71 @@ import SlotTab from './tabs/SlotTab';
 import DoctorTab from './tabs/DoctorTab';
 import ScheduleTab from './tabs/ScheduleTab';
 
-import './_index.scss';
+const TABS = [
+  { value: 'hospitals', label: 'Hospitals', icon: <FaHospital />, Component: HospitalTab },
+  { value: 'branches', label: 'Branches', icon: <FaBuilding />, Component: BranchTab },
+  { value: 'departments', label: 'Departments', icon: <FaStethoscope />, Component: DepartmentTab },
+  { value: 'slots', label: 'Time Slots', icon: <FaClock />, Component: SlotTab },
+  { value: 'doctors', label: 'Doctors', icon: <FaUserMd />, Component: DoctorTab },
+  { value: 'schedules', label: 'Doctor Schedules', icon: <FaCalendarAlt />, Component: ScheduleTab },
+];
 
 const Settings = () => {
   const [activeTab, setActiveTab] = useState('hospitals');
 
   return (
-    <Box className="settings">
-      <Box className="settings-header">
-        <Flex flexDirection="row" alignItems="center" gap="12">
-          <FaCog size={32} style={{ color: 'var(--color-primary)' }} />
-          <Heading level="2" className="settings-title">
-            System Settings
-          </Heading>
+    <Box bg="bg.page" p="24" style={{ maxHeight: '85vh', overflowY: 'auto' }}>
+      <Flex
+        flexDirection="row"
+        alignItems="center"
+        justifyContent="space-between"
+        p="20"
+        bg="bg.default"
+        rounded="xl"
+        border="1"
+        borderColor="border.secondary"
+        shadow="sm"
+        style={{ marginBottom: '24px' }}
+      >
+        <Flex flexDirection="row" alignItems="center" gap="16">
+          <Flex
+            alignItems="center"
+            justifyContent="center"
+            bg="bg.accent.subtle"
+            color="fg.accent"
+            rounded="lg"
+            style={{ width: '48px', height: '48px', fontSize: '24px' }}
+          >
+            <FaCog />
+          </Flex>
+          <Flex flexDirection="column" gap="2">
+            <Heading level="2" color="fg.default">
+              System Settings
+            </Heading>
+            <Text fontSize="sm" color="fg.tertiary">
+              Manage hospitals, branches, departments, and clinical schedules
+            </Text>
+          </Flex>
         </Flex>
-      </Box>
+      </Flex>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="settings-tabs">
-        <TabsList className="settings-tabs-list">
-          <TabsTrigger value="hospitals">
-            <FaHospital style={{ marginRight: '8px' }} />
-            Hospitals
-          </TabsTrigger>
-          <TabsTrigger value="branches">
-            <FaBuilding style={{ marginRight: '8px' }} />
-            Branches
-          </TabsTrigger>
-          <TabsTrigger value="departments">
-            <FaStethoscope style={{ marginRight: '8px' }} />
-            Departments
-          </TabsTrigger>
-          <TabsTrigger value="slots">
-            <FaClock style={{ marginRight: '8px' }} />
-            Time Slots
-          </TabsTrigger>
-          <TabsTrigger value="doctors">
-            <FaUserMd style={{ marginRight: '8px' }} />
-            Doctors
-          </TabsTrigger>
-          <TabsTrigger value="schedules">
-            <FaCalendarAlt style={{ marginRight: '8px' }} />
-            Doctor Schedules
-          </TabsTrigger>
+      <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <TabsList style={{ marginBottom: '20px', flexWrap: 'wrap' }}>
+          {TABS.map(({ value, label, icon }) => (
+            <TabsTrigger key={value} value={value}>
+              <Flex alignItems="center" gap="8">
+                {icon}
+                {label}
+              </Flex>
+            </TabsTrigger>
+          ))}
         </TabsList>
 
-        <TabsContent value="hospitals">
-          <HospitalTab />
-        </TabsContent>
-
-        <TabsContent value="branches">
-          <BranchTab />
-        </TabsContent>
-
-        <TabsContent value="departments">
-          <DepartmentTab />
-        </TabsContent>
-
-        <TabsContent value="slots">
-          <SlotTab />
-        </TabsContent>
-
-        <TabsContent value="doctors">
-          <DoctorTab />
-        </TabsContent>
-
-        <TabsContent value="schedules">
-          <ScheduleTab />
-        </TabsContent>
+        {TABS.map(({ value, Component }) => (
+          <TabsContent key={value} value={value}>
+            <Component />
+          </TabsContent>
+        ))}
       </Tabs>
     </Box>
   );

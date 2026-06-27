@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { Box, Button, Field, Input, Heading, Text, Flex } from '@optiaxiom/react';
-import { FaPlus, FaCheckCircle } from 'react-icons/fa';
+import { Button, Field, Flex, Input } from '@optiaxiom/react';
+import { FaPlus, FaHospital } from 'react-icons/fa';
 
 import Config from '../../../config';
+import { Card, CardBody, CardHeader, StatusMessage } from '../_components';
 
 const HospitalTab = () => {
   const [hospitalName, setHospitalName] = useState('');
@@ -31,32 +32,33 @@ const HospitalTab = () => {
   };
 
   return (
-    <Box className="settings-tab">
-      <Box className="settings-tab-form">
-        <Heading level="3">Add New Hospital</Heading>
+    <Card>
+      <CardHeader
+        icon={<FaHospital />}
+        title="Add New Hospital"
+        subtitle="Register a new hospital in the system"
+      />
+      <CardBody>
         <form onSubmit={handleSubmit}>
-          <Field label="Hospital Name" required>
-            <Input
-              placeholder="Enter hospital name"
-              value={hospitalName}
-              onChange={(e) => setHospitalName(e.target.value)}
-              required
-            />
-          </Field>
-          <Flex gap="12" alignItems="center" style={{ marginTop: '16px' }}>
-            <Button type="submit" appearance="primary" disabled={isLoading} icon={<FaPlus />}>
-              {isLoading ? 'Creating...' : 'Create Hospital'}
-            </Button>
-            {successMessage && (
-              <Flex alignItems="center" gap="8" style={{ color: 'var(--color-success)' }}>
-                <FaCheckCircle />
-                <Text>{successMessage}</Text>
-              </Flex>
-            )}
+          <Flex flexDirection="column" gap="16">
+            <Field label="Hospital Name" required>
+              <Input
+                placeholder="Enter hospital name"
+                value={hospitalName}
+                onChange={(e) => setHospitalName(e.target.value)}
+                required
+              />
+            </Field>
+            <Flex flexDirection="row" gap="16" alignItems="center">
+              <Button type="submit" appearance="primary" disabled={isLoading} icon={<FaPlus />}>
+                {isLoading ? 'Creating...' : 'Create Hospital'}
+              </Button>
+              <StatusMessage tone="success">{successMessage}</StatusMessage>
+            </Flex>
           </Flex>
         </form>
-      </Box>
-    </Box>
+      </CardBody>
+    </Card>
   );
 };
 

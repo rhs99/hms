@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Box, Button, Field, Input, Heading, Text, Flex } from '@optiaxiom/react';
-import { Menu, MenuContent, MenuTrigger } from '@optiaxiom/react';
-import { FaPlus, FaCheckCircle } from 'react-icons/fa';
+import { Button, Field, Flex, Input, Menu, MenuContent, MenuTrigger } from '@optiaxiom/react';
+import { FaPlus, FaBuilding } from 'react-icons/fa';
 
 import Config from '../../../config';
+import { Card, CardBody, CardHeader, StatusMessage } from '../_components';
 
 const BranchTab = () => {
   const [selectedHospital, setSelectedHospital] = useState(null);
@@ -60,61 +60,64 @@ const BranchTab = () => {
   };
 
   return (
-    <Box className="settings-tab">
-      <Box className="settings-tab-form">
-        <Heading level="3">Add New Branch</Heading>
+    <Card>
+      <CardHeader
+        icon={<FaBuilding />}
+        title="Add New Branch"
+        subtitle="Register a hospital branch with contact details"
+      />
+      <CardBody>
         <form onSubmit={handleSubmit}>
-          <Field label="Hospital" required>
-            <Menu
-              options={hospitals.map((hospital) => ({
-                label: hospital.name,
-                execute: () => setSelectedHospital(hospital),
-              }))}
-            >
-              <MenuTrigger>{selectedHospital ? selectedHospital.name : 'Select hospital'}</MenuTrigger>
-              <MenuContent />
-            </Menu>
-          </Field>
-          <Field label="Address" required>
-            <Input
-              placeholder="Enter branch address"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              required
-            />
-          </Field>
-          <Field label="Phone" required>
-            <Input
-              placeholder="Enter phone number"
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              required
-            />
-          </Field>
-          <Field label="Email" required>
-            <Input
-              placeholder="Enter email address"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </Field>
-          <Flex gap="12" alignItems="center" style={{ marginTop: '16px' }}>
-            <Button type="submit" appearance="primary" disabled={isLoading} icon={<FaPlus />}>
-              {isLoading ? 'Creating...' : 'Create Branch'}
-            </Button>
-            {successMessage && (
-              <Flex alignItems="center" gap="8" style={{ color: 'var(--color-success)' }}>
-                <FaCheckCircle />
-                <Text>{successMessage}</Text>
-              </Flex>
-            )}
+          <Flex flexDirection="column" gap="16">
+            <Field label="Hospital" required>
+              <Menu
+                options={hospitals.map((hospital) => ({
+                  label: hospital.name,
+                  execute: () => setSelectedHospital(hospital),
+                }))}
+              >
+                <MenuTrigger>{selectedHospital ? selectedHospital.name : 'Select hospital'}</MenuTrigger>
+                <MenuContent />
+              </Menu>
+            </Field>
+            <Field label="Address" required>
+              <Input
+                placeholder="Enter branch address"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                required
+              />
+            </Field>
+            <Flex flexDirection="row" gap="16" style={{ flexWrap: 'wrap' }}>
+              <Field label="Phone" required style={{ flex: '1 1 200px' }}>
+                <Input
+                  placeholder="Enter phone number"
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  required
+                />
+              </Field>
+              <Field label="Email" required style={{ flex: '1 1 200px' }}>
+                <Input
+                  placeholder="Enter email address"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </Field>
+            </Flex>
+            <Flex flexDirection="row" gap="16" alignItems="center">
+              <Button type="submit" appearance="primary" disabled={isLoading} icon={<FaPlus />}>
+                {isLoading ? 'Creating...' : 'Create Branch'}
+              </Button>
+              <StatusMessage tone="success">{successMessage}</StatusMessage>
+            </Flex>
           </Flex>
         </form>
-      </Box>
-    </Box>
+      </CardBody>
+    </Card>
   );
 };
 

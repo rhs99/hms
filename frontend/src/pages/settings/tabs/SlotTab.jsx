@@ -1,11 +1,11 @@
 import { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
-import { Box, Button, Field, Input, Heading, Text, Flex } from '@optiaxiom/react';
-import { DataTable, DataTableBody } from '@optiaxiom/react';
+import { Box, Button, DataTable, DataTableBody, Field, Flex, Input, Text } from '@optiaxiom/react';
 import { createColumnHelper, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { FaPlus, FaCheckCircle } from 'react-icons/fa';
+import { FaPlus, FaClock, FaList } from 'react-icons/fa';
 
 import Config from '../../../config';
+import { Card, CardBody, CardHeader, StatusMessage } from '../_components';
 
 const columnHelper = createColumnHelper();
 
@@ -75,48 +75,64 @@ const SlotTab = () => {
   });
 
   return (
-    <Box className="settings-tab">
-      <Box className="settings-tab-form">
-        <Heading level="3">Add New Time Slot</Heading>
-        <form onSubmit={handleSubmit}>
-          <Flex gap="12">
-            <Field label="Start Time" required style={{ flex: 1 }}>
-              <Input
-                placeholder="e.g., 8 AM"
-                value={startTime}
-                onChange={(e) => setStartTime(e.target.value)}
-                required
-              />
-            </Field>
-            <Field label="End Time" required style={{ flex: 1 }}>
-              <Input placeholder="e.g., 12 PM" value={endTime} onChange={(e) => setEndTime(e.target.value)} required />
-            </Field>
-          </Flex>
-          <Flex gap="12" alignItems="center" style={{ marginTop: '16px' }}>
-            <Button type="submit" appearance="primary" disabled={isLoading} icon={<FaPlus />}>
-              {isLoading ? 'Creating...' : 'Create Time Slot'}
-            </Button>
-            {successMessage && (
-              <Flex alignItems="center" gap="8" style={{ color: 'var(--color-success)' }}>
-                <FaCheckCircle />
-                <Text>{successMessage}</Text>
+    <Flex flexDirection="column" gap="20">
+      <Card>
+        <CardHeader
+          icon={<FaClock />}
+          title="Add New Time Slot"
+          subtitle="Define a reusable appointment time window"
+        />
+        <CardBody>
+          <form onSubmit={handleSubmit}>
+            <Flex flexDirection="column" gap="16">
+              <Flex flexDirection="row" gap="16" style={{ flexWrap: 'wrap' }}>
+                <Field label="Start Time" required style={{ flex: '1 1 200px' }}>
+                  <Input
+                    placeholder="e.g., 8 AM"
+                    value={startTime}
+                    onChange={(e) => setStartTime(e.target.value)}
+                    required
+                  />
+                </Field>
+                <Field label="End Time" required style={{ flex: '1 1 200px' }}>
+                  <Input
+                    placeholder="e.g., 12 PM"
+                    value={endTime}
+                    onChange={(e) => setEndTime(e.target.value)}
+                    required
+                  />
+                </Field>
               </Flex>
-            )}
-          </Flex>
-        </form>
-      </Box>
+              <Flex flexDirection="row" gap="16" alignItems="center">
+                <Button type="submit" appearance="primary" disabled={isLoading} icon={<FaPlus />}>
+                  {isLoading ? 'Creating...' : 'Create Time Slot'}
+                </Button>
+                <StatusMessage tone="success">{successMessage}</StatusMessage>
+              </Flex>
+            </Flex>
+          </form>
+        </CardBody>
+      </Card>
 
-      <Box className="settings-tab-table">
-        <Heading level="3">Existing Time Slots</Heading>
-        {slots.length === 0 ? (
-          <Text color="fg.tertiary">No time slots created yet.</Text>
-        ) : (
-          <DataTable table={table}>
-            <DataTableBody />
-          </DataTable>
-        )}
-      </Box>
-    </Box>
+      <Card>
+        <CardHeader
+          icon={<FaList />}
+          title="Existing Time Slots"
+          subtitle={`${slots.length} ${slots.length === 1 ? 'slot' : 'slots'} configured`}
+        />
+        <CardBody>
+          {slots.length === 0 ? (
+            <Box p="16" bg="bg.secondary" rounded="md">
+              <Text color="fg.tertiary">No time slots created yet.</Text>
+            </Box>
+          ) : (
+            <DataTable table={table}>
+              <DataTableBody />
+            </DataTable>
+          )}
+        </CardBody>
+      </Card>
+    </Flex>
   );
 };
 
