@@ -1,17 +1,42 @@
 import { useParams } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaEnvelope, FaPhone, FaCalendar, FaTint, FaVenusMars } from 'react-icons/fa';
+import { FaEnvelope, FaPhone, FaCalendar, FaTint, FaVenusMars, FaUser } from 'react-icons/fa';
 
-import { Card, CardFooter, CardHeader, CardImage, CardPreview, Text, Box, Avatar, Badge } from '@optiaxiom/react';
+import { Avatar, Badge, Box, Card, CardFooter, CardHeader, CardPreview, Flex, Heading, Text } from '@optiaxiom/react';
 
 import Config from '../../config';
+import { AlertBanner, useAlertState } from '../../component/alerts';
 
-import './_index.scss';
+const BLOOD_GROUP_LABELS = {
+  A_POS: 'A+',
+  A_NEG: 'A-',
+  B_POS: 'B+',
+  B_NEG: 'B-',
+  O_POS: 'O+',
+  O_NEG: 'O-',
+  AB_POS: 'AB+',
+  AB_NEG: 'AB-',
+};
+
+const formatBloodGroup = (bg) => BLOOD_GROUP_LABELS[bg] || 'Unknown';
+
+const DetailRow = ({ icon, label, children }) => (
+  <Flex flexDirection="row" alignItems="center" justifyContent="space-between" p="12" rounded="md" gap="16">
+    <Flex flexDirection="row" alignItems="center" gap="8" color="fg.tertiary">
+      {icon}
+      <Text fontSize="sm" fontWeight="500" color="fg.tertiary">
+        {label}
+      </Text>
+    </Flex>
+    {children}
+  </Flex>
+);
 
 const Profile = () => {
   const { userName } = useParams();
   const [profileData, setProfileData] = useState(null);
+  const { alert, show, dismiss } = useAlertState();
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -19,101 +44,93 @@ const Profile = () => {
         const response = await axios.get(`${Config.SERVER_URL}/users?username=${userName}`);
         setProfileData(response.data);
       } catch (error) {
-        console.error('Error fetching profile data:', error);
+        show('danger', 'Failed to load profile.');
       }
     };
 
     void fetchProfileData();
-  }, [userName]);
-
-  const getBloodGroup = (bloodGroup) => {
-    switch (bloodGroup) {
-      case 'A_NEG':
-        return 'A-';
-      case 'A_POS':
-        return 'A+';
-      case 'B_NEG':
-        return 'B-';
-      case 'B_POS':
-        return 'B+';
-      case 'O_NEG':
-        return 'O-';
-      case 'O_POS':
-        return 'O+';
-      case 'AB_NEG':
-        return 'AB-';
-      case 'AB_POS':
-        return 'AB+';
-      default:
-        return 'Unknown';
-    }
-  };
+  }, [userName, show]);
 
   if (!profileData) {
     return (
-      <Box className="profile-loading">
-        <Text fontSize="xl" color="fg.tertiary">
-          Loading profile...
-        </Text>
-      </Box>
+      <Flex
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        gap="16"
+        bg="bg.page"
+        p="24"
+        style={{ minHeight: '85vh' }}
+      >
+        {alert ? (
+          <Box style={{ width: '100%', maxWidth: '520px' }}>
+            <AlertBanner alert={alert} onDismiss={dismiss} />
+          </Box>
+        ) : (
+          <Text fontSize="lg" color="fg.tertiary">
+            Loading profile...
+          </Text>
+        )}
+      </Flex>
     );
   }
 
+  const displayName = profileData.full_name || profileData.user_name;
+
   return (
-    <Box className="profile">
-      <Card className="profile-card">
-        <CardPreview className="profile-preview">
-          <CardImage asChild>
-            <Avatar size="3xl" color="fg.avatar.purple" name={profileData.full_name || profileData.user_name} />
-          </CardImage>
+    <Flex alignItems="center" justifyContent="center" bg="bg.page" p="24" style={{ minHeight: '85vh' }}>
+      <Card style={{ width: '100%', maxWidth: '520px' }}>
+        <CardPreview bg="bg.accent.subtle" p="32">
+          <Flex flexDirection="column" alignItems="center" gap="12">
+            <Avatar size="3xl" color="fg.avatar.purple" name={displayName} />
+            <Heading level="3" color="fg.default">
+              {displayName}
+            </Heading>
+            {profileData.user_name && (
+              <Badge intent="information">
+                <Flex alignItems="center" gap="4">
+                  <FaUser />@{profileData.user_name}
+                </Flex>
+              </Badge>
+            )}
+          </Flex>
         </CardPreview>
-        <CardHeader className="profile-header">
-          <Box className="profile-user-info">
-            <Text className="profile-name">{profileData.full_name}</Text>
-          </Box>
-          <Box className="profile-details">
-            <Box className="profile-detail-row">
-              <Text className="profile-label">
-                <FaVenusMars style={{ display: 'inline', marginRight: '8px' }} />
-                Gender
+
+        <CardHeader>
+          <Flex flexDirection="column" gap="4">
+            <DetailRow icon={<FaVenusMars />} label="Gender">
+              <Badge intent="success">{profileData.gender || 'N/A'}</Badge>
+            </DetailRow>
+            <DetailRow icon={<FaTint />} label="Blood Group">
+              <Badge intent="danger">{formatBloodGroup(profileData.blood_group)}</Badge>
+            </DetailRow>
+            <DetailRow icon={<FaCalendar />} label="Date of Birth">
+              <Text fontSize="sm" fontWeight="600" color="fg.default">
+                {profileData.dob || 'N/A'}
               </Text>
-              <Badge intent="success">{profileData.gender}</Badge>
-            </Box>
-            <Box className="profile-detail-row">
-              <Text className="profile-label">
-                <FaTint style={{ display: 'inline', marginRight: '8px' }} />
-                Blood Group
+            </DetailRow>
+            <DetailRow icon={<FaEnvelope />} label="Email">
+              <Text fontSize="sm" fontWeight="600" color="fg.default">
+                {profileData.email || 'N/A'}
               </Text>
-              <Badge intent="danger">{getBloodGroup(profileData.blood_group)}</Badge>
-            </Box>
-            <Box className="profile-detail-row">
-              <Text className="profile-label">
-                <FaCalendar style={{ display: 'inline', marginRight: '8px' }} />
-                Date of Birth
+            </DetailRow>
+            <DetailRow icon={<FaPhone />} label="Phone">
+              <Text fontSize="sm" fontWeight="600" color="fg.default">
+                {profileData.phone || 'N/A'}
               </Text>
-              <Text className="profile-value">{profileData.dob}</Text>
-            </Box>
-            <Box className="profile-detail-row">
-              <Text className="profile-label">
-                <FaEnvelope style={{ display: 'inline', marginRight: '8px' }} />
-                Email
-              </Text>
-              <Text className="profile-value">{profileData.email}</Text>
-            </Box>
-            <Box className="profile-detail-row">
-              <Text className="profile-label">
-                <FaPhone style={{ display: 'inline', marginRight: '8px' }} />
-                Phone
-              </Text>
-              <Text className="profile-value">{profileData.phone}</Text>
-            </Box>
-          </Box>
+            </DetailRow>
+          </Flex>
         </CardHeader>
-        <CardFooter className="profile-footer">
-          <Text className="profile-footer-text">Profile information is public and can be viewed by others.</Text>
+
+        <CardFooter>
+          <Box bg="bg.secondary" p="12" rounded="md" style={{ width: '100%', textAlign: 'center' }}>
+            <Text fontSize="xs" color="fg.tertiary" style={{ fontStyle: 'italic' }}>
+              Profile information is public and can be viewed by others.
+            </Text>
+          </Box>
         </CardFooter>
       </Card>
-    </Box>
+    </Flex>
   );
 };
 

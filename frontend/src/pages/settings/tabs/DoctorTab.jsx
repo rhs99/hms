@@ -1,10 +1,22 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Box, Button, Field, Input, Heading, Text, Flex, Badge } from '@optiaxiom/react';
-import { Menu, MenuContent, MenuTrigger } from '@optiaxiom/react';
-import { FaPlus, FaCheckCircle, FaSearch, FaUser } from 'react-icons/fa';
+import {
+  Badge,
+  Box,
+  Button,
+  Field,
+  Flex,
+  Input,
+  Menu,
+  MenuContent,
+  MenuTrigger,
+  SearchInput,
+  Text,
+} from '@optiaxiom/react';
+import { FaPlus, FaSearch, FaUser, FaUserMd } from 'react-icons/fa';
 
 import Config from '../../../config';
+import { AlertBanner, Card, CardBody, CardHeader, SectionLabel, useAlertState } from '../_components';
 
 const DoctorTab = () => {
   const [username, setUsername] = useState('');
@@ -17,31 +29,28 @@ const DoctorTab = () => {
   const [departments, setDepartments] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
-
-  const fetchDepartments = async () => {
-    try {
-      const { data } = await axios.get(`${Config.SERVER_URL}/departments`);
-      setDepartments(data);
-    } catch (error) {
-      console.error('Error fetching departments:', error);
-    }
-  };
+  const { alert, show, dismiss } = useAlertState();
 
   useEffect(() => {
+    const fetchDepartments = async () => {
+      try {
+        const { data } = await axios.get(`${Config.SERVER_URL}/departments`);
+        setDepartments(data);
+      } catch (error) {
+        show('danger', 'Failed to load departments.');
+      }
+    };
     fetchDepartments();
-  }, []);
+  }, [show]);
 
   const handleSearchUser = async () => {
     if (!username.trim()) {
-      setErrorMessage('Please enter a username');
-      setTimeout(() => setErrorMessage(''), 3000);
+      show('warning', 'Please enter a username.');
       return;
     }
 
     setIsSearching(true);
-    setErrorMessage('');
+    dismiss();
     setSelectedUser(null);
 
     try {
@@ -49,15 +58,11 @@ const DoctorTab = () => {
 
       if (data) {
         setSelectedUser({ ...data, user_name: username });
-        setErrorMessage('');
       } else {
-        setErrorMessage('User not found. Please check the username.');
-        setTimeout(() => setErrorMessage(''), 5000);
+        show('danger', 'User not found. Please check the username.');
       }
     } catch (error) {
-      console.error('Error searching user:', error);
-      setErrorMessage('User not found. Please check the username.');
-      setTimeout(() => setErrorMessage(''), 5000);
+      show('danger', 'User not found. Please check the username.');
     } finally {
       setIsSearching(false);
     }
@@ -76,23 +81,19 @@ const DoctorTab = () => {
     e.preventDefault();
 
     if (!selectedUser) {
-      setErrorMessage('Please search and select a user first');
-      setTimeout(() => setErrorMessage(''), 3000);
+      show('warning', 'Please search and select a user first.');
       return;
     }
 
     if (!selectedDepartment) {
-      setErrorMessage('Please select a department');
-      setTimeout(() => setErrorMessage(''), 3000);
+      show('warning', 'Please select a department.');
       return;
     }
 
     setIsLoading(true);
-    setSuccessMessage('');
-    setErrorMessage('');
+    dismiss();
 
     try {
-      // Create doctor record using the user ID from selectedUser
       await axios.post(`${Config.SERVER_URL}/doctors`, {
         user_id: selectedUser.id,
         dept_id: selectedDepartment.id,
@@ -102,139 +103,133 @@ const DoctorTab = () => {
       });
 
       resetForm();
-      setSuccessMessage('Doctor created successfully!');
-      setTimeout(() => setSuccessMessage(''), 3000);
+      show('success', 'Doctor created successfully!');
     } catch (error) {
-      console.error('Error creating doctor:', error);
-      setErrorMessage('Error creating doctor. Please check all fields and try again.');
-      setTimeout(() => setErrorMessage(''), 5000);
+      show('danger', 'Failed to create doctor. Please check all fields and try again.');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <Box className="settings-tab">
-      <Box className="settings-tab-form">
-        <Heading level="3">Add New Doctor</Heading>
-        <Text color="fg.tertiary" style={{ marginBottom: '16px' }}>
-          Create a doctor profile for an existing user account.
-        </Text>
+    <Card>
+      <CardHeader
+        icon={<FaUserMd />}
+        title="Add New Doctor"
+        subtitle="Create a doctor profile for an existing user account"
+      />
+      <CardBody>
+        <Flex flexDirection="column" gap="24">
+          <AlertBanner alert={alert} onDismiss={dismiss} />
+          <Flex
+            flexDirection="column"
+            gap="16"
+            p="16"
+            bg="bg.secondary"
+            rounded="lg"
+            border="1"
+            borderColor="border.tertiary"
+          >
+            <SectionLabel>Step 1 · Find User</SectionLabel>
+            <Flex flexDirection="row" gap="12" alignItems="end">
+              <Field label="Username" required style={{ flex: 1 }}>
+                <SearchInput
+                  placeholder="Search by username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && handleSearchUser()}
+                />
+              </Field>
+              <Button onClick={handleSearchUser} disabled={isSearching} icon={<FaSearch />}>
+                {isSearching ? 'Searching...' : 'Search'}
+              </Button>
+            </Flex>
 
-        {/* User Search Section */}
-        <Box
-          style={{
-            marginBottom: '24px',
-            padding: '16px',
-            backgroundColor: 'var(--color-bg-secondary)',
-            borderRadius: 'var(--radius-md)',
-          }}
-        >
-          <Heading level="4" style={{ marginBottom: '12px' }}>
-            Search User
-          </Heading>
-          <Flex gap="12" alignItems="end">
-            <Field label="Username" required style={{ flex: 1 }}>
-              <Input
-                placeholder="Enter username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSearchUser()}
-              />
-            </Field>
-            <Button onClick={handleSearchUser} disabled={isSearching} icon={<FaSearch />}>
-              {isSearching ? 'Searching...' : 'Search'}
-            </Button>
+            {selectedUser && (
+              <Box bg="bg.default" rounded="md" border="1" borderColor="border.tertiary" p="12">
+                <Flex alignItems="center" gap="12" style={{ marginBottom: '8px' }}>
+                  <Box color="fg.accent.strong">
+                    <FaUser />
+                  </Box>
+                  <Text fontSize="sm" fontWeight="600" color="fg.default">
+                    User Found
+                  </Text>
+                </Flex>
+                <Flex flexDirection="row" gap="8" style={{ flexWrap: 'wrap' }}>
+                  <Badge intent="success">Name: {selectedUser.full_name}</Badge>
+                  <Badge intent="information">Email: {selectedUser.email}</Badge>
+                  <Badge intent="information">Phone: {selectedUser.phone}</Badge>
+                  <Badge intent="information">Gender: {selectedUser.gender}</Badge>
+                </Flex>
+              </Box>
+            )}
           </Flex>
 
           {selectedUser && (
-            <Box
-              style={{
-                marginTop: '16px',
-                padding: '12px',
-                backgroundColor: 'var(--color-white)',
-                borderRadius: 'var(--radius-sm)',
-                border: '1px solid var(--color-border-light)',
-              }}
-            >
-              <Flex alignItems="center" gap="12" style={{ marginBottom: '8px' }}>
-                <FaUser style={{ color: 'var(--color-primary)' }} />
-                <Text fontWeight="600">User Found</Text>
-              </Flex>
-              <Flex gap="8" style={{ flexWrap: 'wrap' }}>
-                <Badge intent="success">Name: {selectedUser.full_name}</Badge>
-                <Badge>Email: {selectedUser.email}</Badge>
-                <Badge>Phone: {selectedUser.phone}</Badge>
-                <Badge>Gender: {selectedUser.gender}</Badge>
-              </Flex>
-            </Box>
-          )}
-        </Box>
-
-        {/* Doctor Information Form */}
-        {selectedUser && (
-          <form onSubmit={handleSubmit}>
-            <Heading level="4" style={{ marginBottom: '12px' }}>
-              Doctor Information
-            </Heading>
-
-            <Field label="Department" required>
-              <Menu
-                options={departments.map((dept) => ({
-                  label: dept.name,
-                  execute: () => setSelectedDepartment(dept),
-                }))}
+            <form onSubmit={handleSubmit}>
+              <Flex
+                flexDirection="column"
+                gap="16"
+                p="16"
+                bg="bg.secondary"
+                rounded="lg"
+                border="1"
+                borderColor="border.tertiary"
               >
-                <MenuTrigger>{selectedDepartment ? selectedDepartment.name : 'Select department'}</MenuTrigger>
-                <MenuContent />
-              </Menu>
-            </Field>
+                <SectionLabel>Step 2 · Doctor Information</SectionLabel>
 
-            <Field label="Registration Number" required>
-              <Input
-                placeholder="Enter registration number"
-                type="number"
-                value={registrationNo}
-                onChange={(e) => setRegistrationNo(e.target.value)}
-                required
-              />
-            </Field>
+                <Field label="Department" required>
+                  <Menu
+                    options={departments.map((dept) => ({
+                      label: dept.name,
+                      execute: () => setSelectedDepartment(dept),
+                    }))}
+                  >
+                    <MenuTrigger>{selectedDepartment ? selectedDepartment.name : 'Select department'}</MenuTrigger>
+                    <MenuContent />
+                  </Menu>
+                </Field>
 
-            <Field label="Degree" required>
-              <Input
-                placeholder="e.g., MBBS, MD, FCPS"
-                value={degree}
-                onChange={(e) => setDegree(e.target.value)}
-                required
-              />
-            </Field>
+                <Field label="Registration Number" required>
+                  <Input
+                    placeholder="Enter registration number"
+                    type="number"
+                    value={registrationNo}
+                    onChange={(e) => setRegistrationNo(e.target.value)}
+                    required
+                  />
+                </Field>
 
-            <Field label="Experience" required>
-              <Input
-                placeholder="e.g., Senior Consultant, 10 years"
-                value={experience}
-                onChange={(e) => setExperience(e.target.value)}
-                required
-              />
-            </Field>
-
-            <Flex gap="12" alignItems="center" style={{ marginTop: '16px' }}>
-              <Button type="submit" appearance="primary" disabled={isLoading} icon={<FaPlus />}>
-                {isLoading ? 'Creating...' : 'Create Doctor Profile'}
-              </Button>
-              {successMessage && (
-                <Flex alignItems="center" gap="8" style={{ color: 'var(--color-success)' }}>
-                  <FaCheckCircle />
-                  <Text>{successMessage}</Text>
+                <Flex flexDirection="row" gap="16" style={{ flexWrap: 'wrap' }}>
+                  <Field label="Degree" required style={{ flex: '1 1 200px' }}>
+                    <Input
+                      placeholder="e.g., MBBS, MD, FCPS"
+                      value={degree}
+                      onChange={(e) => setDegree(e.target.value)}
+                      required
+                    />
+                  </Field>
+                  <Field label="Experience" required style={{ flex: '1 1 200px' }}>
+                    <Input
+                      placeholder="e.g., Senior Consultant, 10 years"
+                      value={experience}
+                      onChange={(e) => setExperience(e.target.value)}
+                      required
+                    />
+                  </Field>
                 </Flex>
-              )}
-            </Flex>
-          </form>
-        )}
 
-        {errorMessage && <Text style={{ color: 'var(--color-danger)', marginTop: '12px' }}>{errorMessage}</Text>}
-      </Box>
-    </Box>
+                <Box>
+                  <Button type="submit" appearance="primary" disabled={isLoading} icon={<FaPlus />}>
+                    {isLoading ? 'Creating...' : 'Create Doctor Profile'}
+                  </Button>
+                </Box>
+              </Flex>
+            </form>
+          )}
+        </Flex>
+      </CardBody>
+    </Card>
   );
 };
 

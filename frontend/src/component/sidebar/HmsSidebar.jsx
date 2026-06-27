@@ -6,12 +6,14 @@ import { TbLayoutSidebar, TbTimelineEventText, TbHome, TbSettings } from 'react-
 import { RiHomeOfficeLine } from 'react-icons/ri';
 
 import AuthContext from '../../store/auth';
+import { useMediaQuery } from '../useMediaQuery';
 
 const HmsSidebar = () => {
   const [selected, setSelected] = useState('activities');
 
   const authCtx = useContext(AuthContext);
   const navigate = useNavigate();
+  const isDesktop = useMediaQuery('(min-width: 900px)');
 
   const { isLoggedIn } = authCtx;
 
@@ -37,7 +39,7 @@ const HmsSidebar = () => {
 
   return (
     <Box style={{ maxWidth: '250px', height: 'calc(100vh - 100px)' }}>
-      <Sidebar defaultExpanded>
+      <Sidebar key={isDesktop ? 'desktop' : 'mobile'} defaultExpanded={isDesktop}>
         <Nav>
           <NavBody>
             <NavList>

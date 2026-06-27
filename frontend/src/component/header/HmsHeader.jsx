@@ -1,18 +1,21 @@
 import { useNavigate, NavLink } from 'react-router-dom';
 import { useContext } from 'react';
-import { Avatar, Heading, Flex, Text } from '@optiaxiom/react';
+import { Avatar, Button, Heading, Flex, Text } from '@optiaxiom/react';
 import { Menu, MenuContent, MenuTrigger } from '@optiaxiom/react';
 
 import { FiLogOut } from 'react-icons/fi';
-import { FaRegUser, FaHospital } from 'react-icons/fa';
+import { FaRegUser, FaHospital, FaMoon, FaSun } from 'react-icons/fa';
 
 import AuthContext from '../../store/auth';
+import { useColorScheme } from '../useColorScheme';
 
 const HmsHeader = () => {
   const navigate = useNavigate();
   const authCtx = useContext(AuthContext);
+  const { scheme, toggle } = useColorScheme();
 
   const { isLoggedIn, logout } = authCtx;
+  const isDark = scheme === 'dark';
 
   const handleLogOut = () => {
     logout();
@@ -24,11 +27,14 @@ const HmsHeader = () => {
       flexDirection="row"
       justifyContent="space-between"
       alignItems="center"
+      flexWrap="wrap"
+      gap="12"
+      py="12"
+      px="16"
       style={{
-        padding: 'var(--spacing-lg) var(--spacing-2xl)',
-        backgroundColor: 'var(--color-white)',
-        borderBottom: '2px solid var(--color-primary)',
-        boxShadow: 'var(--shadow-md)',
+        backgroundColor: 'var(--ax-colors-bg-default)',
+        borderBottom: '2px solid var(--ax-colors-fg-accent-strong)',
+        boxShadow: 'var(--ax-boxShadow-md)',
         position: 'sticky',
         top: 0,
         zIndex: 100,
@@ -41,20 +47,23 @@ const HmsHeader = () => {
         style={{ cursor: 'pointer' }}
         onClick={() => navigate('/')}
       >
-        <FaHospital size={28} style={{ color: 'var(--color-primary)' }} />
+        <FaHospital size={28} style={{ color: 'var(--ax-colors-fg-accent-strong)' }} />
         <Flex flexDirection="column" gap="0">
-          <Heading
-            level="4"
-            style={{ margin: 0, color: 'var(--color-primary-dark)', fontWeight: 'var(--font-weight-bold)' }}
-          >
+          <Heading level="4" color="fg.accent.strong" fontWeight="700" style={{ margin: 0 }}>
             HMS
           </Heading>
-          <Text fontSize="xs" style={{ color: 'var(--color-text-tertiary)', marginTop: '-4px' }}>
+          <Text fontSize="xs" style={{ color: 'var(--ax-colors-fg-tertiary)', marginTop: '-4px' }}>
             Healthcare Management
           </Text>
         </Flex>
       </Flex>
-      <>
+      <Flex flexDirection="row" alignItems="center" gap="12">
+        <Button
+          appearance="subtle"
+          aria-label={isDark ? 'Switch to light mode' : 'Switch to dark mode'}
+          icon={isDark ? <FaSun /> : <FaMoon />}
+          onClick={toggle}
+        />
         {isLoggedIn ? (
           <Flex flexDirection="row" justifyContent="center" gap="12">
             <Menu
@@ -91,18 +100,18 @@ const HmsHeader = () => {
               to="/sign-in"
               style={({ isActive }) => ({
                 textDecoration: 'none',
-                color: isActive ? 'var(--color-white)' : 'var(--color-primary)',
-                fontWeight: 'var(--font-weight-medium)',
+                color: isActive ? 'var(--ax-colors-bg-default)' : 'var(--ax-colors-fg-accent-strong)',
+                fontWeight: 500,
                 padding: '8px 20px',
-                borderRadius: 'var(--radius-md)',
-                backgroundColor: isActive ? 'var(--color-primary)' : 'transparent',
-                border: '2px solid var(--color-primary)',
-                transition: 'var(--transition-fast)',
+                borderRadius: 'var(--ax-borderRadius-md)',
+                backgroundColor: isActive ? 'var(--ax-colors-fg-accent-strong)' : 'transparent',
+                border: '2px solid var(--ax-colors-fg-accent-strong)',
+                transition: '150ms ease-in-out',
               })}
               onMouseEnter={(e) => {
                 const isActive = e.currentTarget.getAttribute('aria-current') === 'page';
                 if (!isActive) {
-                  e.currentTarget.style.backgroundColor = 'var(--color-primary-lighter)';
+                  e.currentTarget.style.backgroundColor = 'var(--ax-colors-bg-accent-subtle)';
                 }
               }}
               onMouseLeave={(e) => {
@@ -118,18 +127,18 @@ const HmsHeader = () => {
               to="/sign-up"
               style={({ isActive }) => ({
                 textDecoration: 'none',
-                color: isActive ? 'var(--color-white)' : 'var(--color-primary)',
-                fontWeight: 'var(--font-weight-medium)',
+                color: isActive ? 'var(--ax-colors-bg-default)' : 'var(--ax-colors-fg-accent-strong)',
+                fontWeight: 500,
                 padding: '8px 20px',
-                borderRadius: 'var(--radius-md)',
-                backgroundColor: isActive ? 'var(--color-primary)' : 'transparent',
-                border: '2px solid var(--color-primary)',
-                transition: 'var(--transition-fast)',
+                borderRadius: 'var(--ax-borderRadius-md)',
+                backgroundColor: isActive ? 'var(--ax-colors-fg-accent-strong)' : 'transparent',
+                border: '2px solid var(--ax-colors-fg-accent-strong)',
+                transition: '150ms ease-in-out',
               })}
               onMouseEnter={(e) => {
                 const isActive = e.currentTarget.getAttribute('aria-current') === 'page';
                 if (!isActive) {
-                  e.currentTarget.style.backgroundColor = 'var(--color-primary-lighter)';
+                  e.currentTarget.style.backgroundColor = 'var(--ax-colors-bg-accent-subtle)';
                 }
               }}
               onMouseLeave={(e) => {
@@ -143,7 +152,7 @@ const HmsHeader = () => {
             </NavLink>
           </Flex>
         )}
-      </>
+      </Flex>
     </Flex>
   );
 };

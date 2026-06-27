@@ -45,6 +45,43 @@ class Hospital(Base):
     branches: Mapped[List["Branch"]] = relationship(back_populates="hospital")
 
 
+class Division(Base):
+    __tablename__ = "divisions"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(100), unique=True)
+
+    districts: Mapped[List["District"]] = relationship(back_populates="division")
+
+
+class District(Base):
+    __tablename__ = "districts"
+    __table_args__ = (
+        UniqueConstraint("name", "division_id", name="u_ix_district_name_division"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(100))
+    division_id: Mapped[int] = mapped_column(ForeignKey("divisions.id"))
+    division: Mapped["Division"] = relationship(back_populates="districts")
+
+    thanas: Mapped[List["Thana"]] = relationship(back_populates="district")
+
+
+class Thana(Base):
+    __tablename__ = "thanas"
+    __table_args__ = (
+        UniqueConstraint("name", "district_id", name="u_ix_thana_name_district"),
+    )
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(String(100))
+    district_id: Mapped[int] = mapped_column(ForeignKey("districts.id"))
+    district: Mapped["District"] = relationship(back_populates="thanas")
+
+    branches: Mapped[List["Branch"]] = relationship(back_populates="thana")
+
+
 class GenderEnum(enum.Enum):
     Male = 1
     Female = 2
@@ -90,6 +127,8 @@ class Branch(Base):
     phone: Mapped[str] = mapped_column(String(20))
     hospital_id: Mapped[int] = mapped_column(ForeignKey("hospitals.id"))
     hospital: Mapped["Hospital"] = relationship(back_populates="branches")
+    thana_id: Mapped[int] = mapped_column(ForeignKey("thanas.id"), nullable=True)
+    thana: Mapped["Thana"] = relationship(back_populates="branches")
 
     depts: Mapped[List["Department"]] = relationship(
         secondary="branchdepts", back_populates="branches"

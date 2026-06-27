@@ -1,11 +1,11 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import axios from 'axios';
-import { Box, Button, Field, Input, Heading, Text, Flex } from '@optiaxiom/react';
-import { DataTable, DataTableBody } from '@optiaxiom/react';
+import { Box, Button, DataTable, DataTableBody, Field, Flex, Input, Text } from '@optiaxiom/react';
 import { createColumnHelper, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { FaPlus, FaCheckCircle } from 'react-icons/fa';
+import { FaPlus, FaStethoscope, FaList } from 'react-icons/fa';
 
 import Config from '../../../config';
+import { AlertBanner, Card, CardBody, CardHeader, useAlertState } from '../_components';
 
 const columnHelper = createColumnHelper();
 
@@ -13,25 +13,25 @@ const DepartmentTab = () => {
   const [departmentName, setDepartmentName] = useState('');
   const [departments, setDepartments] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
+  const { alert, show, dismiss } = useAlertState();
 
-  const fetchDepartments = async () => {
+  const fetchDepartments = useCallback(async () => {
     try {
       const { data } = await axios.get(`${Config.SERVER_URL}/departments`);
       setDepartments(data);
     } catch (error) {
-      console.error('Error fetching departments:', error);
+      show('danger', 'Failed to load departments.');
     }
-  };
+  }, [show]);
 
   useEffect(() => {
     fetchDepartments();
-  }, []);
+  }, [fetchDepartments]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setSuccessMessage('');
+    dismiss();
 
     try {
       await axios.post(`${Config.SERVER_URL}/departments`, {
@@ -39,11 +39,10 @@ const DepartmentTab = () => {
       });
 
       setDepartmentName('');
-      setSuccessMessage('Department created successfully!');
-      setTimeout(() => setSuccessMessage(''), 3000);
+      show('success', 'Department created successfully!');
       await fetchDepartments();
     } catch (error) {
-      console.error('Error creating department:', error);
+      show('danger', 'Failed to create department. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -69,43 +68,52 @@ const DepartmentTab = () => {
   });
 
   return (
-    <Box className="settings-tab">
-      <Box className="settings-tab-form">
-        <Heading level="3">Add New Department</Heading>
-        <form onSubmit={handleSubmit}>
-          <Field label="Department Name" required>
-            <Input
-              placeholder="Enter department name"
-              value={departmentName}
-              onChange={(e) => setDepartmentName(e.target.value)}
-              required
-            />
-          </Field>
-          <Flex gap="12" alignItems="center" style={{ marginTop: '16px' }}>
-            <Button type="submit" appearance="primary" disabled={isLoading} icon={<FaPlus />}>
-              {isLoading ? 'Creating...' : 'Create Department'}
-            </Button>
-            {successMessage && (
-              <Flex alignItems="center" gap="8" style={{ color: 'var(--color-success)' }}>
-                <FaCheckCircle />
-                <Text>{successMessage}</Text>
+    <Flex flexDirection="column" gap="20">
+      <Card>
+        <CardHeader icon={<FaStethoscope />} title="Add New Department" subtitle="Create a clinical department" />
+        <CardBody>
+          <Flex flexDirection="column" gap="16">
+            <AlertBanner alert={alert} onDismiss={dismiss} />
+            <form onSubmit={handleSubmit}>
+              <Flex flexDirection="column" gap="16">
+                <Field label="Department Name" required>
+                  <Input
+                    placeholder="Enter department name"
+                    value={departmentName}
+                    onChange={(e) => setDepartmentName(e.target.value)}
+                    required
+                  />
+                </Field>
+                <Box>
+                  <Button type="submit" appearance="primary" disabled={isLoading} icon={<FaPlus />}>
+                    {isLoading ? 'Creating...' : 'Create Department'}
+                  </Button>
+                </Box>
               </Flex>
-            )}
+            </form>
           </Flex>
-        </form>
-      </Box>
+        </CardBody>
+      </Card>
 
-      <Box className="settings-tab-table">
-        <Heading level="3">Existing Departments</Heading>
-        {departments.length === 0 ? (
-          <Text color="fg.tertiary">No departments created yet.</Text>
-        ) : (
-          <DataTable table={table}>
-            <DataTableBody />
-          </DataTable>
-        )}
-      </Box>
-    </Box>
+      <Card>
+        <CardHeader
+          icon={<FaList />}
+          title="Existing Departments"
+          subtitle={`${departments.length} ${departments.length === 1 ? 'department' : 'departments'} configured`}
+        />
+        <CardBody>
+          {departments.length === 0 ? (
+            <Box p="16" bg="bg.secondary" rounded="md">
+              <Text color="fg.tertiary">No departments created yet.</Text>
+            </Box>
+          ) : (
+            <DataTable table={table}>
+              <DataTableBody />
+            </DataTable>
+          )}
+        </CardBody>
+      </Card>
+    </Flex>
   );
 };
 

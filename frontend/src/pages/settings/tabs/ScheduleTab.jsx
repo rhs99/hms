@@ -1,10 +1,22 @@
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
-import { Box, Button, Field, Heading, Text, Flex, Checkbox, DateInput } from '@optiaxiom/react';
-import { Menu, MenuContent, MenuTrigger } from '@optiaxiom/react';
-import { FaPlus, FaCheckCircle } from 'react-icons/fa';
+import {
+  Badge,
+  Box,
+  Button,
+  Checkbox,
+  DateInput,
+  Field,
+  Flex,
+  Menu,
+  MenuContent,
+  MenuTrigger,
+  Text,
+} from '@optiaxiom/react';
+import { FaPlus, FaUserMd, FaMapMarkedAlt, FaCalendarPlus, FaCheckCircle } from 'react-icons/fa';
 
 import Config from '../../../config';
+import { AlertBanner, Card, CardBody, CardHeader, SectionLabel, useAlertState } from '../_components';
 
 const WEEKDAYS = [
   { value: 'SAT', label: 'Saturday' },
@@ -17,99 +29,73 @@ const WEEKDAYS = [
 ];
 
 const ScheduleTab = () => {
-  // Step 1: Select doctor and branch
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [selectedHospital, setSelectedHospital] = useState(null);
   const [selectedBranch, setSelectedBranch] = useState(null);
 
-  // Step 2: Assignment data
   const [workPlaceId, setWorkPlaceId] = useState(null);
   const [isAssigned, setIsAssigned] = useState(false);
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
 
-  // Step 3: Schedule data
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [selectedDays, setSelectedDays] = useState([]);
   const [existingSchedules, setExistingSchedules] = useState([]);
 
-  // Data lists
   const [doctors, setDoctors] = useState([]);
   const [hospitals, setHospitals] = useState([]);
   const [branches, setBranches] = useState([]);
   const [slots, setSlots] = useState([]);
 
-  // UI state
   const [isAssigning, setIsAssigning] = useState(false);
   const [isAddingSchedule, setIsAddingSchedule] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
+  const { alert, show, dismiss } = useAlertState();
 
-  useEffect(() => {
-    fetchDoctors();
-    fetchHospitals();
-    fetchSlots();
-  }, []);
-
-  useEffect(() => {
-    if (selectedHospital) {
-      fetchBranches(selectedHospital.id);
-    } else {
-      setBranches([]);
-      setSelectedBranch(null);
-    }
-  }, [selectedHospital]);
-
-  useEffect(() => {
-    if (selectedDoctor && selectedBranch) {
-      checkAssignment();
-    } else {
-      setIsAssigned(false);
-      setWorkPlaceId(null);
-      setExistingSchedules([]);
-    }
-  }, [selectedDoctor, selectedBranch]);
-
-  const fetchDoctors = async () => {
+  const fetchDoctors = useCallback(async () => {
     try {
       const { data } = await axios.get(`${Config.SERVER_URL}/doctors`);
       setDoctors(data);
     } catch (error) {
-      console.error('Error fetching doctors:', error);
+      show('danger', 'Failed to load doctors.');
     }
-  };
+  }, [show]);
 
-  const fetchHospitals = async () => {
+  const fetchHospitals = useCallback(async () => {
     try {
       const { data } = await axios.get(`${Config.SERVER_URL}/hospitals`);
       setHospitals(data);
     } catch (error) {
-      console.error('Error fetching hospitals:', error);
+      show('danger', 'Failed to load hospitals.');
     }
-  };
+  }, [show]);
 
-  const fetchBranches = async (hospitalId) => {
-    try {
-      const { data } = await axios.get(`${Config.SERVER_URL}/branches?hospital_id=${hospitalId}`);
-      setBranches(data);
-    } catch (error) {
-      console.error('Error fetching branches:', error);
-    }
-  };
+  const fetchBranches = useCallback(
+    async (hospitalId) => {
+      try {
+        const { data } = await axios.get(
+          `${Config.SERVER_URL}/branches?hospital_id=${hospitalId}&limit=100`
+        );
+        setBranches(data.items);
+      } catch (error) {
+        show('danger', 'Failed to load branches.');
+      }
+    },
+    [show]
+  );
 
-  const fetchSlots = async () => {
+  const fetchSlots = useCallback(async () => {
     try {
       const { data } = await axios.get(`${Config.SERVER_URL}/slots`);
       setSlots(data);
     } catch (error) {
-      console.error('Error fetching slots:', error);
+      show('danger', 'Failed to load time slots.');
     }
-  };
+  }, [show]);
 
-  const checkAssignment = async () => {
+  const checkAssignment = useCallback(async () => {
     if (!selectedDoctor || !selectedBranch) return;
 
     try {
-      // Check if work place exists
       const workPlaceResponse = await axios.get(
         `${Config.SERVER_URL}/work-places?branch_id=${selectedBranch.id}&employee_id=${selectedDoctor.user_id}`
       );
@@ -118,7 +104,6 @@ const ScheduleTab = () => {
         setIsAssigned(true);
         setWorkPlaceId(workPlaceResponse.data.id);
 
-        // Fetch existing slot schedules
         const schedulesResponse = await axios.get(
           `${Config.SERVER_URL}/slot-schedules?branch_id=${selectedBranch.id}&employee_id=${selectedDoctor.user_id}`
         );
@@ -133,16 +118,41 @@ const ScheduleTab = () => {
       setWorkPlaceId(null);
       setExistingSchedules([]);
     }
-  };
+  }, [selectedDoctor, selectedBranch]);
+
+  useEffect(() => {
+    fetchDoctors();
+    fetchHospitals();
+    fetchSlots();
+  }, [fetchDoctors, fetchHospitals, fetchSlots]);
+
+  useEffect(() => {
+    if (selectedHospital) {
+      fetchBranches(selectedHospital.id);
+    } else {
+      setBranches([]);
+      setSelectedBranch(null);
+    }
+  }, [selectedHospital, fetchBranches]);
+
+  useEffect(() => {
+    if (selectedDoctor && selectedBranch) {
+      checkAssignment();
+    } else {
+      setIsAssigned(false);
+      setWorkPlaceId(null);
+      setExistingSchedules([]);
+    }
+  }, [selectedDoctor, selectedBranch, checkAssignment]);
 
   const handleAssignBranch = async () => {
     if (!selectedDoctor || !selectedBranch || !startDate) {
-      alert('Please select doctor, branch, and start date');
+      show('warning', 'Please select doctor, branch, and start date.');
       return;
     }
 
     setIsAssigning(true);
-    setSuccessMessage('');
+    dismiss();
 
     try {
       await axios.post(`${Config.SERVER_URL}/work-places`, {
@@ -152,13 +162,10 @@ const ScheduleTab = () => {
         end_date: endDate || null,
       });
 
-      // Refresh assignment status
       await checkAssignment();
-      setSuccessMessage('Doctor assigned to branch successfully!');
-      setTimeout(() => setSuccessMessage(''), 3000);
+      show('success', 'Doctor assigned to branch successfully!');
     } catch (error) {
-      console.error('Error assigning doctor to branch:', error);
-      alert('Error assigning doctor. Please try again.');
+      show('danger', 'Failed to assign doctor. Please try again.');
     } finally {
       setIsAssigning(false);
     }
@@ -170,19 +177,18 @@ const ScheduleTab = () => {
 
   const handleAddSchedule = async () => {
     if (!selectedSlot) {
-      alert('Please select a time slot');
+      show('warning', 'Please select a time slot.');
       return;
     }
     if (selectedDays.length === 0) {
-      alert('Please select at least one day');
+      show('warning', 'Please select at least one day.');
       return;
     }
 
     setIsAddingSchedule(true);
-    setSuccessMessage('');
+    dismiss();
 
     try {
-      // Ensure we have a work place ID
       let wpId = workPlaceId;
       if (!wpId) {
         const response = await axios.post(`${Config.SERVER_URL}/work-places`, {
@@ -196,7 +202,6 @@ const ScheduleTab = () => {
         setIsAssigned(true);
       }
 
-      // Create slot schedules for each selected day
       const promises = selectedDays.map((day) =>
         axios.post(`${Config.SERVER_URL}/slot-schedules`, {
           slot_id: selectedSlot.id,
@@ -207,170 +212,204 @@ const ScheduleTab = () => {
 
       await Promise.all(promises);
 
-      // Reset schedule form
       setSelectedSlot(null);
       setSelectedDays([]);
-      setSuccessMessage('Schedule added successfully!');
-      setTimeout(() => setSuccessMessage(''), 3000);
+      show('success', 'Schedule added successfully!');
 
-      // Refresh existing schedules
       checkAssignment();
     } catch (error) {
-      console.error('Error adding schedule:', error);
-      alert('Error adding schedule. Please try again.');
+      show('danger', 'Failed to add schedule. Please try again.');
     } finally {
       setIsAddingSchedule(false);
     }
   };
 
   return (
-    <Box className="settings-tab">
-      {/* Step 1: Select Doctor and Branch */}
-      <Box className="settings-tab-form" style={{ marginBottom: '24px' }}>
-        <Heading level="3">Select Doctor and Branch</Heading>
-
-        <Field label="Doctor" required>
-          <Menu
-            options={doctors.map((doctor) => ({
-              label: `${doctor.full_name} (Reg: ${doctor.registration_no})`,
-              execute: () => setSelectedDoctor(doctor),
-            }))}
-          >
-            <MenuTrigger>
-              {selectedDoctor
-                ? `${selectedDoctor.full_name} (Reg: ${selectedDoctor.registration_no})`
-                : 'Select doctor'}
-            </MenuTrigger>
-            <MenuContent />
-          </Menu>
-        </Field>
-
-        <Field label="Hospital" required>
-          <Menu
-            options={hospitals.map((hospital) => ({
-              label: hospital.name,
-              execute: () => setSelectedHospital(hospital),
-            }))}
-          >
-            <MenuTrigger>{selectedHospital ? selectedHospital.name : 'Select hospital'}</MenuTrigger>
-            <MenuContent />
-          </Menu>
-        </Field>
-
-        <Field label="Branch" required>
-          <Menu
-            options={branches.map((branch) => ({
-              label: branch.address,
-              execute: () => setSelectedBranch(branch),
-            }))}
-          >
-            <MenuTrigger>{selectedBranch ? selectedBranch.address : 'Select branch'}</MenuTrigger>
-            <MenuContent />
-          </Menu>
-        </Field>
-      </Box>
-
-      {/* Step 2: Assignment Status and Action */}
-      {selectedDoctor && selectedBranch && (
-        <>
-          {!isAssigned ? (
-            <Box className="settings-tab-form" style={{ marginBottom: '24px' }}>
-              <Heading level="4">Assign Doctor to Branch</Heading>
-              <Text style={{ marginBottom: '16px', color: 'var(--color-fg-secondary)' }}>
-                This doctor is not yet assigned to this branch. Please assign them first.
-              </Text>
-
-              <Field label="Start Date" required>
-                <DateInput value={startDate} onValueChange={setStartDate} required />
-              </Field>
-
-              <Field label="End Date (Optional)">
-                <DateInput value={endDate} onValueChange={setEndDate} />
-              </Field>
-
-              <Button
-                onClick={handleAssignBranch}
-                appearance="primary"
-                disabled={isAssigning}
-                icon={<FaPlus />}
-                style={{ marginTop: '16px' }}
+    <Flex flexDirection="column" gap="20">
+      <AlertBanner alert={alert} onDismiss={dismiss} />
+      <Card>
+        <CardHeader
+          icon={<FaUserMd />}
+          title="Select Doctor and Branch"
+          subtitle="Choose who you're scheduling and where"
+        />
+        <CardBody>
+          <Flex flexDirection="column" gap="16">
+            <Field label="Doctor" required>
+              <Menu
+                options={doctors.map((doctor) => ({
+                  label: `${doctor.full_name} (Reg: ${doctor.registration_no})`,
+                  execute: () => setSelectedDoctor(doctor),
+                }))}
               >
-                {isAssigning ? 'Assigning...' : 'Assign to Branch'}
-              </Button>
-            </Box>
-          ) : (
-            <Box className="settings-tab-form" style={{ marginBottom: '24px' }}>
-              <Heading level="4">Doctor Assignment</Heading>
-              <Text style={{ color: 'var(--color-success)', marginBottom: '16px' }}>
-                ✓ This doctor is assigned to this branch
-              </Text>
+                <MenuTrigger>
+                  {selectedDoctor
+                    ? `${selectedDoctor.full_name} (Reg: ${selectedDoctor.registration_no})`
+                    : 'Select doctor'}
+                </MenuTrigger>
+                <MenuContent />
+              </Menu>
+            </Field>
 
-              {existingSchedules.length > 0 && (
-                <Box style={{ marginBottom: '16px' }}>
-                  <Text fontWeight="600" style={{ marginBottom: '8px' }}>
-                    Existing Schedules:
-                  </Text>
-                  <Box style={{ display: 'grid', gap: '8px' }}>
-                    {existingSchedules.map((schedule, index) => (
-                      <Text key={index} style={{ color: 'var(--color-fg-secondary)' }}>
-                        • {schedule.day}: {schedule.start_at} - {schedule.end_at}
-                      </Text>
-                    ))}
-                  </Box>
-                </Box>
-              )}
-            </Box>
-          )}
-
-          {/* Step 3: Manage Schedules */}
-          {(isAssigned || workPlaceId) && (
-            <Box className="settings-tab-form">
-              <Heading level="4">Add New Schedule</Heading>
-
-              <Field label="Time Slot" required>
+            <Flex flexDirection="row" gap="16" style={{ flexWrap: 'wrap' }}>
+              <Field label="Hospital" required style={{ flex: '1 1 240px' }}>
                 <Menu
-                  options={slots.map((slot) => ({
-                    label: `${slot.start_at} - ${slot.end_at}`,
-                    execute: () => setSelectedSlot(slot),
+                  options={hospitals.map((hospital) => ({
+                    label: hospital.name,
+                    execute: () => setSelectedHospital(hospital),
                   }))}
                 >
-                  <MenuTrigger>
-                    {selectedSlot ? `${selectedSlot.start_at} - ${selectedSlot.end_at}` : 'Select time slot'}
-                  </MenuTrigger>
+                  <MenuTrigger>{selectedHospital ? selectedHospital.name : 'Select hospital'}</MenuTrigger>
                   <MenuContent />
                 </Menu>
               </Field>
 
-              <Field label="Days of Week" required>
-                <Flex flexDirection="column" gap="8">
-                  {WEEKDAYS.map((day) => (
-                    <Flex flexDirection="row" key={day.value} alignItems="center" gap="8">
-                      <Checkbox
-                        checked={selectedDays.includes(day.value)}
-                        onChange={() => handleDayToggle(day.value)}
-                      />
-                      <Text>{day.label}</Text>
-                    </Flex>
-                  ))}
-                </Flex>
+              <Field label="Branch" required style={{ flex: '1 1 240px' }}>
+                <Menu
+                  options={branches.map((branch) => ({
+                    label: branch.address,
+                    execute: () => setSelectedBranch(branch),
+                  }))}
+                >
+                  <MenuTrigger>{selectedBranch ? selectedBranch.address : 'Select branch'}</MenuTrigger>
+                  <MenuContent />
+                </Menu>
               </Field>
+            </Flex>
+          </Flex>
+        </CardBody>
+      </Card>
 
-              <Flex gap="12" alignItems="center" style={{ marginTop: '16px' }}>
-                <Button onClick={handleAddSchedule} appearance="primary" disabled={isAddingSchedule} icon={<FaPlus />}>
-                  {isAddingSchedule ? 'Adding...' : 'Add Schedule'}
-                </Button>
-                {successMessage && (
-                  <Flex alignItems="center" gap="8" style={{ color: 'var(--color-success)' }}>
-                    <FaCheckCircle />
-                    <Text>{successMessage}</Text>
+      {selectedDoctor && selectedBranch && (
+        <>
+          {!isAssigned ? (
+            <Card>
+              <CardHeader
+                icon={<FaMapMarkedAlt />}
+                title="Assign Doctor to Branch"
+                subtitle="This doctor is not yet assigned to this branch"
+              />
+              <CardBody>
+                <Flex flexDirection="column" gap="16">
+                  <Flex flexDirection="row" gap="16" style={{ flexWrap: 'wrap' }}>
+                    <Field label="Start Date" required style={{ flex: '1 1 200px' }}>
+                      <DateInput value={startDate} onValueChange={setStartDate} required />
+                    </Field>
+                    <Field label="End Date (Optional)" style={{ flex: '1 1 200px' }}>
+                      <DateInput value={endDate} onValueChange={setEndDate} />
+                    </Field>
                   </Flex>
+                  <Box>
+                    <Button onClick={handleAssignBranch} appearance="primary" disabled={isAssigning} icon={<FaPlus />}>
+                      {isAssigning ? 'Assigning...' : 'Assign to Branch'}
+                    </Button>
+                  </Box>
+                </Flex>
+              </CardBody>
+            </Card>
+          ) : (
+            <Card>
+              <CardHeader
+                icon={<FaMapMarkedAlt />}
+                title="Doctor Assignment"
+                subtitle="Active assignment and existing schedules"
+                trailing={
+                  <Flex alignItems="center" gap="8" color="fg.success">
+                    <FaCheckCircle />
+                    <Text fontSize="sm" fontWeight="600" color="fg.success">
+                      Assigned
+                    </Text>
+                  </Flex>
+                }
+              />
+              <CardBody>
+                {existingSchedules.length > 0 ? (
+                  <Flex flexDirection="column" gap="12">
+                    <SectionLabel>Existing Schedules</SectionLabel>
+                    <Flex flexDirection="row" gap="8" style={{ flexWrap: 'wrap' }}>
+                      {existingSchedules.map((schedule, index) => (
+                        <Badge key={index} intent="information">
+                          {schedule.day}: {schedule.start_at} - {schedule.end_at}
+                        </Badge>
+                      ))}
+                    </Flex>
+                  </Flex>
+                ) : (
+                  <Text fontSize="sm" color="fg.tertiary">
+                    No schedules yet — add one below.
+                  </Text>
                 )}
-              </Flex>
-            </Box>
+              </CardBody>
+            </Card>
+          )}
+
+          {(isAssigned || workPlaceId) && (
+            <Card>
+              <CardHeader
+                icon={<FaCalendarPlus />}
+                title="Add New Schedule"
+                subtitle="Pick a time slot and the days of the week"
+              />
+              <CardBody>
+                <Flex flexDirection="column" gap="16">
+                  <Field label="Time Slot" required>
+                    <Menu
+                      options={slots.map((slot) => ({
+                        label: `${slot.start_at} - ${slot.end_at}`,
+                        execute: () => setSelectedSlot(slot),
+                      }))}
+                    >
+                      <MenuTrigger>
+                        {selectedSlot ? `${selectedSlot.start_at} - ${selectedSlot.end_at}` : 'Select time slot'}
+                      </MenuTrigger>
+                      <MenuContent />
+                    </Menu>
+                  </Field>
+
+                  <Field label="Days of Week" required>
+                    <Flex flexDirection="row" gap="8" style={{ flexWrap: 'wrap' }}>
+                      {WEEKDAYS.map((day) => {
+                        const checked = selectedDays.includes(day.value);
+                        return (
+                          <Flex
+                            key={day.value}
+                            alignItems="center"
+                            gap="8"
+                            p="8"
+                            rounded="md"
+                            border="1"
+                            borderColor={checked ? 'border.accent' : 'border.tertiary'}
+                            bg={checked ? 'bg.accent.subtle' : 'bg.default'}
+                            style={{ cursor: 'pointer', minWidth: '128px' }}
+                            onClick={() => handleDayToggle(day.value)}
+                          >
+                            <Checkbox checked={checked} onClick={(e) => e.stopPropagation()} readOnly tabIndex={-1} />
+                            <Text fontSize="sm" fontWeight="600" color="fg.default">
+                              {day.label}
+                            </Text>
+                          </Flex>
+                        );
+                      })}
+                    </Flex>
+                  </Field>
+
+                  <Box>
+                    <Button
+                      onClick={handleAddSchedule}
+                      appearance="primary"
+                      disabled={isAddingSchedule}
+                      icon={<FaPlus />}
+                    >
+                      {isAddingSchedule ? 'Adding...' : 'Add Schedule'}
+                    </Button>
+                  </Box>
+                </Flex>
+              </CardBody>
+            </Card>
           )}
         </>
       )}
-    </Box>
+    </Flex>
   );
 };
 

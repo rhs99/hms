@@ -1,9 +1,9 @@
 import axios from 'axios';
-import { useState, useContext, useEffect, useMemo } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createColumnHelper } from '@tanstack/react-table';
 import { FaBriefcaseMedical, FaClock, FaUserClock, FaCheckCircle } from 'react-icons/fa';
-import { DataTable, DataTableBody, Box, Checkbox, Text, Badge, Heading } from '@optiaxiom/react';
+import { Badge, Box, Cover, DataTable, DataTableBody, DataTableCheckbox, Flex, Heading, Text } from '@optiaxiom/react';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 
 import utils from '../../utils';
@@ -11,20 +11,16 @@ import Prescreption from '../../component/prescription/Prescreption';
 import AuthContext from '../../store/auth';
 import Config from '../../config';
 
-import './_index.scss';
-
 const columnHelper = createColumnHelper();
 
 const getWorkplaceColumns = () => [
   {
     id: 'select',
     size: 50,
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onChange={row.getToggleSelectedHandler()}
-        disabled={!row.getCanSelect()}
-      />
+    cell: () => (
+      <Cover asChild>
+        <DataTableCheckbox />
+      </Cover>
     ),
   },
   columnHelper.accessor('hospital', {
@@ -48,12 +44,10 @@ const getAppointmentColumns = () => [
   {
     id: 'select',
     size: 50,
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onChange={row.getToggleSelectedHandler()}
-        disabled={!row.getCanSelect()}
-      />
+    cell: () => (
+      <Cover asChild>
+        <DataTableCheckbox />
+      </Cover>
     ),
   },
   columnHelper.accessor('serial_no', {
@@ -103,13 +97,7 @@ const Workplace = () => {
     });
   }, [authCtx, navigate]);
 
-  useEffect(() => {
-    if (selectedSlotScheduleId) {
-      getAllAppointments();
-    }
-  }, [selectedSlotScheduleId]);
-
-  const getAllAppointments = async () => {
+  const getAllAppointments = useCallback(async () => {
     if (!selectedSlotScheduleId) return;
 
     const PENDING_URL = `${Config.SERVER_URL}/slot-schedules/${selectedSlotScheduleId}/appointments?date=${utils.getFormatedDate(new Date())}&pending=True`;
@@ -119,7 +107,13 @@ const Workplace = () => {
 
     setPendingAppointments(pendingResponse.data);
     setResolvedAppointments(resolvedResponse.data);
-  };
+  }, [selectedSlotScheduleId]);
+
+  useEffect(() => {
+    if (selectedSlotScheduleId) {
+      getAllAppointments();
+    }
+  }, [selectedSlotScheduleId, getAllAppointments]);
 
   const resolveAppointment = async (id) => {
     const URL = Config.SERVER_URL + `/appointments/${id}`;
@@ -145,7 +139,7 @@ const Workplace = () => {
         resolveAppointment(selectedAppointment.id);
       }
     }
-  }, [pendingRowSelection]);
+  }, [pendingRowSelection, pendingAppointments]);
 
   const currentDay = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'][new Date().getDay()];
   const filteredWorkplaces = useMemo(() => workplaces.filter((wp) => wp.day === currentDay), [workplaces, currentDay]);
@@ -156,9 +150,7 @@ const Workplace = () => {
     getCoreRowModel: getCoreRowModel(),
     enableMultiRowSelection: false,
     onRowSelectionChange: setWorkplaceRowSelection,
-    state: {
-      rowSelection: workplaceRowSelection,
-    },
+    state: { rowSelection: workplaceRowSelection },
   });
 
   const pendingAppointmentsTable = useReactTable({
@@ -167,9 +159,7 @@ const Workplace = () => {
     getCoreRowModel: getCoreRowModel(),
     enableMultiRowSelection: false,
     onRowSelectionChange: setPendingRowSelection,
-    state: {
-      rowSelection: pendingRowSelection,
-    },
+    state: { rowSelection: pendingRowSelection },
   });
 
   const resolvedAppointmentsTable = useReactTable({
@@ -182,97 +172,127 @@ const Workplace = () => {
     return null;
   }
 
-  return (
-    <Box className="workplace">
-      <Box className="workplace-header">
-        <Heading level="2" className="workplace-title">
-          <FaBriefcaseMedical size={32} />
-          My Workplace
-        </Heading>
-        <Text className="workplace-subtitle">Manage your workplaces and appointments</Text>
-      </Box>
-
-      <Box className="workplace-content">
-        <Box className="workplace-section">
-          <Box className="workplace-section-header">
-            <Heading level="3" className="workplace-section-title">
-              <FaClock />
-              Today's Workplaces
-            </Heading>
-          </Box>
-          {filteredWorkplaces.length > 0 ? (
-            <Box className="workplace-table-wrapper">
-              <DataTable maxH="xs" table={workplaceTable}>
-                <DataTableBody />
-              </DataTable>
-            </Box>
-          ) : (
-            <Box className="workplace-empty-state">
-              <Text>No workplaces scheduled for today</Text>
-            </Box>
-          )}
+  const Section = ({ icon, title, isEmpty, emptyLabel, children }) => (
+    <Box bg="bg.default" rounded="xl" border="1" borderColor="border.secondary" shadow="sm" p="20">
+      <Flex
+        flexDirection="row"
+        alignItems="center"
+        gap="8"
+        pb="12"
+        borderColor="border.tertiary"
+        style={{ borderBottomWidth: '1px', borderBottomStyle: 'solid', marginBottom: '16px' }}
+      >
+        <Box color="fg.accent.strong" style={{ fontSize: '18px', display: 'flex' }}>
+          {icon}
         </Box>
+        <Heading level="4" color="fg.default">
+          {title}
+        </Heading>
+      </Flex>
+      {isEmpty ? (
+        <Box
+          p="24"
+          bg="bg.page"
+          rounded="md"
+          border="1"
+          borderColor="border.secondary"
+          style={{ borderStyle: 'dashed', textAlign: 'center' }}
+        >
+          <Text color="fg.tertiary">{emptyLabel}</Text>
+        </Box>
+      ) : (
+        children
+      )}
+    </Box>
+  );
+
+  return (
+    <Box bg="bg.page" p="16" style={{ maxHeight: '85vh', overflowY: 'auto' }}>
+      <Flex
+        flexDirection="row"
+        flexWrap="wrap"
+        alignItems="center"
+        gap="12"
+        p="16"
+        bg="bg.default"
+        rounded="xl"
+        border="1"
+        borderColor="border.secondary"
+        shadow="sm"
+        style={{ marginBottom: '20px' }}
+      >
+        <Flex
+          alignItems="center"
+          justifyContent="center"
+          bg="bg.accent.subtle"
+          color="fg.accent.strong"
+          rounded="lg"
+          style={{ width: '48px', height: '48px', fontSize: '24px' }}
+        >
+          <FaBriefcaseMedical />
+        </Flex>
+        <Flex flexDirection="column" gap="2">
+          <Heading level="2" color="fg.default">
+            My Workplace
+          </Heading>
+          <Text fontSize="sm" color="fg.tertiary">
+            Manage your workplaces and appointments
+          </Text>
+        </Flex>
+      </Flex>
+
+      <Flex flexDirection="column" gap="20">
+        <Section
+          icon={<FaClock />}
+          title="Today's Workplaces"
+          isEmpty={filteredWorkplaces.length === 0}
+          emptyLabel="No workplaces scheduled for today"
+        >
+          <DataTable maxH="xs" table={workplaceTable}>
+            <DataTableBody />
+          </DataTable>
+        </Section>
 
         {appointmentToResolve && (
-          <Box className="workplace-prescription-wrapper">
-            <Prescreption
-              data={appointmentToResolve}
-              onUpdate={async () => {
-                setAppointmentToResolve(null);
-                await getAllAppointments();
-              }}
-              onCancel={() => {
-                setAppointmentToResolve(null);
-                setPendingRowSelection({});
-              }}
-            />
-          </Box>
+          <Prescreption
+            data={appointmentToResolve}
+            onUpdate={async () => {
+              setAppointmentToResolve(null);
+              await getAllAppointments();
+            }}
+            onCancel={() => {
+              setAppointmentToResolve(null);
+              setPendingRowSelection({});
+            }}
+          />
         )}
 
         {Object.keys(workplaceRowSelection).length > 0 && (
           <>
-            <Box className="workplace-section">
-              <Box className="workplace-section-header">
-                <Heading level="3" className="workplace-section-title">
-                  <FaUserClock />
-                  Pending Appointments
-                </Heading>
-              </Box>
-              {pendingAppointments.length > 0 ? (
-                <Box className="workplace-table-wrapper">
-                  <DataTable maxH="xs" w="fit" table={pendingAppointmentsTable}>
-                    <DataTableBody />
-                  </DataTable>
-                </Box>
-              ) : (
-                <Box className="workplace-empty-state">
-                  <Text>No pending appointments for today</Text>
-                </Box>
-              )}
-            </Box>
+            <Section
+              icon={<FaUserClock />}
+              title="Pending Appointments"
+              isEmpty={pendingAppointments.length === 0}
+              emptyLabel="No pending appointments for today"
+            >
+              <DataTable maxH="xs" w="fit" table={pendingAppointmentsTable}>
+                <DataTableBody />
+              </DataTable>
+            </Section>
 
-            <Box className="workplace-section">
-              <Box className="workplace-section-header">
-                <Heading level="3" className="workplace-section-title">
-                  <FaCheckCircle />
-                  Resolved Appointments
-                </Heading>
-              </Box>
-              {resolvedAppointments.length > 0 ? (
-                <Box className="workplace-table-wrapper">
-                  <DataTable maxH="xs" w="fit" table={resolvedAppointmentsTable}>
-                    <DataTableBody />
-                  </DataTable>
-                </Box>
-              ) : (
-                <Box className="workplace-empty-state">
-                  <Text>No resolved appointments for today</Text>
-                </Box>
-              )}
-            </Box>
+            <Section
+              icon={<FaCheckCircle />}
+              title="Resolved Appointments"
+              isEmpty={resolvedAppointments.length === 0}
+              emptyLabel="No resolved appointments for today"
+            >
+              <DataTable maxH="xs" w="fit" table={resolvedAppointmentsTable}>
+                <DataTableBody />
+              </DataTable>
+            </Section>
           </>
         )}
-      </Box>
+      </Flex>
     </Box>
   );
 };
