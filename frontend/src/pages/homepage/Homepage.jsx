@@ -36,9 +36,11 @@ const columns = [
     header: 'Hospital',
     cell: ({ row }) => (
       <DataTableLabel asChild>
-        <DataTableAction primary>
-          <Link asChild>
-            <RouterLink to={`/branches/${row.original.id}`}>{row.original.hospital?.name || 'N/A'}</RouterLink>
+        <DataTableAction flex="initial" overflow="hidden" primary>
+          <Link asChild appearance="subtle">
+            <RouterLink to={`/branches/${row.original.id}`}>
+              <Text truncate>{row.original.hospital?.name || 'N/A'}</Text>
+            </RouterLink>
           </Link>
         </DataTableAction>
       </DataTableLabel>
@@ -165,6 +167,7 @@ const Homepage = () => {
     data: useMemo(() => data.items, [data.items]),
     columns,
     getCoreRowModel: getCoreRowModel(),
+    enableRowSelection: false,
     manualPagination: true,
     onPaginationChange: setPagination,
     rowCount: data.total,
@@ -211,10 +214,10 @@ const Homepage = () => {
           </Flex>
           <Flex flexDirection="column" gap="2">
             <Heading level="3" color="fg.default">
-              Find a Branch
+              Find a Hospital
             </Heading>
             <Text fontSize="sm" color="fg.tertiary">
-              {data.total} {data.total === 1 ? 'branch' : 'branches'}
+              {data.total} {data.total === 1 ? 'hospital' : 'hospitals'}
               {hasActiveFilter ? ' match your filters' : ' total'}
             </Text>
           </Flex>
