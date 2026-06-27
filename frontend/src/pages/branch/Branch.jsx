@@ -41,7 +41,7 @@ const Branch = () => {
           const url = Config.SERVER_URL + `/branches/${branchId}/departments/${dept.id}/doctors`;
           const { data } = await axios.get(url);
           doctorsData[dept.id] = data;
-        } catch (error) {
+        } catch {
           hadError = true;
           doctorsData[dept.id] = [];
         }

@@ -36,7 +36,7 @@ const DoctorTab = () => {
       try {
         const { data } = await axios.get(`${Config.SERVER_URL}/departments`);
         setDepartments(data);
-      } catch (error) {
+      } catch {
         show('danger', 'Failed to load departments.');
       }
     };
@@ -61,7 +61,7 @@ const DoctorTab = () => {
       } else {
         show('danger', 'User not found. Please check the username.');
       }
-    } catch (error) {
+    } catch {
       show('danger', 'User not found. Please check the username.');
     } finally {
       setIsSearching(false);
@@ -104,7 +104,7 @@ const DoctorTab = () => {
 
       resetForm();
       show('success', 'Doctor created successfully!');
-    } catch (error) {
+    } catch {
       show('danger', 'Failed to create doctor. Please check all fields and try again.');
     } finally {
       setIsLoading(false);

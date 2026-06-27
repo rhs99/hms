@@ -27,7 +27,7 @@ const BranchTab = () => {
       try {
         const { data } = await axios.get(`${Config.SERVER_URL}/hospitals`);
         setHospitals(data);
-      } catch (error) {
+      } catch {
         show('danger', 'Failed to load hospitals.');
       }
     };
@@ -90,7 +90,7 @@ const BranchTab = () => {
       setEmail('');
       setSelectedDivision(null);
       show('success', 'Branch created successfully!');
-    } catch (error) {
+    } catch {
       show('danger', 'Failed to create branch. Please try again.');
     } finally {
       setIsLoading(false);

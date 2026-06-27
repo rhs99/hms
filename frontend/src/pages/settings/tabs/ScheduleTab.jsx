@@ -55,7 +55,7 @@ const ScheduleTab = () => {
     try {
       const { data } = await axios.get(`${Config.SERVER_URL}/doctors`);
       setDoctors(data);
-    } catch (error) {
+    } catch {
       show('danger', 'Failed to load doctors.');
     }
   }, [show]);
@@ -64,7 +64,7 @@ const ScheduleTab = () => {
     try {
       const { data } = await axios.get(`${Config.SERVER_URL}/hospitals`);
       setHospitals(data);
-    } catch (error) {
+    } catch {
       show('danger', 'Failed to load hospitals.');
     }
   }, [show]);
@@ -76,7 +76,7 @@ const ScheduleTab = () => {
           `${Config.SERVER_URL}/branches?hospital_id=${hospitalId}&limit=100`
         );
         setBranches(data.items);
-      } catch (error) {
+      } catch {
         show('danger', 'Failed to load branches.');
       }
     },
@@ -87,7 +87,7 @@ const ScheduleTab = () => {
     try {
       const { data } = await axios.get(`${Config.SERVER_URL}/slots`);
       setSlots(data);
-    } catch (error) {
+    } catch {
       show('danger', 'Failed to load time slots.');
     }
   }, [show]);
@@ -113,7 +113,7 @@ const ScheduleTab = () => {
         setWorkPlaceId(null);
         setExistingSchedules([]);
       }
-    } catch (error) {
+    } catch {
       setIsAssigned(false);
       setWorkPlaceId(null);
       setExistingSchedules([]);
@@ -164,7 +164,7 @@ const ScheduleTab = () => {
 
       await checkAssignment();
       show('success', 'Doctor assigned to branch successfully!');
-    } catch (error) {
+    } catch {
       show('danger', 'Failed to assign doctor. Please try again.');
     } finally {
       setIsAssigning(false);
@@ -217,7 +217,7 @@ const ScheduleTab = () => {
       show('success', 'Schedule added successfully!');
 
       checkAssignment();
-    } catch (error) {
+    } catch {
       show('danger', 'Failed to add schedule. Please try again.');
     } finally {
       setIsAddingSchedule(false);

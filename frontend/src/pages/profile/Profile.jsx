@@ -43,7 +43,7 @@ const Profile = () => {
       try {
         const response = await axios.get(`${Config.SERVER_URL}/users?username=${userName}`);
         setProfileData(response.data);
-      } catch (error) {
+      } catch {
         show('danger', 'Failed to load profile.');
       }
     };

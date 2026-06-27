@@ -215,7 +215,7 @@ const Doctor = () => {
   });
 
   const getSelectedSlotSchedule = () => {
-    if (!Boolean(selectedSlotSchedule)) {
+    if (!selectedSlotSchedule) {
       return 'N/A';
     }
     return `${selectedSlotSchedule.start_at} - ${selectedSlotSchedule.end_at} (${selectedSlotSchedule.day})`;
@@ -362,7 +362,7 @@ const Doctor = () => {
             >
               <Button
                 appearance="inverse"
-                disabled={!Boolean(selectedSlotSchedule) || !date || Boolean(dateValidationError)}
+                disabled={!selectedSlotSchedule || !date || !!dateValidationError}
                 onClick={getAppointments}
                 icon={<FaClipboardList />}
               >
@@ -371,7 +371,7 @@ const Doctor = () => {
               <Button
                 appearance="primary"
                 disabled={
-                  !authCtx.isLoggedIn || !date || !Boolean(selectedSlotSchedule) || Boolean(dateValidationError)
+                  !authCtx.isLoggedIn || !date || !selectedSlotSchedule || !!dateValidationError
                 }
                 onClick={makeAppointment}
                 icon={<FaCalendarAlt />}

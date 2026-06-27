@@ -19,7 +19,7 @@ const DepartmentTab = () => {
     try {
       const { data } = await axios.get(`${Config.SERVER_URL}/departments`);
       setDepartments(data);
-    } catch (error) {
+    } catch {
       show('danger', 'Failed to load departments.');
     }
   }, [show]);
@@ -41,7 +41,7 @@ const DepartmentTab = () => {
       setDepartmentName('');
       show('success', 'Department created successfully!');
       await fetchDepartments();
-    } catch (error) {
+    } catch {
       show('danger', 'Failed to create department. Please try again.');
     } finally {
       setIsLoading(false);

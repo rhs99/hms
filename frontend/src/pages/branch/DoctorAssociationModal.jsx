@@ -7,7 +7,7 @@ import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader } from '@
 import Utils from '../../utils';
 import Config from '../../config';
 
-const DoctorAssociationModal = ({ open, onClose, branchId, deptId }) => {
+const DoctorAssociationModal = ({ open, onClose, branchId }) => {
   const [reginstrationNo, setRegistrationNo] = useState('');
   const [doctor, setDoctor] = useState(null);
 

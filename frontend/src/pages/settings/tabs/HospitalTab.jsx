@@ -23,7 +23,7 @@ const HospitalTab = () => {
 
       setHospitalName('');
       show('success', 'Hospital created successfully!');
-    } catch (error) {
+    } catch {
       show('danger', 'Failed to create hospital. Please try again.');
     } finally {
       setIsLoading(false);

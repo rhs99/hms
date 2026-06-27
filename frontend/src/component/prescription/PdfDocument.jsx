@@ -229,7 +229,7 @@ const PdfDocument = ({ pages }) => (
             />
             <View style={styles.signatureBlock}>
               <View style={styles.signatureLine} />
-              <Text style={styles.signatureLabel}>Doctor's Signature</Text>
+              <Text style={styles.signatureLabel}>Doctor&apos;s Signature</Text>
             </View>
           </View>
         </Page>
