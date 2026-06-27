@@ -16,7 +16,7 @@ import {
 import { FaPlus, FaUserMd, FaMapMarkedAlt, FaCalendarPlus, FaCheckCircle } from 'react-icons/fa';
 
 import Config from '../../../config';
-import { Card, CardBody, CardHeader, SectionLabel, StatusMessage } from '../_components';
+import { AlertBanner, Card, CardBody, CardHeader, SectionLabel, useAlertState } from '../_components';
 
 const WEEKDAYS = [
   { value: 'SAT', label: 'Saturday' },
@@ -49,7 +49,7 @@ const ScheduleTab = () => {
 
   const [isAssigning, setIsAssigning] = useState(false);
   const [isAddingSchedule, setIsAddingSchedule] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
+  const { alert, show, dismiss } = useAlertState();
 
   useEffect(() => {
     fetchDoctors();
@@ -81,7 +81,7 @@ const ScheduleTab = () => {
       const { data } = await axios.get(`${Config.SERVER_URL}/doctors`);
       setDoctors(data);
     } catch (error) {
-      console.error('Error fetching doctors:', error);
+      show('danger', 'Failed to load doctors.');
     }
   };
 
@@ -90,7 +90,7 @@ const ScheduleTab = () => {
       const { data } = await axios.get(`${Config.SERVER_URL}/hospitals`);
       setHospitals(data);
     } catch (error) {
-      console.error('Error fetching hospitals:', error);
+      show('danger', 'Failed to load hospitals.');
     }
   };
 
@@ -99,7 +99,7 @@ const ScheduleTab = () => {
       const { data } = await axios.get(`${Config.SERVER_URL}/branches?hospital_id=${hospitalId}`);
       setBranches(data);
     } catch (error) {
-      console.error('Error fetching branches:', error);
+      show('danger', 'Failed to load branches.');
     }
   };
 
@@ -108,7 +108,7 @@ const ScheduleTab = () => {
       const { data } = await axios.get(`${Config.SERVER_URL}/slots`);
       setSlots(data);
     } catch (error) {
-      console.error('Error fetching slots:', error);
+      show('danger', 'Failed to load time slots.');
     }
   };
 
@@ -142,12 +142,12 @@ const ScheduleTab = () => {
 
   const handleAssignBranch = async () => {
     if (!selectedDoctor || !selectedBranch || !startDate) {
-      alert('Please select doctor, branch, and start date');
+      show('warning', 'Please select doctor, branch, and start date.');
       return;
     }
 
     setIsAssigning(true);
-    setSuccessMessage('');
+    dismiss();
 
     try {
       await axios.post(`${Config.SERVER_URL}/work-places`, {
@@ -158,11 +158,9 @@ const ScheduleTab = () => {
       });
 
       await checkAssignment();
-      setSuccessMessage('Doctor assigned to branch successfully!');
-      setTimeout(() => setSuccessMessage(''), 3000);
+      show('success', 'Doctor assigned to branch successfully!');
     } catch (error) {
-      console.error('Error assigning doctor to branch:', error);
-      alert('Error assigning doctor. Please try again.');
+      show('danger', 'Failed to assign doctor. Please try again.');
     } finally {
       setIsAssigning(false);
     }
@@ -174,16 +172,16 @@ const ScheduleTab = () => {
 
   const handleAddSchedule = async () => {
     if (!selectedSlot) {
-      alert('Please select a time slot');
+      show('warning', 'Please select a time slot.');
       return;
     }
     if (selectedDays.length === 0) {
-      alert('Please select at least one day');
+      show('warning', 'Please select at least one day.');
       return;
     }
 
     setIsAddingSchedule(true);
-    setSuccessMessage('');
+    dismiss();
 
     try {
       let wpId = workPlaceId;
@@ -211,13 +209,11 @@ const ScheduleTab = () => {
 
       setSelectedSlot(null);
       setSelectedDays([]);
-      setSuccessMessage('Schedule added successfully!');
-      setTimeout(() => setSuccessMessage(''), 3000);
+      show('success', 'Schedule added successfully!');
 
       checkAssignment();
     } catch (error) {
-      console.error('Error adding schedule:', error);
-      alert('Error adding schedule. Please try again.');
+      show('danger', 'Failed to add schedule. Please try again.');
     } finally {
       setIsAddingSchedule(false);
     }
@@ -225,6 +221,7 @@ const ScheduleTab = () => {
 
   return (
     <Flex flexDirection="column" gap="20">
+      <AlertBanner alert={alert} onDismiss={dismiss} />
       <Card>
         <CardHeader
           icon={<FaUserMd />}
@@ -391,12 +388,11 @@ const ScheduleTab = () => {
                     </Flex>
                   </Field>
 
-                  <Flex flexDirection="row" gap="16" alignItems="center">
+                  <Box>
                     <Button onClick={handleAddSchedule} appearance="primary" disabled={isAddingSchedule} icon={<FaPlus />}>
                       {isAddingSchedule ? 'Adding...' : 'Add Schedule'}
                     </Button>
-                    <StatusMessage tone="success">{successMessage}</StatusMessage>
-                  </Flex>
+                  </Box>
                 </Flex>
               </CardBody>
             </Card>

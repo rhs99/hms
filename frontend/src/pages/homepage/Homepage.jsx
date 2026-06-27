@@ -10,6 +10,7 @@ import { CiLocationOn } from 'react-icons/ci';
 import { SearchInput } from '@optiaxiom/react';
 import { createColumnHelper, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import Config from '../../config';
+import { AlertBanner, useAlertState } from '../../component/alerts';
 
 const columnHelper = createColumnHelper();
 
@@ -20,6 +21,7 @@ const Homepage = () => {
   const [hospitalRowSelection, setHospitalRowSelection] = useState({});
   const [branchRowSelection, setBranchRowSelection] = useState({});
   const [searchTerm, setSearchTerm] = useState('');
+  const { alert, show, dismiss } = useAlertState();
 
   const navigate = useNavigate();
 
@@ -124,11 +126,11 @@ const Homepage = () => {
         const { data } = await axios.get(`${Config.SERVER_URL}/hospitals`);
         setHospitals(data);
       } catch (error) {
-        console.error('Error fetching hospitals:', error);
+        show('danger', 'Failed to load hospitals.');
       }
     };
     fetchHospitals();
-  }, []);
+  }, [show]);
 
   useEffect(() => {
     const selectedRows = hospitalTable.getSelectedRowModel().rows;
@@ -141,7 +143,7 @@ const Homepage = () => {
           const { data } = await axios.get(`${Config.SERVER_URL}/branches?hospital_id=${hospital.id}`);
           setBranches(data);
         } catch (error) {
-          console.error('Error fetching branches:', error);
+          show('danger', 'Failed to load branches.');
         }
       };
       fetchBranches();
@@ -150,7 +152,7 @@ const Homepage = () => {
       setBranches([]);
       setBranchRowSelection({});
     }
-  }, [hospitalRowSelection, hospitalTable]);
+  }, [hospitalRowSelection, hospitalTable, show]);
 
   useEffect(() => {
     const selectedRows = branchTable.getSelectedRowModel().rows;
@@ -166,6 +168,7 @@ const Homepage = () => {
       gap="16"
       style={{ maxHeight: '80vh', overflowY: 'auto', padding: 'var(--spacing-lg)' }}
     >
+      <AlertBanner alert={alert} onDismiss={dismiss} />
       <Flex flexDirection="row" justifyContent="flex-end" alignItems="center">
         <SearchInput
           placeholder="Search hospitals"

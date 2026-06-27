@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Button, Field, Flex, Input, Menu, MenuContent, MenuTrigger } from '@optiaxiom/react';
+import { Box, Button, Field, Flex, Input, Menu, MenuContent, MenuTrigger } from '@optiaxiom/react';
 import { FaPlus, FaBuilding } from 'react-icons/fa';
 
 import Config from '../../../config';
-import { Card, CardBody, CardHeader, StatusMessage } from '../_components';
+import { AlertBanner, Card, CardBody, CardHeader, useAlertState } from '../_components';
 
 const BranchTab = () => {
   const [selectedHospital, setSelectedHospital] = useState(null);
@@ -13,14 +13,14 @@ const BranchTab = () => {
   const [email, setEmail] = useState('');
   const [hospitals, setHospitals] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
+  const { alert, show, dismiss } = useAlertState();
 
   const fetchHospitals = async () => {
     try {
       const { data } = await axios.get(`${Config.SERVER_URL}/hospitals`);
       setHospitals(data);
     } catch (error) {
-      console.error('Error fetching hospitals:', error);
+      show('danger', 'Failed to load hospitals.');
     }
   };
 
@@ -31,12 +31,12 @@ const BranchTab = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!selectedHospital) {
-      alert('Please select a hospital');
+      show('warning', 'Please select a hospital.');
       return;
     }
 
     setIsLoading(true);
-    setSuccessMessage('');
+    dismiss();
 
     try {
       await axios.post(`${Config.SERVER_URL}/branches`, {
@@ -50,10 +50,9 @@ const BranchTab = () => {
       setAddress('');
       setPhone('');
       setEmail('');
-      setSuccessMessage('Branch created successfully!');
-      setTimeout(() => setSuccessMessage(''), 3000);
+      show('success', 'Branch created successfully!');
     } catch (error) {
-      console.error('Error creating branch:', error);
+      show('danger', 'Failed to create branch. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -67,8 +66,10 @@ const BranchTab = () => {
         subtitle="Register a hospital branch with contact details"
       />
       <CardBody>
-        <form onSubmit={handleSubmit}>
-          <Flex flexDirection="column" gap="16">
+        <Flex flexDirection="column" gap="16">
+          <AlertBanner alert={alert} onDismiss={dismiss} />
+          <form onSubmit={handleSubmit}>
+            <Flex flexDirection="column" gap="16">
             <Field label="Hospital" required>
               <Menu
                 options={hospitals.map((hospital) => ({
@@ -108,14 +109,14 @@ const BranchTab = () => {
                 />
               </Field>
             </Flex>
-            <Flex flexDirection="row" gap="16" alignItems="center">
-              <Button type="submit" appearance="primary" disabled={isLoading} icon={<FaPlus />}>
-                {isLoading ? 'Creating...' : 'Create Branch'}
-              </Button>
-              <StatusMessage tone="success">{successMessage}</StatusMessage>
+              <Box>
+                <Button type="submit" appearance="primary" disabled={isLoading} icon={<FaPlus />}>
+                  {isLoading ? 'Creating...' : 'Create Branch'}
+                </Button>
+              </Box>
             </Flex>
-          </Flex>
-        </form>
+          </form>
+        </Flex>
       </CardBody>
     </Card>
   );

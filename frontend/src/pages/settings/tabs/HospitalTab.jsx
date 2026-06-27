@@ -1,20 +1,20 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { Button, Field, Flex, Input } from '@optiaxiom/react';
+import { Box, Button, Field, Flex, Input } from '@optiaxiom/react';
 import { FaPlus, FaHospital } from 'react-icons/fa';
 
 import Config from '../../../config';
-import { Card, CardBody, CardHeader, StatusMessage } from '../_components';
+import { AlertBanner, Card, CardBody, CardHeader, useAlertState } from '../_components';
 
 const HospitalTab = () => {
   const [hospitalName, setHospitalName] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
+  const { alert, show, dismiss } = useAlertState();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setSuccessMessage('');
+    dismiss();
 
     try {
       await axios.post(`${Config.SERVER_URL}/hospitals`, {
@@ -22,10 +22,9 @@ const HospitalTab = () => {
       });
 
       setHospitalName('');
-      setSuccessMessage('Hospital created successfully!');
-      setTimeout(() => setSuccessMessage(''), 3000);
+      show('success', 'Hospital created successfully!');
     } catch (error) {
-      console.error('Error creating hospital:', error);
+      show('danger', 'Failed to create hospital. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -39,24 +38,26 @@ const HospitalTab = () => {
         subtitle="Register a new hospital in the system"
       />
       <CardBody>
-        <form onSubmit={handleSubmit}>
-          <Flex flexDirection="column" gap="16">
-            <Field label="Hospital Name" required>
-              <Input
-                placeholder="Enter hospital name"
-                value={hospitalName}
-                onChange={(e) => setHospitalName(e.target.value)}
-                required
-              />
-            </Field>
-            <Flex flexDirection="row" gap="16" alignItems="center">
-              <Button type="submit" appearance="primary" disabled={isLoading} icon={<FaPlus />}>
-                {isLoading ? 'Creating...' : 'Create Hospital'}
-              </Button>
-              <StatusMessage tone="success">{successMessage}</StatusMessage>
+        <Flex flexDirection="column" gap="16">
+          <AlertBanner alert={alert} onDismiss={dismiss} />
+          <form onSubmit={handleSubmit}>
+            <Flex flexDirection="column" gap="16">
+              <Field label="Hospital Name" required>
+                <Input
+                  placeholder="Enter hospital name"
+                  value={hospitalName}
+                  onChange={(e) => setHospitalName(e.target.value)}
+                  required
+                />
+              </Field>
+              <Box>
+                <Button type="submit" appearance="primary" disabled={isLoading} icon={<FaPlus />}>
+                  {isLoading ? 'Creating...' : 'Create Hospital'}
+                </Button>
+              </Box>
             </Flex>
-          </Flex>
-        </form>
+          </form>
+        </Flex>
       </CardBody>
     </Card>
   );

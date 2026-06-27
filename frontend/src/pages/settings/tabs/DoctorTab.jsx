@@ -4,7 +4,7 @@ import { Badge, Box, Button, Field, Flex, Input, Menu, MenuContent, MenuTrigger,
 import { FaPlus, FaSearch, FaUser, FaUserMd } from 'react-icons/fa';
 
 import Config from '../../../config';
-import { Card, CardBody, CardHeader, SectionLabel, StatusMessage } from '../_components';
+import { AlertBanner, Card, CardBody, CardHeader, SectionLabel, useAlertState } from '../_components';
 
 const DoctorTab = () => {
   const [username, setUsername] = useState('');
@@ -17,15 +17,14 @@ const DoctorTab = () => {
   const [departments, setDepartments] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
-  const [errorMessage, setErrorMessage] = useState('');
+  const { alert, show, dismiss } = useAlertState();
 
   const fetchDepartments = async () => {
     try {
       const { data } = await axios.get(`${Config.SERVER_URL}/departments`);
       setDepartments(data);
     } catch (error) {
-      console.error('Error fetching departments:', error);
+      show('danger', 'Failed to load departments.');
     }
   };
 
@@ -35,13 +34,12 @@ const DoctorTab = () => {
 
   const handleSearchUser = async () => {
     if (!username.trim()) {
-      setErrorMessage('Please enter a username');
-      setTimeout(() => setErrorMessage(''), 3000);
+      show('warning', 'Please enter a username.');
       return;
     }
 
     setIsSearching(true);
-    setErrorMessage('');
+    dismiss();
     setSelectedUser(null);
 
     try {
@@ -49,15 +47,11 @@ const DoctorTab = () => {
 
       if (data) {
         setSelectedUser({ ...data, user_name: username });
-        setErrorMessage('');
       } else {
-        setErrorMessage('User not found. Please check the username.');
-        setTimeout(() => setErrorMessage(''), 5000);
+        show('danger', 'User not found. Please check the username.');
       }
     } catch (error) {
-      console.error('Error searching user:', error);
-      setErrorMessage('User not found. Please check the username.');
-      setTimeout(() => setErrorMessage(''), 5000);
+      show('danger', 'User not found. Please check the username.');
     } finally {
       setIsSearching(false);
     }
@@ -76,20 +70,17 @@ const DoctorTab = () => {
     e.preventDefault();
 
     if (!selectedUser) {
-      setErrorMessage('Please search and select a user first');
-      setTimeout(() => setErrorMessage(''), 3000);
+      show('warning', 'Please search and select a user first.');
       return;
     }
 
     if (!selectedDepartment) {
-      setErrorMessage('Please select a department');
-      setTimeout(() => setErrorMessage(''), 3000);
+      show('warning', 'Please select a department.');
       return;
     }
 
     setIsLoading(true);
-    setSuccessMessage('');
-    setErrorMessage('');
+    dismiss();
 
     try {
       await axios.post(`${Config.SERVER_URL}/doctors`, {
@@ -101,12 +92,9 @@ const DoctorTab = () => {
       });
 
       resetForm();
-      setSuccessMessage('Doctor created successfully!');
-      setTimeout(() => setSuccessMessage(''), 3000);
+      show('success', 'Doctor created successfully!');
     } catch (error) {
-      console.error('Error creating doctor:', error);
-      setErrorMessage('Error creating doctor. Please check all fields and try again.');
-      setTimeout(() => setErrorMessage(''), 5000);
+      show('danger', 'Failed to create doctor. Please check all fields and try again.');
     } finally {
       setIsLoading(false);
     }
@@ -121,6 +109,7 @@ const DoctorTab = () => {
       />
       <CardBody>
         <Flex flexDirection="column" gap="24">
+          <AlertBanner alert={alert} onDismiss={dismiss} />
           <Flex
             flexDirection="column"
             gap="16"
@@ -219,17 +208,14 @@ const DoctorTab = () => {
                   </Field>
                 </Flex>
 
-                <Flex flexDirection="row" gap="16" alignItems="center">
+                <Box>
                   <Button type="submit" appearance="primary" disabled={isLoading} icon={<FaPlus />}>
                     {isLoading ? 'Creating...' : 'Create Doctor Profile'}
                   </Button>
-                  <StatusMessage tone="success">{successMessage}</StatusMessage>
-                </Flex>
+                </Box>
               </Flex>
             </form>
           )}
-
-          <StatusMessage tone="error">{errorMessage}</StatusMessage>
         </Flex>
       </CardBody>
     </Card>

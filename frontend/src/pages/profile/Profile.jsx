@@ -17,6 +17,7 @@ import {
 } from '@optiaxiom/react';
 
 import Config from '../../config';
+import { AlertBanner, useAlertState } from '../../component/alerts';
 
 const BLOOD_GROUP_LABELS = {
   A_POS: 'A+',
@@ -53,6 +54,7 @@ const DetailRow = ({ icon, label, children }) => (
 const Profile = () => {
   const { userName } = useParams();
   const [profileData, setProfileData] = useState(null);
+  const { alert, show, dismiss } = useAlertState();
 
   useEffect(() => {
     const fetchProfileData = async () => {
@@ -60,19 +62,33 @@ const Profile = () => {
         const response = await axios.get(`${Config.SERVER_URL}/users?username=${userName}`);
         setProfileData(response.data);
       } catch (error) {
-        console.error('Error fetching profile data:', error);
+        show('danger', 'Failed to load profile.');
       }
     };
 
     void fetchProfileData();
-  }, [userName]);
+  }, [userName, show]);
 
   if (!profileData) {
     return (
-      <Flex alignItems="center" justifyContent="center" bg="bg.page" style={{ minHeight: '85vh' }}>
-        <Text fontSize="lg" color="fg.tertiary">
-          Loading profile...
-        </Text>
+      <Flex
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+        gap="16"
+        bg="bg.page"
+        p="24"
+        style={{ minHeight: '85vh' }}
+      >
+        {alert ? (
+          <Box style={{ width: '100%', maxWidth: '520px' }}>
+            <AlertBanner alert={alert} onDismiss={dismiss} />
+          </Box>
+        ) : (
+          <Text fontSize="lg" color="fg.tertiary">
+            Loading profile...
+          </Text>
+        )}
       </Flex>
     );
   }

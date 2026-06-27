@@ -1,6 +1,8 @@
 import { Box, Flex, Heading, Text } from '@optiaxiom/react';
 import { FaCheckCircle, FaExclamationCircle } from 'react-icons/fa';
 
+export { AlertBanner, useAlertState } from '../../component/alerts';
+
 export const Card = ({ children, ...rest }) => (
   <Box
     bg="bg.default"
@@ -77,3 +79,4 @@ export const StatusMessage = ({ tone = 'success', children }) => {
     </Flex>
   );
 };
+

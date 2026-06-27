@@ -5,7 +5,7 @@ import { createColumnHelper, getCoreRowModel, useReactTable } from '@tanstack/re
 import { FaPlus, FaClock, FaList } from 'react-icons/fa';
 
 import Config from '../../../config';
-import { Card, CardBody, CardHeader, StatusMessage } from '../_components';
+import { AlertBanner, Card, CardBody, CardHeader, useAlertState } from '../_components';
 
 const columnHelper = createColumnHelper();
 
@@ -14,14 +14,14 @@ const SlotTab = () => {
   const [endTime, setEndTime] = useState('');
   const [slots, setSlots] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
+  const { alert, show, dismiss } = useAlertState();
 
   const fetchSlots = async () => {
     try {
       const { data } = await axios.get(`${Config.SERVER_URL}/slots`);
       setSlots(data);
     } catch (error) {
-      console.error('Error fetching slots:', error);
+      show('danger', 'Failed to load time slots.');
     }
   };
 
@@ -32,7 +32,7 @@ const SlotTab = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setSuccessMessage('');
+    dismiss();
 
     try {
       await axios.post(`${Config.SERVER_URL}/slots`, {
@@ -42,11 +42,10 @@ const SlotTab = () => {
 
       setStartTime('');
       setEndTime('');
-      setSuccessMessage('Time slot created successfully!');
-      setTimeout(() => setSuccessMessage(''), 3000);
+      show('success', 'Time slot created successfully!');
       await fetchSlots();
     } catch (error) {
-      console.error('Error creating slot:', error);
+      show('danger', 'Failed to create time slot. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -83,34 +82,36 @@ const SlotTab = () => {
           subtitle="Define a reusable appointment time window"
         />
         <CardBody>
-          <form onSubmit={handleSubmit}>
-            <Flex flexDirection="column" gap="16">
-              <Flex flexDirection="row" gap="16" style={{ flexWrap: 'wrap' }}>
-                <Field label="Start Time" required style={{ flex: '1 1 200px' }}>
-                  <Input
-                    placeholder="e.g., 8 AM"
-                    value={startTime}
-                    onChange={(e) => setStartTime(e.target.value)}
-                    required
-                  />
-                </Field>
-                <Field label="End Time" required style={{ flex: '1 1 200px' }}>
-                  <Input
-                    placeholder="e.g., 12 PM"
-                    value={endTime}
-                    onChange={(e) => setEndTime(e.target.value)}
-                    required
-                  />
-                </Field>
+          <Flex flexDirection="column" gap="16">
+            <AlertBanner alert={alert} onDismiss={dismiss} />
+            <form onSubmit={handleSubmit}>
+              <Flex flexDirection="column" gap="16">
+                <Flex flexDirection="row" gap="16" style={{ flexWrap: 'wrap' }}>
+                  <Field label="Start Time" required style={{ flex: '1 1 200px' }}>
+                    <Input
+                      placeholder="e.g., 8 AM"
+                      value={startTime}
+                      onChange={(e) => setStartTime(e.target.value)}
+                      required
+                    />
+                  </Field>
+                  <Field label="End Time" required style={{ flex: '1 1 200px' }}>
+                    <Input
+                      placeholder="e.g., 12 PM"
+                      value={endTime}
+                      onChange={(e) => setEndTime(e.target.value)}
+                      required
+                    />
+                  </Field>
+                </Flex>
+                <Box>
+                  <Button type="submit" appearance="primary" disabled={isLoading} icon={<FaPlus />}>
+                    {isLoading ? 'Creating...' : 'Create Time Slot'}
+                  </Button>
+                </Box>
               </Flex>
-              <Flex flexDirection="row" gap="16" alignItems="center">
-                <Button type="submit" appearance="primary" disabled={isLoading} icon={<FaPlus />}>
-                  {isLoading ? 'Creating...' : 'Create Time Slot'}
-                </Button>
-                <StatusMessage tone="success">{successMessage}</StatusMessage>
-              </Flex>
-            </Flex>
-          </form>
+            </form>
+          </Flex>
         </CardBody>
       </Card>
 

@@ -5,7 +5,7 @@ import { createColumnHelper, getCoreRowModel, useReactTable } from '@tanstack/re
 import { FaPlus, FaStethoscope, FaList } from 'react-icons/fa';
 
 import Config from '../../../config';
-import { Card, CardBody, CardHeader, StatusMessage } from '../_components';
+import { AlertBanner, Card, CardBody, CardHeader, useAlertState } from '../_components';
 
 const columnHelper = createColumnHelper();
 
@@ -13,14 +13,14 @@ const DepartmentTab = () => {
   const [departmentName, setDepartmentName] = useState('');
   const [departments, setDepartments] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
+  const { alert, show, dismiss } = useAlertState();
 
   const fetchDepartments = async () => {
     try {
       const { data } = await axios.get(`${Config.SERVER_URL}/departments`);
       setDepartments(data);
     } catch (error) {
-      console.error('Error fetching departments:', error);
+      show('danger', 'Failed to load departments.');
     }
   };
 
@@ -31,7 +31,7 @@ const DepartmentTab = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    setSuccessMessage('');
+    dismiss();
 
     try {
       await axios.post(`${Config.SERVER_URL}/departments`, {
@@ -39,11 +39,10 @@ const DepartmentTab = () => {
       });
 
       setDepartmentName('');
-      setSuccessMessage('Department created successfully!');
-      setTimeout(() => setSuccessMessage(''), 3000);
+      show('success', 'Department created successfully!');
       await fetchDepartments();
     } catch (error) {
-      console.error('Error creating department:', error);
+      show('danger', 'Failed to create department. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -77,24 +76,26 @@ const DepartmentTab = () => {
           subtitle="Create a clinical department"
         />
         <CardBody>
-          <form onSubmit={handleSubmit}>
-            <Flex flexDirection="column" gap="16">
-              <Field label="Department Name" required>
-                <Input
-                  placeholder="Enter department name"
-                  value={departmentName}
-                  onChange={(e) => setDepartmentName(e.target.value)}
-                  required
-                />
-              </Field>
-              <Flex flexDirection="row" gap="16" alignItems="center">
-                <Button type="submit" appearance="primary" disabled={isLoading} icon={<FaPlus />}>
-                  {isLoading ? 'Creating...' : 'Create Department'}
-                </Button>
-                <StatusMessage tone="success">{successMessage}</StatusMessage>
+          <Flex flexDirection="column" gap="16">
+            <AlertBanner alert={alert} onDismiss={dismiss} />
+            <form onSubmit={handleSubmit}>
+              <Flex flexDirection="column" gap="16">
+                <Field label="Department Name" required>
+                  <Input
+                    placeholder="Enter department name"
+                    value={departmentName}
+                    onChange={(e) => setDepartmentName(e.target.value)}
+                    required
+                  />
+                </Field>
+                <Box>
+                  <Button type="submit" appearance="primary" disabled={isLoading} icon={<FaPlus />}>
+                    {isLoading ? 'Creating...' : 'Create Department'}
+                  </Button>
+                </Box>
               </Flex>
-            </Flex>
-          </form>
+            </form>
+          </Flex>
         </CardBody>
       </Card>
 

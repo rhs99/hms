@@ -7,6 +7,7 @@ import { FaHospitalAlt, FaUserMd, FaPlus, FaStethoscope } from 'react-icons/fa';
 import { MdLocalHospital } from 'react-icons/md';
 
 import Config from '../../config';
+import { AlertBanner, useAlertState } from '../../component/alerts';
 import DepartmentAssociationModal from './DepartmentAssociationModal';
 import DoctorAssociationModal from './DoctorAssociationModal';
 
@@ -18,6 +19,7 @@ const Branch = () => {
   const [showAssociateDepartmentModal, setShowAssociateDepartmentModal] = useState(false);
   const [showAssociateDoctorModal, setShowAssociateDoctorModal] = useState(false);
   const [selectedDeptForDoctor, setSelectedDeptForDoctor] = useState(null);
+  const { alert, show, dismiss } = useAlertState();
 
   const { branchId } = useParams();
   const navigate = useNavigate();
@@ -25,10 +27,11 @@ const Branch = () => {
   // Fetch all departments for this branch
   useEffect(() => {
     const url = Config.SERVER_URL + `/branches/${branchId}/departments`;
-    axios.get(url).then(({ data }) => {
-      setDepts(data);
-    });
-  }, [branchId]);
+    axios
+      .get(url)
+      .then(({ data }) => setDepts(data))
+      .catch(() => show('danger', 'Failed to load departments for this branch.'));
+  }, [branchId, show]);
 
   // Fetch doctors for each department
   useEffect(() => {
@@ -36,6 +39,7 @@ const Branch = () => {
 
     const fetchDoctorsForAllDepartments = async () => {
       const doctorsData = {};
+      let hadError = false;
 
       for (const dept of depts) {
         try {
@@ -43,16 +47,17 @@ const Branch = () => {
           const { data } = await axios.get(url);
           doctorsData[dept.id] = data;
         } catch (error) {
-          console.error(`Error fetching doctors for department ${dept.id}:`, error);
+          hadError = true;
           doctorsData[dept.id] = [];
         }
       }
 
       setDepartmentDoctors(doctorsData);
+      if (hadError) show('danger', 'Failed to load doctors for some departments.');
     };
 
     fetchDoctorsForAllDepartments();
-  }, [depts, branchId]);
+  }, [depts, branchId, show]);
 
   const gotoDoctor = (deptId, doctorId) => {
     navigate(`/branches/${branchId}/departments/${deptId}/doctors/${doctorId}`);
@@ -68,15 +73,20 @@ const Branch = () => {
     setShowAssociateDoctorModal(false);
     setSelectedDeptForDoctor(null);
 
-    // Refresh data
     const url = Config.SERVER_URL + `/branches/${branchId}/departments`;
-    axios.get(url).then(({ data }) => {
-      setDepts(data);
-    });
+    axios
+      .get(url)
+      .then(({ data }) => setDepts(data))
+      .catch(() => show('danger', 'Failed to refresh departments.'));
   };
 
   return (
     <Box className="branch">
+      {alert && (
+        <Box style={{ marginBottom: '16px' }}>
+          <AlertBanner alert={alert} onDismiss={dismiss} />
+        </Box>
+      )}
       <Box className="branch-header">
         <Flex flexDirection="row" alignItems="center" gap="12">
           <FaHospitalAlt size={32} style={{ color: 'var(--color-primary)' }} />
