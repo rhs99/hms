@@ -370,9 +370,7 @@ const Doctor = () => {
               </Button>
               <Button
                 appearance="primary"
-                disabled={
-                  !authCtx.isLoggedIn || !date || !selectedSlotSchedule || !!dateValidationError
-                }
+                disabled={!authCtx.isLoggedIn || !date || !selectedSlotSchedule || !!dateValidationError}
                 onClick={makeAppointment}
                 icon={<FaCalendarAlt />}
               >

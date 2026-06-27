@@ -16,7 +16,8 @@ import {
 import { FaPlus, FaUserMd, FaMapMarkedAlt, FaCalendarPlus, FaCheckCircle } from 'react-icons/fa';
 
 import Config from '../../../config';
-import { AlertBanner, Card, CardBody, CardHeader, SectionLabel, useAlertState } from '../_components';
+import { AlertBanner, Card, CardBody, CardHeader, SectionLabel } from '../_components';
+import { useAlertState } from '../../../component/useAlertState';
 
 const WEEKDAYS = [
   { value: 'SAT', label: 'Saturday' },
@@ -72,9 +73,7 @@ const ScheduleTab = () => {
   const fetchBranches = useCallback(
     async (hospitalId) => {
       try {
-        const { data } = await axios.get(
-          `${Config.SERVER_URL}/branches?hospital_id=${hospitalId}&limit=100`
-        );
+        const { data } = await axios.get(`${Config.SERVER_URL}/branches?hospital_id=${hospitalId}&limit=100`);
         setBranches(data.items);
       } catch {
         show('danger', 'Failed to load branches.');

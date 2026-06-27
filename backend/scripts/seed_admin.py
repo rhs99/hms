@@ -27,7 +27,9 @@ from app.models import GenderEnum, Role, User, UserRole
 
 async def _ensure_role(name: str) -> Role:
     session = session_var.get()
-    role = (await session.execute(select(Role).where(Role.name == name))).scalar_one_or_none()
+    role = (
+        await session.execute(select(Role).where(Role.name == name))
+    ).scalar_one_or_none()
     if role is None:
         role = Role(name=name)
         session.add(role)

@@ -5,7 +5,8 @@ import { createColumnHelper, getCoreRowModel, useReactTable } from '@tanstack/re
 import { FaPlus, FaClock, FaList } from 'react-icons/fa';
 
 import Config from '../../../config';
-import { AlertBanner, Card, CardBody, CardHeader, useAlertState } from '../_components';
+import { AlertBanner, Card, CardBody, CardHeader } from '../_components';
+import { useAlertState } from '../../../component/useAlertState';
 
 const columnHelper = createColumnHelper();
 

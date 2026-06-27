@@ -4,7 +4,8 @@ import { Badge, Box, Button, Field, Flex, Input, Menu, MenuContent, MenuTrigger,
 import { FaPlus, FaMapMarkedAlt, FaCity, FaMap } from 'react-icons/fa';
 
 import Config from '../../../config';
-import { AlertBanner, Card, CardBody, CardHeader, useAlertState } from '../_components';
+import { AlertBanner, Card, CardBody, CardHeader } from '../_components';
+import { useAlertState } from '../../../component/useAlertState';
 
 const RegionTab = () => {
   const { alert, show, dismiss } = useAlertState();

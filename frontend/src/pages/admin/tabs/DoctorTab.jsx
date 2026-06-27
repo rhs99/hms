@@ -16,7 +16,8 @@ import {
 import { FaPlus, FaSearch, FaUser, FaUserMd } from 'react-icons/fa';
 
 import Config from '../../../config';
-import { AlertBanner, Card, CardBody, CardHeader, SectionLabel, useAlertState } from '../_components';
+import { AlertBanner, Card, CardBody, CardHeader, SectionLabel } from '../_components';
+import { useAlertState } from '../../../component/useAlertState';
 
 const DoctorTab = () => {
   const [username, setUsername] = useState('');

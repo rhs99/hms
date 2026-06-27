@@ -44,11 +44,7 @@ const HmsSidebar = () => {
                 </NavItem>
               )}
               {isLoggedIn && isAdmin && (
-                <NavItem
-                  active={isActive('/admin')}
-                  icon={<TbShieldCog />}
-                  onClick={() => navigate('/admin')}
-                >
+                <NavItem active={isActive('/admin')} icon={<TbShieldCog />} onClick={() => navigate('/admin')}>
                   Administration
                 </NavItem>
               )}

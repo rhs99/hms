@@ -46,9 +46,7 @@ def create_csrf_token() -> str:
     return secrets.token_urlsafe(32)
 
 
-def set_session_cookies(
-    response: Response, access_token: str, csrf_token: str
-) -> None:
+def set_session_cookies(response: Response, access_token: str, csrf_token: str) -> None:
     max_age = Config.JWT_EXPIRES_HOURS * 3600
     response.set_cookie(
         ACCESS_COOKIE,

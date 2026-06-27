@@ -7,7 +7,8 @@ import { MdLocalHospital } from 'react-icons/md';
 
 import Config from '../../config';
 import AuthContext from '../../store/auth';
-import { AlertBanner, useAlertState } from '../../component/alerts';
+import { AlertBanner } from '../../component/alerts';
+import { useAlertState } from '../../component/useAlertState';
 import DepartmentAssociationModal from './DepartmentAssociationModal';
 import DoctorAssociationModal from './DoctorAssociationModal';
 
@@ -141,7 +142,9 @@ const Branch = () => {
             No Departments Yet
           </Heading>
           <Text color="fg.tertiary">
-            {isAdmin ? 'Get started by adding departments to this branch' : 'No departments have been added to this branch yet.'}
+            {isAdmin
+              ? 'Get started by adding departments to this branch'
+              : 'No departments have been added to this branch yet.'}
           </Text>
           {isAdmin && (
             <Button appearance="primary" onClick={() => setShowAssociateDepartmentModal(true)} icon={<FaPlus />}>

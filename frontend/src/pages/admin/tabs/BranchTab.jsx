@@ -4,7 +4,8 @@ import { Box, Button, Field, Flex, Input, Menu, MenuContent, MenuTrigger, Text }
 import { FaPlus, FaBuilding } from 'react-icons/fa';
 
 import Config from '../../../config';
-import { AlertBanner, Card, CardBody, CardHeader, useAlertState } from '../_components';
+import { AlertBanner, Card, CardBody, CardHeader } from '../_components';
+import { useAlertState } from '../../../component/useAlertState';
 
 const BranchTab = () => {
   const [selectedHospital, setSelectedHospital] = useState(null);

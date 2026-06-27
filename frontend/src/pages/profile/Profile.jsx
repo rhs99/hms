@@ -6,7 +6,8 @@ import { FaEnvelope, FaPhone, FaCalendar, FaTint, FaVenusMars, FaUser } from 're
 import { Avatar, Badge, Box, Card, CardFooter, CardHeader, CardPreview, Flex, Heading, Text } from '@optiaxiom/react';
 
 import Config from '../../config';
-import { AlertBanner, useAlertState } from '../../component/alerts';
+import { AlertBanner } from '../../component/alerts';
+import { useAlertState } from '../../component/useAlertState';
 
 const BLOOD_GROUP_LABELS = {
   A_POS: 'A+',

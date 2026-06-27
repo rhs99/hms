@@ -23,7 +23,8 @@ import { FaPhone, FaMapMarkedAlt } from 'react-icons/fa';
 import { MdOutlineEmail, MdLocationOn } from 'react-icons/md';
 
 import Config from '../../config';
-import { AlertBanner, useAlertState } from '../../component/alerts';
+import { AlertBanner } from '../../component/alerts';
+import { useAlertState } from '../../component/useAlertState';
 
 const PAGE_SIZE = 20;
 const SEARCH_DEBOUNCE_MS = 300;
