@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createColumnHelper } from '@tanstack/react-table';
 import { FaCalendarCheck, FaHistory, FaClipboardList } from 'react-icons/fa';
-import { DataTable, DataTableBody, Box, Checkbox, Heading, Text } from '@optiaxiom/react';
+import { DataTable, DataTableBody, Box, Cover, DataTableCheckbox, Heading, Text } from '@optiaxiom/react';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 
 import { Dialog, DialogBody, DialogClose, DialogContent, DialogFooter, DialogHeader } from '@optiaxiom/react';
@@ -20,12 +20,10 @@ const getAppointmentColumns = () => [
   {
     id: 'select',
     size: 50,
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onChange={row.getToggleSelectedHandler()}
-        disabled={!row.getCanSelect()}
-      />
+    cell: () => (
+      <Cover asChild>
+        <DataTableCheckbox />
+      </Cover>
     ),
   },
   columnHelper.accessor('serial_no', {

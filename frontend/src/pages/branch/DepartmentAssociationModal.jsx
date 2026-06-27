@@ -2,7 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { createColumnHelper } from '@tanstack/react-table';
-import { DataTable, DataTableBody, Flex, Checkbox, Button, Text } from '@optiaxiom/react';
+import { DataTable, DataTableBody, Flex, Cover, DataTableCheckbox, Button, Text } from '@optiaxiom/react';
 
 import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader } from '@optiaxiom/react';
 
@@ -43,12 +43,10 @@ const DepartmentAssociationModal = ({ open, onClose, branchId, branchDepartments
       {
         id: 'select',
         size: 50,
-        cell: ({ row }) => (
-          <Checkbox
-            checked={row.getIsSelected()}
-            onChange={row.getToggleSelectedHandler()}
-            disabled={!row.getCanSelect()}
-          />
+        cell: () => (
+          <Cover asChild>
+            <DataTableCheckbox />
+          </Cover>
         ),
       },
       columnHelper.accessor('name', {

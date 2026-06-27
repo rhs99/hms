@@ -3,7 +3,7 @@ import { useState, useContext, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createColumnHelper } from '@tanstack/react-table';
 import { FaBriefcaseMedical, FaClock, FaUserClock, FaCheckCircle } from 'react-icons/fa';
-import { DataTable, DataTableBody, Box, Checkbox, Text, Badge, Heading } from '@optiaxiom/react';
+import { DataTable, DataTableBody, Box, Cover, DataTableCheckbox, Text, Badge, Heading } from '@optiaxiom/react';
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 
 import utils from '../../utils';
@@ -19,12 +19,10 @@ const getWorkplaceColumns = () => [
   {
     id: 'select',
     size: 50,
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onChange={row.getToggleSelectedHandler()}
-        disabled={!row.getCanSelect()}
-      />
+    cell: () => (
+      <Cover asChild>
+        <DataTableCheckbox />
+      </Cover>
     ),
   },
   columnHelper.accessor('hospital', {
@@ -48,12 +46,10 @@ const getAppointmentColumns = () => [
   {
     id: 'select',
     size: 50,
-    cell: ({ row }) => (
-      <Checkbox
-        checked={row.getIsSelected()}
-        onChange={row.getToggleSelectedHandler()}
-        disabled={!row.getCanSelect()}
-      />
+    cell: () => (
+      <Cover asChild>
+        <DataTableCheckbox />
+      </Cover>
     ),
   },
   columnHelper.accessor('serial_no', {

@@ -9,7 +9,8 @@ import {
   DataTable,
   DataTableBody,
   Flex,
-  Checkbox,
+  Cover,
+  DataTableCheckbox,
   Field,
   Input,
   Button,
@@ -101,12 +102,10 @@ const Doctor = () => {
       {
         id: 'select',
         size: 50,
-        cell: ({ row }) => (
-          <Checkbox
-            checked={row.getIsSelected()}
-            onChange={row.getToggleSelectedHandler()}
-            disabled={!row.getCanSelect()}
-          />
+        cell: () => (
+          <Cover asChild>
+            <DataTableCheckbox />
+          </Cover>
         ),
       },
       columnHelper.accessor('day', {

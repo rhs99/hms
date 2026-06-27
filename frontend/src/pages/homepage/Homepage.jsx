@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Flex, Box, Text, Heading, DataTable, DataTableBody, Checkbox } from '@optiaxiom/react';
+import { Flex, Box, Text, Heading, DataTable, DataTableBody, DataTableCheckbox, Cover } from '@optiaxiom/react';
 import { FaPhone } from 'react-icons/fa';
 import { MdOutlineEmail } from 'react-icons/md';
 import { CiLocationOn } from 'react-icons/ci';
@@ -28,12 +28,10 @@ const Homepage = () => {
       {
         id: 'select',
         size: 50,
-        cell: ({ row }) => (
-          <Checkbox
-            checked={row.getIsSelected()}
-            onChange={row.getToggleSelectedHandler()}
-            disabled={!row.getCanSelect()}
-          />
+        cell: () => (
+          <Cover asChild>
+            <DataTableCheckbox />
+          </Cover>
         ),
       },
       columnHelper.accessor('id', {
@@ -52,12 +50,10 @@ const Homepage = () => {
       {
         id: 'select',
         size: 50,
-        cell: ({ row }) => (
-          <Checkbox
-            checked={row.getIsSelected()}
-            onChange={row.getToggleSelectedHandler()}
-            disabled={!row.getCanSelect()}
-          />
+        cell: () => (
+          <Cover asChild>
+            <DataTableCheckbox />
+          </Cover>
         ),
       },
       columnHelper.accessor('id', {
