@@ -18,6 +18,7 @@ import { FaPlus, FaUserMd, FaMapMarkedAlt, FaCalendarPlus, FaCheckCircle } from 
 import Config from '../../../config';
 import { AlertBanner, Card, CardBody, CardHeader, SectionLabel } from '../_components';
 import { useAlertState } from '../../../component/useAlertState';
+import DoctorSearch from '../../../component/DoctorSearch';
 
 const WEEKDAYS = [
   { value: 'SAT', label: 'Saturday' },
@@ -43,7 +44,6 @@ const ScheduleTab = () => {
   const [selectedDays, setSelectedDays] = useState([]);
   const [existingSchedules, setExistingSchedules] = useState([]);
 
-  const [doctors, setDoctors] = useState([]);
   const [hospitals, setHospitals] = useState([]);
   const [branches, setBranches] = useState([]);
   const [slots, setSlots] = useState([]);
@@ -51,15 +51,6 @@ const ScheduleTab = () => {
   const [isAssigning, setIsAssigning] = useState(false);
   const [isAddingSchedule, setIsAddingSchedule] = useState(false);
   const { alert, show, dismiss } = useAlertState();
-
-  const fetchDoctors = useCallback(async () => {
-    try {
-      const { data } = await axios.get(`${Config.SERVER_URL}/doctors`);
-      setDoctors(data);
-    } catch {
-      show('danger', 'Failed to load doctors.');
-    }
-  }, [show]);
 
   const fetchHospitals = useCallback(async () => {
     try {
@@ -120,10 +111,9 @@ const ScheduleTab = () => {
   }, [selectedDoctor, selectedBranch]);
 
   useEffect(() => {
-    fetchDoctors();
     fetchHospitals();
     fetchSlots();
-  }, [fetchDoctors, fetchHospitals, fetchSlots]);
+  }, [fetchHospitals, fetchSlots]);
 
   useEffect(() => {
     if (selectedHospital) {
@@ -235,19 +225,7 @@ const ScheduleTab = () => {
         <CardBody>
           <Flex flexDirection="column" gap="16">
             <Field label="Doctor" required>
-              <Menu
-                options={doctors.map((doctor) => ({
-                  label: `${doctor.full_name} (Reg: ${doctor.registration_no})`,
-                  execute: () => setSelectedDoctor(doctor),
-                }))}
-              >
-                <MenuTrigger>
-                  {selectedDoctor
-                    ? `${selectedDoctor.full_name} (Reg: ${selectedDoctor.registration_no})`
-                    : 'Select doctor'}
-                </MenuTrigger>
-                <MenuContent />
-              </Menu>
+              <DoctorSearch onDoctorSelect={setSelectedDoctor} />
             </Field>
 
             <Flex flexDirection="row" gap="16" style={{ flexWrap: 'wrap' }}>

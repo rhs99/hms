@@ -1,39 +1,13 @@
 import { useState } from 'react';
 import axios from 'axios';
-import { Flex, Button, Text, SearchInput, Badge } from '@optiaxiom/react';
-
-import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader } from '@optiaxiom/react';
+import { Button, Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader } from '@optiaxiom/react';
 
 import Utils from '../../utils';
 import Config from '../../config';
+import DoctorSearch from '../../component/DoctorSearch';
 
 const DoctorAssociationModal = ({ open, onClose, branchId, deptId }) => {
-  const [reginstrationNo, setRegistrationNo] = useState('');
   const [doctor, setDoctor] = useState(null);
-  const [searchError, setSearchError] = useState(null);
-
-  const getDoctor = () => {
-    setDoctor(null);
-    setSearchError(null);
-    const url = Config.SERVER_URL + `/doctors?registration_no=${reginstrationNo}`;
-    axios
-      .get(url)
-      .then((response) => {
-        if (!response.data) {
-          setSearchError('Doctor not found.');
-          return;
-        }
-
-        if (response.data.dept_id !== deptId) {
-          setSearchError('Doctor does not belong to this department.');
-          return;
-        }
-        setDoctor(response.data);
-      })
-      .catch(() => {
-        setSearchError('Error fetching doctor information.');
-      });
-  };
 
   const handleAssociateDoctor = () => {
     if (!doctor) return;
@@ -53,27 +27,10 @@ const DoctorAssociationModal = ({ open, onClose, branchId, deptId }) => {
       <DialogContent size="sm">
         <DialogHeader>Associate Doctor</DialogHeader>
         <DialogBody>
-          <Flex direction="column" gap="8">
-            <Flex flexDirection="row" gap="8">
-              <SearchInput
-                value={reginstrationNo}
-                onChange={(e) => setRegistrationNo(e.target.value)}
-                placeholder="Enter Registration No"
-              />
-              <Button onClick={getDoctor}>Search</Button>
-            </Flex>
-            {searchError && <Text color="fg.error">{searchError}</Text>}
-            {doctor && (
-              <Flex flexDirection="column" gap="8">
-                <Badge w="fit" intent="success">
-                  Found
-                </Badge>
-                <Text>{doctor.full_name}</Text>
-                <Text>{doctor.degree}</Text>
-                <Text>{doctor.experience}</Text>
-              </Flex>
-            )}
-          </Flex>
+          <DoctorSearch
+            onDoctorSelect={setDoctor}
+            validate={(doctor) => (doctor.dept_id !== deptId ? 'Doctor does not belong to this department.' : null)}
+          />
         </DialogBody>
         <DialogFooter>
           <Button appearance="danger" onClick={onClose}>

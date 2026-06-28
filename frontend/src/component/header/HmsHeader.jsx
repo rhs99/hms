@@ -47,13 +47,13 @@ const HmsHeader = () => {
         style={{ cursor: 'pointer' }}
         onClick={() => navigate('/')}
       >
-        <FaHospital size={28} style={{ color: 'var(--ax-colors-fg-accent-strong)' }} />
+        <FaHospital size={32} style={{ color: 'var(--ax-colors-fg-accent-strong)' }} />
         <Flex flexDirection="column" gap="0">
           <Heading level="4" color="fg.accent.strong" fontWeight="700" style={{ margin: 0 }}>
             HMS
           </Heading>
-          <Text fontSize="xs" style={{ color: 'var(--ax-colors-fg-tertiary)', marginTop: '-4px' }}>
-            Healthcare Management
+          <Text fontSize="xs" color="fg.tertiary">
+            Healthcare Management System
           </Text>
         </Flex>
       </Flex>
