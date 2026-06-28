@@ -231,7 +231,9 @@ const Branch = () => {
                 </Box>
               ) : (
                 <Flex flexDirection="column" alignItems="center" gap="12" p="24">
-                  <Text color="fg.tertiary">No doctors available in this department yet.</Text>
+                  <Text fontSize="2xl" color="fg.tertiary">
+                    No doctors available in this department yet.
+                  </Text>
                   {isAdmin && (
                     <Button appearance="primary" onClick={() => handleAddDoctor(dept.id)} icon={<FaPlus />}>
                       Add Doctor

@@ -18,6 +18,9 @@ class DoctorService:
     @staticmethod
     async def get_doctor(registration_no: int):
         doctor = await DoctorRepo.get_doctor(registration_no)
+        if not doctor:
+            return None
+
         user = await UserRepo.get_user(doctor.user_id)
 
         return {

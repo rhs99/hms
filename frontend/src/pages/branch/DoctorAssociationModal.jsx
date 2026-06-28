@@ -7,15 +7,32 @@ import { Dialog, DialogBody, DialogContent, DialogFooter, DialogHeader } from '@
 import Utils from '../../utils';
 import Config from '../../config';
 
-const DoctorAssociationModal = ({ open, onClose, branchId }) => {
+const DoctorAssociationModal = ({ open, onClose, branchId, deptId }) => {
   const [reginstrationNo, setRegistrationNo] = useState('');
   const [doctor, setDoctor] = useState(null);
+  const [searchError, setSearchError] = useState(null);
 
   const getDoctor = () => {
+    setDoctor(null);
+    setSearchError(null);
     const url = Config.SERVER_URL + `/doctors?registration_no=${reginstrationNo}`;
-    axios.get(url).then((response) => {
-      setDoctor(response.data);
-    });
+    axios
+      .get(url)
+      .then((response) => {
+        if (!response.data) {
+          setSearchError('Doctor not found.');
+          return;
+        }
+
+        if (response.data.dept_id !== deptId) {
+          setSearchError('Doctor does not belong to this department.');
+          return;
+        }
+        setDoctor(response.data);
+      })
+      .catch(() => {
+        setSearchError('Error fetching doctor information.');
+      });
   };
 
   const handleAssociateDoctor = () => {
@@ -45,6 +62,7 @@ const DoctorAssociationModal = ({ open, onClose, branchId }) => {
               />
               <Button onClick={getDoctor}>Search</Button>
             </Flex>
+            {searchError && <Text color="fg.error">{searchError}</Text>}
             {doctor && (
               <Flex flexDirection="column" gap="8">
                 <Badge w="fit" intent="success">
