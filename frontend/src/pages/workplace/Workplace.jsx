@@ -198,7 +198,9 @@ const Workplace = () => {
           borderColor="border.secondary"
           style={{ borderStyle: 'dashed', textAlign: 'center' }}
         >
-          <Text color="fg.tertiary">{emptyLabel}</Text>
+          <Text fontSize="2xl" color="fg.tertiary">
+            {emptyLabel}
+          </Text>
         </Box>
       ) : (
         children

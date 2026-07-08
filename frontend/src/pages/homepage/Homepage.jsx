@@ -98,18 +98,15 @@ const Homepage = () => {
   const [data, setData] = useState({ items: [], total: 0 });
   const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: PAGE_SIZE });
 
-  // Debounce search input
   useEffect(() => {
     const t = setTimeout(() => setDebouncedSearch(searchTerm.trim()), SEARCH_DEBOUNCE_MS);
     return () => clearTimeout(t);
   }, [searchTerm]);
 
-  // Reset to first page whenever filters change
   useEffect(() => {
     setPagination((p) => ({ ...p, pageIndex: 0 }));
   }, [debouncedSearch, selectedDivision, selectedDistrict, selectedThana]);
 
-  // Load divisions once
   useEffect(() => {
     axios
       .get(`${Config.SERVER_URL}/divisions`)
@@ -117,7 +114,6 @@ const Homepage = () => {
       .catch(() => show('danger', 'Failed to load divisions.'));
   }, [show]);
 
-  // Districts depend on selected division
   useEffect(() => {
     if (!selectedDivision) {
       setDistricts([]);
@@ -130,7 +126,6 @@ const Homepage = () => {
       .catch(() => show('danger', 'Failed to load districts.'));
   }, [selectedDivision, show]);
 
-  // Thanas depend on selected district
   useEffect(() => {
     if (!selectedDistrict) {
       setThanas([]);
@@ -173,6 +168,7 @@ const Homepage = () => {
     onPaginationChange: setPagination,
     rowCount: data.total,
     state: { pagination },
+    enableColumnResizing: true,
   });
 
   const clearFilters = () => {
